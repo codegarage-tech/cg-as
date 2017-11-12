@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    <color name="colorPrimary">#3F51B5</color>
+        <color name="colorPrimaryDark">#303F9F</color>
+        <color name="colorAccent">#FF4081</color>-->
+
+    <!--
+    <color name="colorPrimary">#FFEB3B</color>
+        <color name="colorPrimaryDark">#FBC02D</color>
+        <color name="colorPrimaryLight">#FFF9C4</color>
+        <color name="colorAccent">#FFC107</color>
+    -->
+
+    <color name="colorPrimary">#98ef98</color>
+    <color name="colorPrimaryDark">#17ef17</color>
+    <color name="colorAccent">#ed94b3</color>
+
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
+    <color name="icons">#212121</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="dividerDark">#c7c4c4</color>
+
+    <color name="primary_deep_purple">#673AB7</color>
+    <color name="primary_indigo">#3F51B5</color>
+    <color name="primary_blue">#2196F3</color>
+    <color name="primary_light_blue">#03A9F4</color>
+    <color name="primary_cyan">#00BCD4</color>
+    <color name="primary_teal">#009688</color>
+    <color name="primary_light_green">#8BC34A</color>
+    <color name="primary_green">#4CAF50</color>
+    <color name="primary_deep_orange">#FF5722</color>
+    <color name="primary_red">#F44336</color>
+    <color name="primary_green_light">#be69be91</color>
+    <color name="primary_green_dark">#be3fbf7c</color>
+    <color name="primary_yellow_dark">#beefef2c</color>
+
+    <color name="guillotine_background">#beefbe</color>
+    <color name="guillotine_background_dark">#39ed39</color>
+    <color name="selected_item_color">#30d1d5</color>
+
+    <!-- Media player -->
+    <color name="media_item_icon_playing">@color/colorAccent</color>
+    <color name="media_item_icon_not_playing">#ccc</color>
+
+    <!-- Paypal -->
+    <color name="blue_grey_50">#ECEFF1</color>
+    <color name="blue_grey_100">#CFD8DC</color>
+    <color name="blue_grey_200">#B0BEC5</color>
+    <color name="blue_grey_300">#90A4AE</color>
+    <color name="blue_grey_400">#78909C</color>
+    <color name="blue_grey_500">#607D8B</color>
+    <color name="blue_grey_600">#546E7A</color>
+    <color name="blue_grey_700">#455A64</color>
+    <color name="blue_grey_800">#37474F</color>
+    <color name="blue_grey_900">#263238</color>
+</resources>

@@ -1,0 +1,10 @@
+<resources>
+
+    <string-array name="zone_name">
+        <item>Pacific Time Zone</item>
+        <item>Mountain Time Zone</item>
+        <item>Central Time Zone</item>
+        <item>Eastern Time Zone</item>
+    </string-array>
+
+</resources>

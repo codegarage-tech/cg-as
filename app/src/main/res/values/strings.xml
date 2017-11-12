@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">Above Sound</string>
+    <string name="app_version_name" translatable="false">1.0.4</string>
+
+    <!-- Activity Title -->
+    <string name="title_activity_home">Above Sound</string>
+    <string name="title_activity_splash">Splash</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_signup">Sign Up</string>
+    <string name="title_activity_profile">Profile</string>
+    <string name="title_activity_zone">Zone</string>
+    <string name="title_activity_own_music_list">Own Music List</string>
+    <string name="title_activity_paypal">PayPal</string>
+
+    <!--Toast message-->
+    <string name="toast_empty_first_name_field">Please fill first name</string>
+    <string name="toast_empty_last_name_field">Please fill last name</string>
+    <string name="toast_empty_city_field">Please fill timezone</string>
+    <string name="toast_empty_music_category_field">Please fill music category</string>
+    <string name="toast_empty_country_field">Please fill country</string>
+    <string name="toast_empty_email_field">Please fill email address</string>
+    <string name="toast_empty_password_field">Please fill password</string>
+    <string name="toast_already_have_an_account">Already have an account</string>
+    <string name="toast_successfully_registered">Successfully registered</string>
+    <string name="toast_registration_failed">Registration failed</string>
+    <string name="toast_successfully_profile_updated">Successfully profile updated</string>
+    <string name="toast_profile_update_failed">Profile update failed</string>
+    <string name="toast_user_not_found">User not found</string>
+    <string name="toast_could_not_retrieve_info">Could not retrieve info</string>
+    <string name="toast_contact_has_no_number">Contact has no number</string>
+    <string name="toast_contact_has_no_email_id">Contact has no email id</string>
+    <string name="toast_your_sim_card_is_absent">Your sim card is absent</string>
+    <string name="toast_network_error">You have no internet connection!\nPlease connect to internet.</string>
+    <string name="toast_no_info_found">No info found</string>
+    <string name="toast_please_stop_music_before_searching">Please stop music before searching</string>
+    <string name="toast_please_stop_music_before_closing">Please stop music before closing</string>
+    <string name="toast_please_stop_music_before_buying">Please stop music before buying</string>
+    <string name="toast_please_stop_music_before_checking_list">Please stop music before checking list</string>
+    <string name="toast_please_buy_song_for_listening_full_song">Please buy song for listening full song</string>
+    <string name="toast_please_select_any_city">Please select any city</string>
+
+    <!-- Progressdialog message -->
+    <string name="dialog_loading">Loading...</string>
+
+    <!-- Update profile -->
+    <string name="txt_date_of_birth">Choose Your Date of Birth</string>
+    <string name="txt_none">None</string>
+
+    <!-- Spinner text -->
+    <string name="txt_default_music_category">Choose music category</string>
+    <string name="txt_default_country">Choose your location</string>
+    <string name="txt_default_city">Choose your location</string>
+
+</resources>
