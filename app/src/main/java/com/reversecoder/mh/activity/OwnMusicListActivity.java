@@ -47,11 +47,11 @@ public class OwnMusicListActivity extends AppCompatActivity {
     TextView tvTitle;
     ListView lvOwnMusic;
     private String TAG = OwnMusicListActivity.class.getSimpleName();
-    Music mMusic;
+    public Music mMusic;
     UserData intentUser, mUser;
     OwnMusicListViewAdapter musicListViewAdapter;
     ImageView ivBack;
-    boolean isFromMenu = false;
+    public boolean isFromMenu = false;
     ImageView ivProfileImage;
     TextView tvUserName, tvUserBio;
     ImageView ivFacebook, ivTwitter, ivYoutube;

@@ -17,8 +17,11 @@ import android.widget.Toast;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.reversecoder.library.event.OnSingleClickListener;
 import com.reversecoder.library.network.NetworkManager;
+import com.reversecoder.library.storage.SessionManager;
 import com.reversecoder.mh.R;
+import com.reversecoder.mh.activity.OwnMusicListActivity;
 import com.reversecoder.mh.model.Music;
+import com.reversecoder.mh.model.UserData;
 import com.reversecoder.mh.paypal.PayPalActivity;
 import com.reversecoder.mh.service.MediaService;
 import com.reversecoder.mh.util.AllConstants;
@@ -34,6 +37,7 @@ import static com.reversecoder.mh.util.AllConstants.MEDIA_PLAYBACK_PAID;
 import static com.reversecoder.mh.util.AllConstants.MEDIA_PLAYBACK_STOPPED;
 import static com.reversecoder.mh.util.AllConstants.MEDIA_PLAYER_RUNNING;
 import static com.reversecoder.mh.util.AllConstants.REQUEST_CODE_PAYPAL;
+import static com.reversecoder.mh.util.AllConstants.SESSION_USER_DATA;
 import static com.reversecoder.mh.util.AppUtils.getUnderlinedText;
 import static com.reversecoder.mh.util.AppUtils.isServiceRunning;
 
@@ -46,12 +50,18 @@ public class OwnMusicListViewAdapter extends BaseAdapter {
     private ArrayList<Music> mData;
     private static LayoutInflater inflater = null;
     private String TAG = OwnMusicListViewAdapter.class.getSimpleName();
+    private UserData user;
 
     public OwnMusicListViewAdapter(Activity activity) {
         mActivity = activity;
         mData = new ArrayList<Music>();
         inflater = (LayoutInflater) activity
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(mActivity, SESSION_USER_DATA))) {
+            Log.d(TAG, "Session data: " + SessionManager.getStringSetting(mActivity, SESSION_USER_DATA));
+            user = UserData.getResponseObject(SessionManager.getStringSetting(mActivity, SESSION_USER_DATA), UserData.class);
+        }
     }
 
     public ArrayList<Music> getData() {
@@ -162,11 +172,19 @@ public class OwnMusicListViewAdapter extends BaseAdapter {
             Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_buy_song_for_listening_full_song), Toast.LENGTH_LONG).show();
         }
 
-        if (mMusicFile.getIs_paid().equalsIgnoreCase("1")) {
-            musicFreePaid.setVisibility(View.VISIBLE);
-            musicFreePaid.setText(getUnderlinedText("$" + mMusicFile.getPrice()));
-        } else {
+        if (((OwnMusicListActivity) mActivity).isFromMenu) {
             musicFreePaid.setVisibility(View.GONE);
+        } else {
+            if (((OwnMusicListActivity) mActivity).mMusic.getUser_id().equalsIgnoreCase(user.getId())) {
+                musicFreePaid.setVisibility(View.GONE);
+            } else {
+                if (mMusicFile.getIs_paid().equalsIgnoreCase("1")) {
+                    musicFreePaid.setVisibility(View.VISIBLE);
+                    musicFreePaid.setText(getUnderlinedText("$" + mMusicFile.getPrice()));
+                } else {
+                    musicFreePaid.setVisibility(View.GONE);
+                }
+            }
         }
 
         musicFreePaid.setOnClickListener(new OnSingleClickListener() {
