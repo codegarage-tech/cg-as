@@ -24,4 +24,8 @@ dependencies {
     compile "com.android.support:appcompat-v7:$supportlibraryVersion"
     compile "com.android.support:design:$supportlibraryVersion"
     compile "com.android.support:support-v4:$supportlibraryVersion"
+
+    compile ('com.google.android:flexbox:0.2.7'){
+        exclude group: 'com.android.support'
+    }
 }
