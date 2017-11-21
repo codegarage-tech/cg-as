@@ -122,13 +122,13 @@ public class HomeActivity extends AppCompatActivity {
         llOwnMusic = (LinearLayout) findViewById(R.id.ll_own_music);
         llBoughtMusic = (LinearLayout) findViewById(R.id.ll_bought_music);
 
-        initSpinnerData();
-
         btnConfirm = (Button) findViewById(R.id.btn_confirm);
         lvMusic = (ListView) findViewById(R.id.lv_music);
 
         musicListViewAdapter = new MusicListViewAdapter(HomeActivity.this);
         lvMusic.setAdapter(musicListViewAdapter);
+
+        initSpinnerData();
     }
 
     private void initMenu() {
@@ -237,30 +237,34 @@ public class HomeActivity extends AppCompatActivity {
         btnConfirm.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                if (isServiceRunning(HomeActivity.this, MediaService.class)) {
-                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_please_stop_music_before_searching), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String spinnerSelectedMusicCategoryId = ((SpinnerItem) spinnerMusicCategory.getSelectedItem()).getName().equalsIgnoreCase(getString(R.string.txt_default_music_category)) ? "" : ((SpinnerItem) spinnerMusicCategory.getSelectedItem()).getId();
-                String spinnerSelectedCityId = ((City) spinnerCity.getSelectedItem()).getName().equalsIgnoreCase(getString(R.string.txt_default_city)) ? "" : ((City) spinnerCity.getSelectedItem()).getId();
-
-                if (spinnerSelectedMusicCategoryId.equalsIgnoreCase("")) {
-                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_empty_music_category_field), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (spinnerSelectedCityId.equalsIgnoreCase("")) {
-                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_empty_city_field), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (!NetworkManager.isConnected(HomeActivity.this)) {
-                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                new GetMusicList(HomeActivity.this, user.getId(), spinnerSelectedMusicCategoryId, spinnerSelectedCityId).execute();
+                searchMusic();
             }
         });
 
+    }
+
+    private void searchMusic() {
+        if (isServiceRunning(HomeActivity.this, MediaService.class)) {
+            Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_please_stop_music_before_searching), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String spinnerSelectedMusicCategoryId = ((SpinnerItem) spinnerMusicCategory.getSelectedItem()).getName().equalsIgnoreCase(getString(R.string.txt_default_music_category)) ? "" : ((SpinnerItem) spinnerMusicCategory.getSelectedItem()).getId();
+        String spinnerSelectedCityId = ((City) spinnerCity.getSelectedItem()).getName().equalsIgnoreCase(getString(R.string.txt_default_city)) ? "" : ((City) spinnerCity.getSelectedItem()).getId();
+
+//                if (spinnerSelectedMusicCategoryId.equalsIgnoreCase("")) {
+//                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_empty_music_category_field), Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+        if (spinnerSelectedCityId.equalsIgnoreCase("")) {
+            Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_empty_city_field), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!NetworkManager.isConnected(HomeActivity.this)) {
+            Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        new GetMusicList(HomeActivity.this, user.getId(), spinnerSelectedMusicCategoryId, spinnerSelectedCityId).execute();
     }
 
     private void closeMenu() {
@@ -305,12 +309,10 @@ public class HomeActivity extends AppCompatActivity {
             if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY))) {
                 SessionManager.setStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY, AllConstants.getDefaultCountryData());
             }
+            setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.CITY);
 
-            Toast.makeText(HomeActivity.this, getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
+            searchMusic();
         }
-
-        setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.CITY);
-        spinnerCity.setSelection(spinnerCityAdapter.getItemPosition(SessionManager.getStringSetting(HomeActivity.this, SESSION_SELECTED_CITY)));
     }
 
     public class GetAllMusicCategory extends AsyncTask<String, String, HttpRequestManager.HttpResponse> {
@@ -345,6 +347,14 @@ public class HomeActivity extends AppCompatActivity {
                     Log.d(TAG, "success response from session: " + SessionManager.getStringSetting(mContext, SESSION_MUSIC_CATEGORY));
 
                     setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.MUSIC_CATEGORY);
+
+                    //Set city spinner data
+                    if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY))) {
+                        SessionManager.setStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY, AllConstants.getDefaultCountryData());
+                    }
+                    setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.CITY);
+
+                    searchMusic();
                 } else {
                     Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_no_info_found), Toast.LENGTH_SHORT).show();
                 }
@@ -438,7 +448,8 @@ public class HomeActivity extends AppCompatActivity {
 
                 timeZone = wrapperCityWithCountryData.getAnyTimezone(strTimeZone);
                 spinnerCityAdapter.setData(timeZone.getCity());
-                spinnerCity.setSelection(0);
+                spinnerCity.setSelection(spinnerCityAdapter.getItemPosition(SessionManager.getStringSetting(HomeActivity.this, SESSION_SELECTED_CITY)));
+//                spinnerCity.setSelection(0);
 
 //                if (!AppUtils.isNullOrEmpty(user.getCity())) {
 //                    spinnerCity.setSelection(spinnerCityAdapter.getItemPosition(user.getCity()));
