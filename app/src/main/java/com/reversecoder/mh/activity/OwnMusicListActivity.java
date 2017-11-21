@@ -114,7 +114,7 @@ public class OwnMusicListActivity extends AppCompatActivity {
 
             Glide
                     .with(OwnMusicListActivity.this)
-                    .load(R.mipmap.ic_launcher_round)
+                    .load(user.getProfile_image())
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
                     .apply(new RequestOptions().circleCropTransform())
                     .into(ivProfileImage);

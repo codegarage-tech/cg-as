@@ -18,11 +18,12 @@ public class Music extends ResponseBase implements Parcelable {
     private String last_name = "";
     private String id = "";
     private String full_paid_price = "";
+    private String profile_image = "";
     private int totalTime = -1;
     private int lastPlayed = -1;
     private int isPlaying = 0;
 
-    public Music(String music_title, String description, String file_path, String is_paid, String price, String user_id, String first_name, String last_name, String id, String full_paid_price) {
+    public Music(String music_title, String description, String file_path, String is_paid, String price, String user_id, String first_name, String last_name, String id, String full_paid_price, String profile_image) {
         this.music_title = music_title;
         this.description = description;
         this.file_path = file_path;
@@ -33,6 +34,7 @@ public class Music extends ResponseBase implements Parcelable {
         this.last_name = last_name;
         this.id = id;
         this.full_paid_price = full_paid_price;
+        this.profile_image = profile_image;
     }
 
     public String getMusic_title() {
@@ -139,6 +141,14 @@ public class Music extends ResponseBase implements Parcelable {
         this.full_paid_price = full_paid_price;
     }
 
+    public String getProfile_image() {
+        return profile_image;
+    }
+
+    public void setProfile_image(String profile_image) {
+        this.profile_image = profile_image;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -152,6 +162,7 @@ public class Music extends ResponseBase implements Parcelable {
                 ", last_name='" + last_name + '\'' +
                 ", id='" + id + '\'' +
                 ", full_paid_price='" + full_paid_price + '\'' +
+                ", profile_image='" + profile_image + '\'' +
                 ", totalTime=" + totalTime +
                 ", lastPlayed=" + lastPlayed +
                 ", isPlaying=" + isPlaying +
@@ -176,6 +187,7 @@ public class Music extends ResponseBase implements Parcelable {
         dest.writeString(last_name);
         dest.writeString(id);
         dest.writeString(full_paid_price);
+        dest.writeString(profile_image);
         dest.writeInt(totalTime);
         dest.writeInt(lastPlayed);
         dest.writeInt(isPlaying);
@@ -205,6 +217,7 @@ public class Music extends ResponseBase implements Parcelable {
         last_name = in.readString();
         id = in.readString();
         full_paid_price = in.readString();
+        profile_image = in.readString();
         totalTime = in.readInt();
         lastPlayed = in.readInt();
         isPlaying = in.readInt();

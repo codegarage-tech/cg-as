@@ -22,8 +22,9 @@ public class UserData extends ResponseBase implements Parcelable {
     private String twitter = "";
     private String instragram = "";
     private String bio = "";
+    private String profile_image = "";
 
-    public UserData(String id, String first_name, String last_name, String email, String city, String password, String state, String zipcode, String website, String youtube, String facebook, String twitter, String instragram, String bio) {
+    public UserData(String id, String first_name, String last_name, String email, String city, String password, String state, String zipcode, String website, String youtube, String facebook, String twitter, String instragram, String bio, String profile_image) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -38,6 +39,7 @@ public class UserData extends ResponseBase implements Parcelable {
         this.twitter = twitter;
         this.instragram = instragram;
         this.bio = bio;
+        this.profile_image = profile_image;
     }
 
     public String getId() {
@@ -152,6 +154,14 @@ public class UserData extends ResponseBase implements Parcelable {
         this.bio = bio;
     }
 
+    public String getProfile_image() {
+        return profile_image;
+    }
+
+    public void setProfile_image(String profile_image) {
+        this.profile_image = profile_image;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -169,6 +179,7 @@ public class UserData extends ResponseBase implements Parcelable {
                 ", twitter='" + twitter + '\'' +
                 ", instragram='" + instragram + '\'' +
                 ", bio='" + bio + '\'' +
+                ", profile_image='" + bio + '\'' +
                 '}';
     }
 
@@ -194,6 +205,7 @@ public class UserData extends ResponseBase implements Parcelable {
         dest.writeString(twitter);
         dest.writeString(instragram);
         dest.writeString(bio);
+        dest.writeString(profile_image);
     }
 
     // Creator
@@ -224,5 +236,6 @@ public class UserData extends ResponseBase implements Parcelable {
         twitter = in.readString();
         instragram = in.readString();
         bio = in.readString();
+        profile_image = in.readString();
     }
 }
