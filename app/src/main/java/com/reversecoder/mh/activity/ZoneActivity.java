@@ -22,6 +22,7 @@ import com.reversecoder.mh.R;
 import com.reversecoder.mh.adapter.StateListAdapter;
 import com.reversecoder.mh.model.City;
 import com.reversecoder.mh.model.ResponseCountry;
+import com.reversecoder.mh.model.ResponseMusicCategory;
 import com.reversecoder.mh.model.TimeZone;
 import com.reversecoder.mh.util.AllConstants;
 import com.reversecoder.mh.util.AllUrls;
@@ -29,6 +30,7 @@ import com.reversecoder.mh.util.AppUtils;
 import com.reversecoder.mh.util.HttpRequestManager;
 
 import static com.reversecoder.mh.util.AllConstants.SESSION_CITY_WITH_COUNTRY;
+import static com.reversecoder.mh.util.AllConstants.SESSION_MUSIC_CATEGORY;
 import static com.reversecoder.mh.util.AllConstants.SESSION_SELECTED_CITY;
 import static com.reversecoder.mh.util.AllConstants.SESSION_SELECTED_ZONE;
 
@@ -72,10 +74,22 @@ public class ZoneActivity extends AppCompatActivity {
 
         if (NetworkManager.isConnected(ZoneActivity.this)) {
             new GetCityWithCountry(ZoneActivity.this).execute();
+            new GetAllMusicCategory(ZoneActivity.this).execute();
         } else {
-            if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(ZoneActivity.this, SESSION_CITY_WITH_COUNTRY))) {
-                SessionManager.setStringSetting(ZoneActivity.this, SESSION_CITY_WITH_COUNTRY, AllConstants.getDefaultCountryData());
-            }
+            setDefaultCityWithCountry();
+            setDefaultMusicCategory();
+        }
+    }
+
+    private void setDefaultCityWithCountry(){
+        if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(ZoneActivity.this, SESSION_CITY_WITH_COUNTRY))) {
+            SessionManager.setStringSetting(ZoneActivity.this, SESSION_CITY_WITH_COUNTRY, AllConstants.getDefaultCountryData());
+        }
+    }
+
+    private void setDefaultMusicCategory(){
+        if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(ZoneActivity.this, SESSION_MUSIC_CATEGORY))) {
+            SessionManager.setStringSetting(ZoneActivity.this, SESSION_MUSIC_CATEGORY, AllConstants.getDefaultMusicCategoryData());
         }
     }
 
@@ -214,9 +228,52 @@ public class ZoneActivity extends AppCompatActivity {
                     SessionManager.setStringSetting(mContext, SESSION_CITY_WITH_COUNTRY, responseData.toString());
                     Log.d(TAG, "success response from session: " + SessionManager.getStringSetting(mContext, SESSION_CITY_WITH_COUNTRY));
                 } else {
+                    setDefaultCityWithCountry();
                     Toast.makeText(ZoneActivity.this, getResources().getString(R.string.toast_no_info_found), Toast.LENGTH_SHORT).show();
                 }
             } else {
+                setDefaultCityWithCountry();
+                Toast.makeText(ZoneActivity.this, getResources().getString(R.string.toast_could_not_retrieve_info), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public class GetAllMusicCategory extends AsyncTask<String, String, HttpRequestManager.HttpResponse> {
+
+        private Context mContext;
+
+        public GetAllMusicCategory(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected HttpRequestManager.HttpResponse doInBackground(String... params) {
+            HttpRequestManager.HttpResponse response = HttpRequestManager.doGetRequest(AllUrls.getMusicCategoriesUrl());
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(HttpRequestManager.HttpResponse result) {
+            if (result.isSuccess() && !AppUtils.isNullOrEmpty(result.getResult().toString())) {
+                Log.d(TAG, "success response: " + result.getResult().toString());
+                ResponseMusicCategory responseData = ResponseMusicCategory.getResponseObject(result.getResult().toString(), ResponseMusicCategory.class);
+                Log.d(TAG, "success response from object: " + responseData.toString());
+
+                if ((responseData.getStatus().equalsIgnoreCase("1")) && (responseData.getData().size() > 0)) {
+                    Log.d(TAG, "success response from cityWithCountry: " + responseData.getData().toString());
+                    String modifiedMusicCategory = "{" + "data=" + responseData.getData().toString() + "}";
+                    SessionManager.setStringSetting(mContext, SESSION_MUSIC_CATEGORY, modifiedMusicCategory);
+                    Log.d(TAG, "success response from session: " + SessionManager.getStringSetting(mContext, SESSION_MUSIC_CATEGORY));
+                } else {
+                    setDefaultMusicCategory();
+                    Toast.makeText(ZoneActivity.this, getResources().getString(R.string.toast_no_info_found), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                setDefaultMusicCategory();
                 Toast.makeText(ZoneActivity.this, getResources().getString(R.string.toast_could_not_retrieve_info), Toast.LENGTH_SHORT).show();
             }
         }

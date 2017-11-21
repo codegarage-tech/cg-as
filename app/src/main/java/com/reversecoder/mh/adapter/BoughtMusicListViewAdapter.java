@@ -104,10 +104,6 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
         TextView musicDescription = (TextView) vi.findViewById(R.id.tv_music_description);
         TextView musicSpentTime = (TextView) vi.findViewById(R.id.tv_spent_time);
         TextView musicFreePaid = (TextView) vi.findViewById(R.id.tv_music_free_paid);
-        musicFreePaid.setVisibility(View.GONE);
-        //Set music as free
-        mMusicFile.setIs_paid("0");
-
         ImageView musicPlayStop = (ImageView) vi.findViewById(R.id.iv_music_play_stop);
         ImageView musicEqualizer = (ImageView) vi.findViewById(R.id.iv_equalizer);
         CircularProgressBar circularProgressBar = (CircularProgressBar) vi.findViewById(R.id.cp_streaming_music);
@@ -169,33 +165,33 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
             Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_buy_song_for_listening_full_song), Toast.LENGTH_LONG).show();
         }
 
-//        if (mMusicFile.getIs_paid().equalsIgnoreCase("1")) {
-//            musicFreePaid.setVisibility(View.VISIBLE);
-//            musicFreePaid.setText(getUnderlinedText("$" + mMusicFile.getPrice()));
-//        } else {
-//            musicFreePaid.setVisibility(View.GONE);
-//        }
-//
-//        musicFreePaid.setOnClickListener(new OnSingleClickListener() {
-//            @Override
-//            public void onSingleClick(View view) {
-//                if (isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
-//                    Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_stop_music_before_buying), Toast.LENGTH_LONG).show();
-//                    return;
-//                }
-//
-//                if (!NetworkManager.isConnected(mActivity)) {
-//                    Toast.makeText(mActivity, mActivity.getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//
-//                if (mMusicFile.getIs_paid().equalsIgnoreCase("1")) {
-//                    Intent intentPaypal = new Intent(mActivity, PayPalActivity.class);
-//                    intentPaypal.putExtra(INTENT_KEY_PAYPAL_MUSIC_ITEM, mMusicFile);
-//                    mActivity.startActivityForResult(intentPaypal, REQUEST_CODE_PAYPAL);
-//                }
-//            }
-//        });
+        if (mMusicFile.getIs_paid().equalsIgnoreCase("1")) {
+            musicFreePaid.setVisibility(View.VISIBLE);
+            musicFreePaid.setText(getUnderlinedText("$" + mMusicFile.getPrice()));
+        } else {
+            musicFreePaid.setVisibility(View.GONE);
+        }
+
+        musicFreePaid.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View view) {
+                if (isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
+                    Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_stop_music_before_buying), Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (!NetworkManager.isConnected(mActivity)) {
+                    Toast.makeText(mActivity, mActivity.getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (mMusicFile.getIs_paid().equalsIgnoreCase("1")) {
+                    Intent intentPaypal = new Intent(mActivity, PayPalActivity.class);
+                    intentPaypal.putExtra(INTENT_KEY_PAYPAL_MUSIC_ITEM, mMusicFile);
+                    mActivity.startActivityForResult(intentPaypal, REQUEST_CODE_PAYPAL);
+                }
+            }
+        });
 
         musicPlayStop.setOnClickListener(new OnSingleClickListener() {
             @Override

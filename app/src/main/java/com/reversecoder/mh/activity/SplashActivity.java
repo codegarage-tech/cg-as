@@ -11,11 +11,13 @@ import android.widget.TextView;
 
 import com.reversecoder.library.storage.SessionManager;
 import com.reversecoder.mh.R;
+import com.reversecoder.mh.util.AppUtils;
 import com.reversecoder.permission.activity.PermissionListActivity;
 import com.rodolfonavalon.shaperipplelibrary.ShapeRipple;
 import com.rodolfonavalon.shaperipplelibrary.model.Circle;
 
 import static com.reversecoder.mh.util.AllConstants.SESSION_IS_USER_LOGGED_IN;
+import static com.reversecoder.mh.util.AllConstants.SESSION_SELECTED_ZONE;
 
 /**
  * @author Md. Rashadul Alam
@@ -82,7 +84,11 @@ public class SplashActivity extends AppCompatActivity {
     private void navigateMainActivity() {
         Intent intent;
         if (SessionManager.getBooleanSetting(SplashActivity.this, SESSION_IS_USER_LOGGED_IN, false)) {
-            intent = new Intent(SplashActivity.this, ZoneActivity.class);
+            if(AppUtils.isNullOrEmpty(SessionManager.getStringSetting(SplashActivity.this, SESSION_SELECTED_ZONE))){
+                intent = new Intent(SplashActivity.this, ZoneActivity.class);
+            }else{
+                intent = new Intent(SplashActivity.this, HomeActivity.class);
+            }
         } else {
             intent = new Intent(SplashActivity.this, LoginActivity.class);
         }

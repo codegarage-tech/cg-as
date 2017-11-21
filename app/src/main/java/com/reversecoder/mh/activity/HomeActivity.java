@@ -34,7 +34,6 @@ import com.reversecoder.mh.model.Music;
 import com.reversecoder.mh.model.MusicCategoryData;
 import com.reversecoder.mh.model.ResponseCountry;
 import com.reversecoder.mh.model.ResponseMusic;
-import com.reversecoder.mh.model.ResponseMusicCategory;
 import com.reversecoder.mh.model.SpinnerItem;
 import com.reversecoder.mh.model.TimeZone;
 import com.reversecoder.mh.model.UserData;
@@ -70,7 +69,7 @@ public class HomeActivity extends AppCompatActivity {
     ImageView contentHamburger;
     GuillotineAnimation guillotineAnimation;
     TextView tvTitle;
-    LinearLayout llLogOut, llHome, llProfile, llOwnMusic, llBoughtMusic;
+    LinearLayout llLogOut, llHome, llProfile, llOwnMusic, llBoughtMusic, llZone;
     private static final String TAG = HomeActivity.class.getSimpleName();
     Spinner spinnerMusicCategory, spinnerCity;
     CommonSpinnerAdapter spinnerMusicCategoryAdapter, spinnerCityAdapter;
@@ -121,6 +120,7 @@ public class HomeActivity extends AppCompatActivity {
         llProfile = (LinearLayout) findViewById(R.id.ll_profile);
         llOwnMusic = (LinearLayout) findViewById(R.id.ll_own_music);
         llBoughtMusic = (LinearLayout) findViewById(R.id.ll_bought_music);
+        llZone = (LinearLayout) findViewById(R.id.ll_zone);
 
         btnConfirm = (Button) findViewById(R.id.btn_confirm);
         lvMusic = (ListView) findViewById(R.id.lv_music);
@@ -222,10 +222,30 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        llZone.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View view) {
+                Intent zoneIntent = new Intent(HomeActivity.this, ZoneActivity.class);
+                startActivity(zoneIntent);
+            }
+        });
+
         spinnerCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 City item = (City) parent.getItemAtPosition(position);
+//                Toast.makeText(SignUpActivity.this, item.getName(), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        spinnerMusicCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                SpinnerItem item = (SpinnerItem) parent.getItemAtPosition(position);
 //                Toast.makeText(SignUpActivity.this, item.getName(), Toast.LENGTH_LONG).show();
             }
 
@@ -298,69 +318,24 @@ public class HomeActivity extends AppCompatActivity {
         spinnerCity.setAdapter(spinnerCityAdapter);
 
         //Get spinner data
-        if (NetworkManager.isConnected(HomeActivity.this)) {
-            new GetAllMusicCategory(HomeActivity.this).execute();
-        } else {
-            if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY))) {
-                SessionManager.setStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY, AllConstants.getDefaultMusicCategoryData());
-            }
-            setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.MUSIC_CATEGORY);
+        setMusicCategory();
+        setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.MUSIC_CATEGORY);
 
-            if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY))) {
-                SessionManager.setStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY, AllConstants.getDefaultCountryData());
-            }
-            setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.CITY);
+        setCityWithCountry();
+        setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.CITY);
 
-            searchMusic();
+        searchMusic();
+    }
+
+    private void setCityWithCountry() {
+        if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY))) {
+            SessionManager.setStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY, AllConstants.getDefaultCountryData());
         }
     }
 
-    public class GetAllMusicCategory extends AsyncTask<String, String, HttpRequestManager.HttpResponse> {
-
-        private Context mContext;
-
-        public GetAllMusicCategory(Context context) {
-            mContext = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected HttpRequestManager.HttpResponse doInBackground(String... params) {
-            HttpRequestManager.HttpResponse response = HttpRequestManager.doGetRequest(AllUrls.getMusicCategoriesUrl());
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(HttpRequestManager.HttpResponse result) {
-            if (result.isSuccess() && !AppUtils.isNullOrEmpty(result.getResult().toString())) {
-                Log.d(TAG, "success response: " + result.getResult().toString());
-                ResponseMusicCategory responseData = ResponseMusicCategory.getResponseObject(result.getResult().toString(), ResponseMusicCategory.class);
-                Log.d(TAG, "success response from object: " + responseData.toString());
-
-                if ((responseData.getStatus().equalsIgnoreCase("1")) && (responseData.getData().size() > 0)) {
-                    Log.d(TAG, "success response from cityWithCountry: " + responseData.getData().toString());
-                    String modifiedMusicCategory = "{" + "data=" + responseData.getData().toString() + "}";
-                    SessionManager.setStringSetting(mContext, SESSION_MUSIC_CATEGORY, modifiedMusicCategory);
-                    Log.d(TAG, "success response from session: " + SessionManager.getStringSetting(mContext, SESSION_MUSIC_CATEGORY));
-
-                    setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.MUSIC_CATEGORY);
-
-                    //Set city spinner data
-                    if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY))) {
-                        SessionManager.setStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY, AllConstants.getDefaultCountryData());
-                    }
-                    setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.CITY);
-
-                    searchMusic();
-                } else {
-                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_no_info_found), Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_could_not_retrieve_info), Toast.LENGTH_SHORT).show();
-            }
+    private void setMusicCategory() {
+        if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY))) {
+            SessionManager.setStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY, AllConstants.getDefaultMusicCategoryData());
         }
     }
 
@@ -434,7 +409,7 @@ public class HomeActivity extends AppCompatActivity {
 
         if (adapterType == CommonSpinnerAdapter.ADAPTER_TYPE.MUSIC_CATEGORY) {
             //set music category spinner data
-            if (SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY) != null) {
+            if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY))) {
                 wrapperMusicCategoryData = MusicCategoryData.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY), MusicCategoryData.class);
 
                 spinnerMusicCategoryAdapter.setData(wrapperMusicCategoryData.getMusicCategory());
@@ -442,22 +417,16 @@ public class HomeActivity extends AppCompatActivity {
             }
         } else if (adapterType == CommonSpinnerAdapter.ADAPTER_TYPE.CITY) {
             //set city spinner data
-            if (SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY) != null) {
+            if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY))) {
                 wrapperCityWithCountryData = ResponseCountry.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY), ResponseCountry.class);
                 Log.d(TAG, "before setting spinner: " + wrapperCityWithCountryData.toString());
 
                 timeZone = wrapperCityWithCountryData.getAnyTimezone(strTimeZone);
                 spinnerCityAdapter.setData(timeZone.getCity());
                 spinnerCity.setSelection(spinnerCityAdapter.getItemPosition(SessionManager.getStringSetting(HomeActivity.this, SESSION_SELECTED_CITY)));
-//                spinnerCity.setSelection(0);
-
-//                if (!AppUtils.isNullOrEmpty(user.getCity())) {
-//                    spinnerCity.setSelection(spinnerCityAdapter.getItemPosition(user.getCity()));
-//                }
             }
         }
     }
-
 
     /*****************************
      * Broadcast activity update *
@@ -470,7 +439,6 @@ public class HomeActivity extends AppCompatActivity {
             if (musicListViewAdapter != null) {
                 musicListViewAdapter.updateMusic(music);
             }
-//            Toast.makeText(HomeActivity.this, AppUtils.milliSecondsToTimer(music.getLastPlayed()) + "/" + AppUtils.milliSecondsToTimer(music.getTotalTime()), Toast.LENGTH_SHORT).show();
         }
     }
 
