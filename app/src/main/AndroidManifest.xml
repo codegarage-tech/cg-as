@@ -66,6 +66,12 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
+            android:name="com.reversecoder.mh.activity.BoughtMusicListActivity"
+            android:label="@string/title_activity_bought_music_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
             android:name="com.reversecoder.mh.paypal.PayPalActivity"
             android:label="@string/title_activity_paypal"
             android:screenOrientation="portrait"

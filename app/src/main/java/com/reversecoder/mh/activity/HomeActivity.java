@@ -146,6 +146,8 @@ public class HomeActivity extends AppCompatActivity {
                 .setActionBarViewForAnimation(toolbar)
                 .setClosedOnStart(true)
                 .build();
+
+        ((TextView) guillotineMenu.findViewById(R.id.text_title)).setText(getString(R.string.title_menu));
     }
 
     private void initMenuAction() {
@@ -195,7 +197,20 @@ public class HomeActivity extends AppCompatActivity {
         llBoughtMusic.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                Toast.makeText(HomeActivity.this, "Feature under development at server side", Toast.LENGTH_SHORT).show();
+                if (isServiceRunning(HomeActivity.this, MediaService.class)) {
+                    Toast.makeText(HomeActivity.this, getString(R.string.toast_please_stop_music_before_checking_list), Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (!NetworkManager.isConnected(HomeActivity.this)) {
+                    Toast.makeText(HomeActivity.this, getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Intent intentBoughtMusicList = new Intent(HomeActivity.this, BoughtMusicListActivity.class);
+                intentBoughtMusicList.putExtra(INTENT_KEY_OWN_MUSIC_LIST_ITEM_USER, user);
+                intentBoughtMusicList.putExtra(INTENT_KEY_OWN_MUSIC_LIST_FROM_MENU, true);
+                startActivity(intentBoughtMusicList);
             }
         });
 

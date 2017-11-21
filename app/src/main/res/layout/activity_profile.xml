@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:orientation="vertical">
 
-        <include layout="@layout/toolbar_base" />
+        <include layout="@layout/toolbar_menu" />
 
     </LinearLayout>
 

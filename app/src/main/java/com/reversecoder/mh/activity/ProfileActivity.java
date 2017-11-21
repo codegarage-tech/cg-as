@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
     ResponseCountry wrapperCityWithCountryData;
 
     TextView tvTitle;
+    ImageView ivBack;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,8 +65,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void initUpdateProfileUI() {
         tvTitle = (TextView) findViewById(R.id.text_title);
+        ivBack = (ImageView) findViewById(R.id.menu_hamburger);
         btnUpdateProfile = (Button) findViewById(R.id.btn_update_profile);
-        tvTitle = (TextView) findViewById(R.id.text_title);
         edtFirstName = (EditText) findViewById(R.id.edt_first_name);
         edtLastName = (EditText) findViewById(R.id.edt_last_name);
         edtEmail = (EditText) findViewById(R.id.edt_email);
@@ -108,6 +110,13 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void initUpdateProfileActions() {
+
+        ivBack.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View view) {
+                onBackPressed();
+            }
+        });
 
         spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

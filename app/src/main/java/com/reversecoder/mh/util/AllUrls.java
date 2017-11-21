@@ -139,72 +139,9 @@ public class AllUrls {
         return params;
     }
 
-//    {
-//        "status": 1,
-//            "data": [
-//        {
-//            "music_title": "08.Phir_Wohi-Qaidi_Band_FusionBD.Com.mp3",
-//                "description": "test music descriptin",
-//                "file_path": "http://ntstx.com/music_app/uploads/08.Phir_Wohi-Qaidi_Band_FusionBD.Com.mp3",
-//                "is_paid": "1",
-//                "price": "5.00",
-//                "id": "1",
-//                "full_paid_price": "21.00"
-//        },
-//        {
-//            "music_title": "Mere Payari Bindu ",
-//                "description": "test music description",
-//                "file_path": "http://ntstx.com/music_app/uploads/Haareya-Meri_Pyaari_Bindu_FusionBD.Com.mp3",
-//                "is_paid": "0",
-//                "price": "2.00",
-//                "id": "2",
-//                "full_paid_price": "4.00"
-//        },
-//        {
-//            "music_title": "Gulabi Noor",
-//                "description": "test music description",
-//                "file_path": "http://ntstx.com/music_app/uploads/Gulabi_2.0-Noor_FusionBD.Com.mp3",
-//                "is_paid": "0",
-//                "price": "2.70",
-//                "id": "4",
-//                "full_paid_price": "7.00"
-//        },
-//        {
-//            "music_title": "Ashona by Arijit singh",
-//                "description": "",
-//                "file_path": "http://ntstx.com/music_app/uploads/04.Aashona-Arijit_Singh_And_Prashmita_Paul_FusionBD.Com.mp3",
-//                "is_paid": "0",
-//                "price": "1.40",
-//                "id": "6",
-//                "full_paid_price": "3.00"
-//        },
-//        {
-//            "music_title": "Sorry Sorry ",
-//                "description": "nice song",
-//                "file_path": "http://ntstx.com/music_app/uploads/07.ABCD-Sorry_Sorry.mp3",
-//                "is_paid": "1",
-//                "price": "12.00",
-//                "id": "9",
-//                "full_paid_price": "65.00"
-//        }
-//	],
-//        "profile": [
-//        {
-//            "id": "1",
-//                "first_name": "nissoy",
-//                "last_name": "B",
-//                "email": "niloy.cste@gmail.com",
-//                "city": "dhaka",
-//                "password": "123",
-//                "state": "1",
-//                "zipcode": "s",
-//                "website": "d",
-//                "youtube": "test",
-//                "facebook": "test",
-//                "twitter": "test",
-//                "instragram": "sd",
-//                "bio": "test"
-//        }
-//	]
-//    }
+    public static String getBoughtMusicListUrl(String userId) {
+        String url = BASE_URL + "music/bought_music_list/"+userId;
+        Log.d(TAG, "getBoughtMusicListUrl: " + url);
+        return url;
+    }
 }

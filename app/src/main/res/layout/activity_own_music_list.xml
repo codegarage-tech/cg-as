@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:text="Md. Rashadul Alam"
+            android:text=""
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -43,7 +43,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
-        android:text="This is biography."
+        android:text=""
         android:textSize="16sp" />
 
     <LinearLayout
