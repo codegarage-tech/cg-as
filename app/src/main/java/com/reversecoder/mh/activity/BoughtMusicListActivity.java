@@ -122,7 +122,7 @@ public class BoughtMusicListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (isServiceRunning(BoughtMusicListActivity.this, MediaService.class)) {
+        if (isServiceRunning(getApplicationContext(), MediaService.class)) {
             Toast.makeText(BoughtMusicListActivity.this, getResources().getString(R.string.toast_please_stop_music_before_closing), Toast.LENGTH_SHORT).show();
         } else {
             super.onBackPressed();

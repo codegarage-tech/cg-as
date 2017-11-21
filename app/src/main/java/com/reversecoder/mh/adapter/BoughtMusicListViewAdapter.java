@@ -105,6 +105,9 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
         TextView musicSpentTime = (TextView) vi.findViewById(R.id.tv_spent_time);
         TextView musicFreePaid = (TextView) vi.findViewById(R.id.tv_music_free_paid);
         musicFreePaid.setVisibility(View.GONE);
+        //Set music as free
+        mMusicFile.setIs_paid("0");
+
         ImageView musicPlayStop = (ImageView) vi.findViewById(R.id.iv_music_play_stop);
         ImageView musicEqualizer = (ImageView) vi.findViewById(R.id.iv_equalizer);
         CircularProgressBar circularProgressBar = (CircularProgressBar) vi.findViewById(R.id.cp_streaming_music);
@@ -157,10 +160,10 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
             circularProgressBar.setProgressWithAnimation(0);
 
             //stop music service
-            if (isServiceRunning(mActivity, MediaService.class)) {
-                Intent intentMediaService = new Intent(mActivity, MediaService.class);
+            if (isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
+                Intent intentMediaService = new Intent(mActivity.getApplicationContext(), MediaService.class);
                 intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_ACTION, AllConstants.EXTRA_ACTION_STOP);
-                mActivity.stopService(intentMediaService);
+                mActivity.getApplicationContext().stopService(intentMediaService);
             }
 
             Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_buy_song_for_listening_full_song), Toast.LENGTH_LONG).show();
@@ -176,7 +179,7 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
 //        musicFreePaid.setOnClickListener(new OnSingleClickListener() {
 //            @Override
 //            public void onSingleClick(View view) {
-//                if (isServiceRunning(mActivity, MediaService.class)) {
+//                if (isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
 //                    Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_stop_music_before_buying), Toast.LENGTH_LONG).show();
 //                    return;
 //                }
@@ -198,15 +201,15 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
             @Override
             public void onSingleClick(View view) {
                 Intent intentMediaService = null;
-                if (isServiceRunning(mActivity, MediaService.class)) {
-                    intentMediaService = new Intent(mActivity, MediaService.class);
+                if (isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
+                    intentMediaService = new Intent(mActivity.getApplicationContext(), MediaService.class);
                     intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_ACTION, AllConstants.EXTRA_ACTION_STOP);
-                    mActivity.stopService(intentMediaService);
+                    mActivity.getApplicationContext().stopService(intentMediaService);
                 } else {
-                    intentMediaService = new Intent(mActivity, MediaService.class);
+                    intentMediaService = new Intent(mActivity.getApplicationContext(), MediaService.class);
                     intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_ACTION, AllConstants.EXTRA_ACTION_START);
                     intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_MUSIC, mMusicFile);
-                    mActivity.startService(intentMediaService);
+                    mActivity.getApplicationContext().startService(intentMediaService);
                 }
             }
         });
@@ -214,7 +217,7 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
         musicDescription.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                if (isServiceRunning(mActivity, MediaService.class)) {
+                if (isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
                     Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_stop_music_before_checking_list), Toast.LENGTH_LONG).show();
                     return;
                 }

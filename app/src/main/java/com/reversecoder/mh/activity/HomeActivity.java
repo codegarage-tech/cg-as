@@ -155,10 +155,10 @@ public class HomeActivity extends AppCompatActivity {
         llLogOut.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                if (isServiceRunning(HomeActivity.this, MediaService.class)) {
-                    Intent intentMediaService = new Intent(HomeActivity.this, MediaService.class);
+                if (isServiceRunning(getApplicationContext(), MediaService.class)) {
+                    Intent intentMediaService = new Intent(getApplicationContext(), MediaService.class);
                     intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_ACTION, AllConstants.EXTRA_ACTION_STOP);
-                    stopService(intentMediaService);
+                    getApplicationContext().stopService(intentMediaService);
                 }
                 SessionManager.setBooleanSetting(HomeActivity.this, SESSION_IS_USER_LOGGED_IN, false);
                 Intent logoutIntent = new Intent(HomeActivity.this, LoginActivity.class);
@@ -177,7 +177,7 @@ public class HomeActivity extends AppCompatActivity {
         llOwnMusic.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                if (isServiceRunning(HomeActivity.this, MediaService.class)) {
+                if (isServiceRunning(getApplicationContext(), MediaService.class)) {
                     Toast.makeText(HomeActivity.this, getString(R.string.toast_please_stop_music_before_checking_list), Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -197,7 +197,7 @@ public class HomeActivity extends AppCompatActivity {
         llBoughtMusic.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                if (isServiceRunning(HomeActivity.this, MediaService.class)) {
+                if (isServiceRunning(getApplicationContext(), MediaService.class)) {
                     Toast.makeText(HomeActivity.this, getString(R.string.toast_please_stop_music_before_checking_list), Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -244,7 +244,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void searchMusic() {
-        if (isServiceRunning(HomeActivity.this, MediaService.class)) {
+        if (isServiceRunning(getApplicationContext(), MediaService.class)) {
             Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_please_stop_music_before_searching), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -277,7 +277,7 @@ public class HomeActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (guillotineAnimation.isOpened()) {
             guillotineAnimation.close();
-        } else if (isServiceRunning(HomeActivity.this, MediaService.class)) {
+        } else if (isServiceRunning(getApplicationContext(), MediaService.class)) {
             Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_please_stop_music_before_closing), Toast.LENGTH_SHORT).show();
         } else {
             super.onBackPressed();
