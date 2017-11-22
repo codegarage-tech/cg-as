@@ -1,15 +1,26 @@
 package com.reversecoder.mh.activity;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 import com.reversecoder.mh.R;
+import com.reversecoder.mh.adapter.MusicListViewAdapter;
+import com.reversecoder.mh.adapter.SearchListViewAdapter;
+import com.reversecoder.mh.fragment.FilterFragment;
+import com.reversecoder.mh.model.FilterData;
+import com.reversecoder.mh.model.Music;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Md. Rashadul Alam
@@ -18,7 +29,15 @@ import java.util.List;
 public class SearchActivity extends AppCompatActivity implements AAH_FabulousFragment.Callbacks, AAH_FabulousFragment.AnimationListener {
 
     TextView tvTitle;
+    ListView lvMusic;
     private ArrayMap<String, List<String>> applied_filters = new ArrayMap<>();
+
+    FilterData mData;
+
+    FilterFragment dialogFrag;
+    FloatingActionButton fabFilter;
+    List<Music> mList = new ArrayList<>();
+    SearchListViewAdapter musicListViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +51,43 @@ public class SearchActivity extends AppCompatActivity implements AAH_FabulousFra
     private void initZoneUI() {
         tvTitle = (TextView) findViewById(R.id.text_title);
         tvTitle.setText("Search");
+        fabFilter = (FloatingActionButton) findViewById(R.id.fab_filter);
+        fabFilter.setVisibility(View.VISIBLE);
+        lvMusic = (ListView)findViewById(R.id.lv_music);
+
+        mData = getFilterData();
+        mList.addAll(mData.getAllMusics());
+
+        musicListViewAdapter = new SearchListViewAdapter(SearchActivity.this);
+        lvMusic.setAdapter(musicListViewAdapter);
+        musicListViewAdapter.setData(new ArrayList<Music>(mList));
+
+        dialogFrag = FilterFragment.newInstance();
+        dialogFrag.setParentFab(fabFilter);
+        fabFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogFrag.show(getSupportFragmentManager(), dialogFrag.getTag());
+            }
+        });
+    }
+
+    public FilterData getData() {
+        return mData;
+    }
+
+    public FilterData getFilterData(){
+
+        List<Music> mList = new ArrayList<>();
+
+        mList.add(new Music("Parbo na ami charte toke","nice love song.","Michigan","Pop","","","","","","","","",""));
+        mList.add(new Music("I am India from Qaidi Band","nice love song.","Michigan","Hip Hop","","","","","","","","",""));
+        mList.add(new Music("Kar ja Re Ya Mar Ja","nice love song.","Michigan","Pop","","","","","","","","",""));
+        mList.add(new Music("Ek poloke valobese feleci","nice love song.","Michigan","Pop","","","","","","","","",""));
+        mList.add(new Music("Ami to karor noi","nice love song.","Michigan","Hip Hop","","","","","","","","",""));
+        mList.add(new Music("Ami to karor noi","nice love song.","Michigan","Pop","","","","","","","","",""));
+
+        return new FilterData(mList);
     }
 
     private void initZoneAction() {
@@ -45,6 +101,47 @@ public class SearchActivity extends AppCompatActivity implements AAH_FabulousFra
     @Override
     public void onResult(Object result) {
         Log.d("k9res", "onResult: " + result.toString());
+
+        if (result.toString().equalsIgnoreCase("swiped_down")) {
+            //do something or nothing
+        } else {
+            if (result != null) {
+                ArrayMap<String, List<String>> applied_filters = (ArrayMap<String, List<String>>) result;
+                if (applied_filters.size() != 0) {
+                    List<Music> filteredList = mData.getAllMusics();
+                    //iterate over arraymap
+                    for (Map.Entry<String, List<String>> entry : applied_filters.entrySet()) {
+                        Log.d("k9res", "entry.key: " + entry.getKey());
+                        switch (entry.getKey()) {
+                            case "category":
+                                filteredList = mData.getCategoryFilteredMusics(entry.getValue(), filteredList);
+                                break;
+                            case "state":
+                                filteredList = mData.getStateFilteredMusics(entry.getValue(), filteredList);
+                                break;
+                        }
+                    }
+                    Log.d("k9res", "new size: " + filteredList.size());
+                    mList.clear();
+                    mList.addAll(filteredList);
+                    musicListViewAdapter.setData(new ArrayList<Music>(mList));
+
+                } else {
+                    mList.addAll(mData.getAllMusics());
+                    musicListViewAdapter.setData(new ArrayList<Music>(mList));
+                }
+            }
+            //handle result
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (dialogFrag.isAdded()) {
+            dialogFrag.dismiss();
+            dialogFrag.show(getSupportFragmentManager(), dialogFrag.getTag());
+        }
     }
 
     @Override

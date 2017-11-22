@@ -10,6 +10,8 @@ public class Music extends ResponseBase implements Parcelable {
 
     private String music_title = "";
     private String description = "";
+    private String state_name = "";
+    private String music_category = "";
     private String file_path = "";
     private String is_paid = "";
     private String price = "";
@@ -23,9 +25,11 @@ public class Music extends ResponseBase implements Parcelable {
     private int lastPlayed = -1;
     private int isPlaying = 0;
 
-    public Music(String music_title, String description, String file_path, String is_paid, String price, String user_id, String first_name, String last_name, String id, String full_paid_price, String profile_image) {
+    public Music(String music_title, String description, String state_name, String music_category, String file_path, String is_paid, String price, String user_id, String first_name, String last_name, String id, String full_paid_price, String profile_image) {
         this.music_title = music_title;
         this.description = description;
+        this.state_name = state_name;
+        this.music_category = music_category;
         this.file_path = file_path;
         this.is_paid = is_paid;
         this.price = price;
@@ -51,6 +55,22 @@ public class Music extends ResponseBase implements Parcelable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getState_name() {
+        return state_name;
+    }
+
+    public void setState_name(String state_name) {
+        this.state_name = state_name;
+    }
+
+    public String getMusic_category() {
+        return music_category;
+    }
+
+    public void setMusic_category(String music_category) {
+        this.music_category = music_category;
     }
 
     public String getFile_path() {
@@ -154,6 +174,8 @@ public class Music extends ResponseBase implements Parcelable {
         return "{" +
                 "music_title='" + music_title + '\'' +
                 ", description='" + description + '\'' +
+                ", state_name='" + state_name + '\'' +
+                ", music_category='" + music_category + '\'' +
                 ", file_path='" + file_path + '\'' +
                 ", is_paid='" + is_paid + '\'' +
                 ", price='" + price + '\'' +
@@ -179,6 +201,8 @@ public class Music extends ResponseBase implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(music_title);
         dest.writeString(description);
+        dest.writeString(state_name);
+        dest.writeString(music_category);
         dest.writeString(file_path);
         dest.writeString(is_paid);
         dest.writeString(price);
@@ -209,6 +233,8 @@ public class Music extends ResponseBase implements Parcelable {
     public Music(Parcel in) {
         music_title = in.readString();
         description = in.readString();
+        state_name = in.readString();
+        music_category = in.readString();
         file_path = in.readString();
         is_paid = in.readString();
         price = in.readString();

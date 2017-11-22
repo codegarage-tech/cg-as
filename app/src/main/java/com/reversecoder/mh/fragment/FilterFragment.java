@@ -105,7 +105,6 @@ public class FilterFragment extends AAH_FabulousFragment {
         mAdapter.notifyDataSetChanged();
         tabs_types.setupWithViewPager(vp_types);
 
-
         //params to set
         setAnimationDuration(600); //optional; default 500ms
         setPeekHeight(300); // optional; default 400dp
@@ -130,16 +129,10 @@ public class FilterFragment extends AAH_FabulousFragment {
 //            ll_scroll.setLayoutParams(lp);
             switch (position) {
                 case 0:
-                    inflateLayoutWithFilters("genre", fbl);
+                    inflateLayoutWithFilters("category", fbl);
                     break;
                 case 1:
-                    inflateLayoutWithFilters("rating", fbl);
-                    break;
-                case 2:
-                    inflateLayoutWithFilters("year", fbl);
-                    break;
-                case 3:
-                    inflateLayoutWithFilters("quality", fbl);
+                    inflateLayoutWithFilters("state", fbl);
                     break;
             }
             collection.addView(layout);
@@ -154,21 +147,16 @@ public class FilterFragment extends AAH_FabulousFragment {
 
         @Override
         public int getCount() {
-            return 4;
+            return 2;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "GENRE";
+                    return "CATEGORY";
                 case 1:
-                    return "RATING";
-                case 2:
-                    return "YEAR";
-                case 3:
-                    return "QUALITY";
-
+                    return "STATE";
             }
             return "";
         }
@@ -183,17 +171,11 @@ public class FilterFragment extends AAH_FabulousFragment {
     private void inflateLayoutWithFilters(final String filter_category, FlexboxLayout fbl) {
         List<String> keys = new ArrayList<>();
         switch (filter_category) {
-            case "genre":
-                keys = ((MainActivity) getActivity()).getmData().getUniqueGenreKeys();
+            case "state":
+                keys = ((SearchActivity) getActivity()).getData().getUniqueStateKeys();
                 break;
-            case "rating":
-                keys = ((MainActivity) getActivity()).getmData().getUniqueRatingKeys();
-                break;
-            case "year":
-                keys = ((MainActivity) getActivity()).getmData().getUniqueYearKeys();
-                break;
-            case "quality":
-                keys = ((MainActivity) getActivity()).getmData().getUniqueQualityKeys();
+            case "category":
+                keys = ((SearchActivity) getActivity()).getData().getUniqueCategoryKeys();
                 break;
         }
 
@@ -239,8 +221,6 @@ public class FilterFragment extends AAH_FabulousFragment {
 
             fbl.addView(subchild);
         }
-
-
     }
 
     private void addToSelectedMap(String key, String value) {
