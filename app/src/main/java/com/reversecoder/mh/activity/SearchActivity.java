@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 import com.reversecoder.mh.R;
-import com.reversecoder.mh.adapter.MusicListViewAdapter;
 import com.reversecoder.mh.adapter.SearchListViewAdapter;
 import com.reversecoder.mh.fragment.FilterFragment;
 import com.reversecoder.mh.model.FilterData;
@@ -53,7 +52,7 @@ public class SearchActivity extends AppCompatActivity implements AAH_FabulousFra
         tvTitle.setText("Search");
         fabFilter = (FloatingActionButton) findViewById(R.id.fab_filter);
         fabFilter.setVisibility(View.VISIBLE);
-        lvMusic = (ListView)findViewById(R.id.lv_music);
+        lvMusic = (ListView) findViewById(R.id.lv_music);
 
         mData = getFilterData();
         mList.addAll(mData.getAllMusics());
@@ -76,16 +75,16 @@ public class SearchActivity extends AppCompatActivity implements AAH_FabulousFra
         return mData;
     }
 
-    public FilterData getFilterData(){
+    public FilterData getFilterData() {
 
         List<Music> mList = new ArrayList<>();
 
-        mList.add(new Music("Parbo na ami charte toke","nice love song.","Michigan","Pop","","","","","","","","",""));
-        mList.add(new Music("I am India from Qaidi Band","nice love song.","Michigan","Hip Hop","","","","","","","","",""));
-        mList.add(new Music("Kar ja Re Ya Mar Ja","nice love song.","Michigan","Pop","","","","","","","","",""));
-        mList.add(new Music("Ek poloke valobese feleci","nice love song.","Michigan","Pop","","","","","","","","",""));
-        mList.add(new Music("Ami to karor noi","nice love song.","Michigan","Hip Hop","","","","","","","","",""));
-        mList.add(new Music("Ami to karor noi","nice love song.","Michigan","Pop","","","","","","","","",""));
+        mList.add(new Music("Parbo na ami charte toke", "nice love song.", "Michigan", "Pop", "", "", "", "", "", "", "", "", ""));
+        mList.add(new Music("I am India from Qaidi Band", "nice love song.", "Michigan", "Hip Hop", "", "", "", "", "", "", "", "", ""));
+        mList.add(new Music("Kar ja Re Ya Mar Ja", "nice love song.", "Michigan", "Pop", "", "", "", "", "", "", "", "", ""));
+        mList.add(new Music("Ek poloke valobese feleci", "nice love song.", "Michigan", "Pop", "", "", "", "", "", "", "", "", ""));
+        mList.add(new Music("Ami to karor noi", "nice love song.", "Michigan", "Hip Hop", "", "", "", "", "", "", "", "", ""));
+        mList.add(new Music("Ami bonno tor jonno", "nice love song.", "Michigan", "Pop", "", "", "", "", "", "", "", "", ""));
 
         return new FilterData(mList);
     }
