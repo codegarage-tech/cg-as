@@ -21,15 +21,13 @@
         android:textColor="@color/white"
         android:textSize="@dimen/activity_title_text_size" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_filter"
+    <ImageView
+        android:id="@+id/iv_filter"
+        android:visibility="gone"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="end"
-        android:layout_marginRight="5dp"
-        android:src="@drawable/ic_filter"
-        android:tint="@color/filters_chips"
-        app:backgroundTint="@color/primary_cyan"
-        app:elevation="0dp" />
+        android:layout_marginRight="10dp"
+        android:src="@drawable/ic_filter" />
 
 </android.support.v7.widget.Toolbar>
