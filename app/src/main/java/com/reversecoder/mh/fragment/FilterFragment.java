@@ -272,8 +272,12 @@ public class FilterFragment extends AAH_FabulousFragment {
         }
     }
 
-    private void singleChoiceSelectedMap(String key, TextView textView) {
-        clearAllSelectedDataExceptCurrent(key, textView);
+    private void singleChoiceSelectedMap(String filterKey, TextView textView) {
+        if (filterKey.equalsIgnoreCase("state")) {
+            clearAllSelectedData(filterKey);
+        } else {
+            clearAllSelectedDataExceptCurrent(filterKey, textView);
+        }
 
         if (textView.getTag().equals("selected")) {
             unSelectTextView(textView);

@@ -56,6 +56,7 @@ import static com.reversecoder.mh.util.AllConstants.KEY_INTENT_EXTRA_MUSIC_UPDAT
 import static com.reversecoder.mh.util.AllConstants.SESSION_CITY_WITH_COUNTRY;
 import static com.reversecoder.mh.util.AllConstants.SESSION_IS_USER_LOGGED_IN;
 import static com.reversecoder.mh.util.AllConstants.SESSION_MUSIC_CATEGORY;
+import static com.reversecoder.mh.util.AllConstants.SESSION_SELECTED_CITY;
 import static com.reversecoder.mh.util.AllConstants.SESSION_SELECTED_ZONE;
 import static com.reversecoder.mh.util.AllConstants.SESSION_USER_DATA;
 import static com.reversecoder.mh.util.AppUtils.isServiceRunning;
@@ -86,6 +87,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     MusicListViewAdapter musicListViewAdapter;
     TimeZone timeZone;
     String strTimeZone;
+    String selectedMusicCategory = "", selectedState = "";
 
     //Fabulous Filter
     private ArrayMap<String, List<String>> applied_filters = new ArrayMap<>();
@@ -94,6 +96,8 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     List<Music> mList = new ArrayList<>();
     List<String> mCategoryKey = new ArrayList<>();
     List<String> mStateKey = new ArrayList<>();
+    ArrayList<MusicCategory> mCategory = new ArrayList<>();
+    ArrayList<City> mState = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,29 +111,33 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
 
     private void initUI() {
 
+        //Set data from session
         if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_USER_DATA))) {
             Log.d(TAG, "Session data: " + SessionManager.getStringSetting(HomeActivity.this, SESSION_USER_DATA));
             user = UserData.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_USER_DATA), UserData.class);
         }
-
         if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_SELECTED_ZONE))) {
             Log.d(TAG, "Session data: " + SessionManager.getStringSetting(HomeActivity.this, SESSION_SELECTED_ZONE));
             strTimeZone = SessionManager.getStringSetting(HomeActivity.this, SESSION_SELECTED_ZONE);
         }
-
         if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY))) {
             wrapperMusicCategoryData = MusicCategoryData.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY), MusicCategoryData.class);
-            mCategoryKey = getUniqueCategoryKeys(wrapperMusicCategoryData.getMusicCategory());
+            mCategory = wrapperMusicCategoryData.getMusicCategory();
+            mCategoryKey = getUniqueCategoryKeys(mCategory);
         }
-
         if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY))) {
             wrapperCityWithCountryData = ResponseCountry.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY), ResponseCountry.class);
             Log.d(TAG, "before setting spinner: " + wrapperCityWithCountryData.toString());
 
             timeZone = wrapperCityWithCountryData.getAnyTimezone(strTimeZone);
-            mStateKey = getUniqueStateKeys(timeZone.getCity());
+            mState = timeZone.getCity();
+            mStateKey = getUniqueStateKeys(mState);
+        }
+        if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_SELECTED_CITY))) {
+            selectedState = SessionManager.getStringSetting(HomeActivity.this, SESSION_SELECTED_CITY);
         }
 
+        //Initialize views
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         fabFilter = (FloatingActionButton) findViewById(R.id.fab_filter);
         root = (FrameLayout) findViewById(R.id.root);
@@ -155,6 +163,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         lvMusic.setAdapter(musicListViewAdapter);
 
 //        initSpinnerData();
+        searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
     }
 
     private void initMenu() {
@@ -302,7 +311,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
 
     }
 
-    private void searchMusic() {
+    private void searchMusic(String category, String state) {
         if (isServiceRunning(getApplicationContext(), MediaService.class)) {
             Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_please_stop_music_before_searching), Toast.LENGTH_SHORT).show();
             return;
@@ -318,12 +327,12 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
 //            Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_empty_city_field), Toast.LENGTH_SHORT).show();
 //            return;
 //        }
-//        if (!NetworkManager.isConnected(HomeActivity.this)) {
-//            Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        new GetMusicList(HomeActivity.this, user.getId(), spinnerSelectedMusicCategoryId, spinnerSelectedCityId).execute();
+        if (!NetworkManager.isConnected(HomeActivity.this)) {
+            Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        new GetMusicList(HomeActivity.this, user.getId(), category, state).execute();
     }
 
     private void closeMenu() {
@@ -609,5 +618,23 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
 
     public List<String> getStateKey() {
         return mStateKey;
+    }
+
+    public MusicCategory getSelectedMusicCategory(String category) {
+        for (MusicCategory musicCategory : mCategory) {
+            if (musicCategory.getName().equalsIgnoreCase(category)) {
+                return musicCategory;
+            }
+        }
+        return new MusicCategory("", "");
+    }
+
+    public City getSelectedCity(String city) {
+        for (City mCity : mState) {
+            if (mCity.getName().equalsIgnoreCase(city)) {
+                return mCity;
+            }
+        }
+        return new City("", "");
     }
 }

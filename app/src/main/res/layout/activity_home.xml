@@ -20,41 +20,42 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:orientation="vertical">
-<!--
+            <!--
 
-            <Spinner
-                android:id="@+id/spinner_music_category"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="bottom"
-                android:textColor="@color/guillotine_background"
-                android:visibility="gone" />
+                        <Spinner
+                            android:id="@+id/spinner_music_category"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginBottom="5dp"
+                            android:gravity="bottom"
+                            android:textColor="@color/guillotine_background"
+                            android:visibility="gone" />
 
-            <Spinner
-                android:id="@+id/spinner_city"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:gravity="bottom"
-                android:textColor="@color/guillotine_background"
-                android:visibility="gone" />
+                        <Spinner
+                            android:id="@+id/spinner_city"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginBottom="10dp"
+                            android:gravity="bottom"
+                            android:textColor="@color/guillotine_background"
+                            android:visibility="gone" />
 
-            <Button
-                android:id="@+id/btn_confirm"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/shape_border_rectangle"
-                android:padding="5dp"
-                android:text="Confirm"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/small_font_size"
-                android:textStyle="bold"
-                android:visibility="gone" />
--->
+                        <Button
+                            android:id="@+id/btn_confirm"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:layout_marginBottom="15dp"
+                            android:background="@drawable/shape_border_rectangle"
+                            android:padding="5dp"
+                            android:text="Confirm"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="@dimen/small_font_size"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+            -->
 
             <ListView
                 android:id="@+id/lv_music"
