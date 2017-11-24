@@ -31,6 +31,7 @@ import com.reversecoder.mh.adapter.CommonSpinnerAdapter;
 import com.reversecoder.mh.adapter.MusicListViewAdapter;
 import com.reversecoder.mh.model.City;
 import com.reversecoder.mh.model.Music;
+import com.reversecoder.mh.model.MusicCategory;
 import com.reversecoder.mh.model.MusicCategoryData;
 import com.reversecoder.mh.model.ResponseCountry;
 import com.reversecoder.mh.model.ResponseMusic;
@@ -268,7 +269,7 @@ public class HomeActivity extends AppCompatActivity {
             Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_please_stop_music_before_searching), Toast.LENGTH_SHORT).show();
             return;
         }
-        String spinnerSelectedMusicCategoryId = ((SpinnerItem) spinnerMusicCategory.getSelectedItem()).getName().equalsIgnoreCase(getString(R.string.txt_default_music_category)) ? "" : ((SpinnerItem) spinnerMusicCategory.getSelectedItem()).getId();
+        String spinnerSelectedMusicCategoryId = ((MusicCategory) spinnerMusicCategory.getSelectedItem()).getName().equalsIgnoreCase(getString(R.string.txt_default_music_category)) ? "" : ((MusicCategory) spinnerMusicCategory.getSelectedItem()).getId();
         String spinnerSelectedCityId = ((City) spinnerCity.getSelectedItem()).getName().equalsIgnoreCase(getString(R.string.txt_default_city)) ? "" : ((City) spinnerCity.getSelectedItem()).getId();
 
 //                if (spinnerSelectedMusicCategoryId.equalsIgnoreCase("")) {

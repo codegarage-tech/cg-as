@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.reversecoder.mh.R;
 import com.reversecoder.mh.model.City;
 import com.reversecoder.mh.model.Country;
-import com.reversecoder.mh.model.SpinnerItem;
+import com.reversecoder.mh.model.MusicCategory;
 import com.reversecoder.mh.model.TimeZone;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class CommonSpinnerAdapter<T> extends BaseAdapter {
                     return i;
                 }
             } else if (mAdapterType == ADAPTER_TYPE.MUSIC_CATEGORY) {
-                SpinnerItem mItem = (SpinnerItem) mData.get(i);
+                MusicCategory mItem = (MusicCategory) mData.get(i);
                 if (mItem.getName().contains(name)) {
                     return i;
                 }
@@ -108,7 +108,7 @@ public class CommonSpinnerAdapter<T> extends BaseAdapter {
             City city = (City) getItem(position);
             names.setText(city.getName());
         } else if (mAdapterType == ADAPTER_TYPE.MUSIC_CATEGORY) {
-            SpinnerItem mItem = (SpinnerItem) getItem(position);
+            MusicCategory mItem = (MusicCategory) getItem(position);
             names.setText(mItem.getName());
         }
 

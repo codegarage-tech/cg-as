@@ -196,6 +196,7 @@ public class ZoneActivity extends AppCompatActivity {
     private void goHome() {
         Intent intent = new Intent(ZoneActivity.this, HomeActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public class GetCityWithCountry extends AsyncTask<String, String, HttpRequestManager.HttpResponse> {
