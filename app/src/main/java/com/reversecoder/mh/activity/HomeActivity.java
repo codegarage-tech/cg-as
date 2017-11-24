@@ -48,6 +48,7 @@ import com.yalantis.guillotine.animation.GuillotineAnimation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static com.reversecoder.mh.util.AllConstants.INTENT_FILTER_ACTIVITY_UPDATE;
 import static com.reversecoder.mh.util.AllConstants.INTENT_KEY_OWN_MUSIC_LIST_FROM_MENU;
@@ -90,7 +91,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     String selectedMusicCategory = "", selectedState = "";
 
     //Fabulous Filter
-    private ArrayMap<String, List<String>> applied_filters = new ArrayMap<>();
+    private ArrayMap<String, List<String>> appliedFilters = new ArrayMap<>();
     FilterFragment dialogFrag;
     FloatingActionButton fabFilter;
     List<Music> mList = new ArrayList<>();
@@ -135,6 +136,15 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         }
         if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_SELECTED_CITY))) {
             selectedState = SessionManager.getStringSetting(HomeActivity.this, SESSION_SELECTED_CITY);
+
+            String currentFilterKey = "state";
+            if (appliedFilters.get(currentFilterKey) != null && !appliedFilters.get(currentFilterKey).contains(selectedState)) {
+                appliedFilters.get(currentFilterKey).add(selectedState);
+            } else {
+                List<String> temp = new ArrayList<>();
+                temp.add(selectedState);
+                appliedFilters.put(currentFilterKey, temp);
+            }
         }
 
         //Initialize views
@@ -192,7 +202,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
             @Override
             public void onClick(View v) {
 
-                dialogFrag = FilterFragment.newInstance(applied_filters);
+                dialogFrag = FilterFragment.newInstance(appliedFilters);
                 dialogFrag.setParentFab(fabFilter);
 
                 dialogFrag.show(getSupportFragmentManager(), dialogFrag.getTag());
@@ -530,7 +540,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     @Override
     public void onResult(Object result) {
         Log.d("k9res", "onResult: " + result.toString());
-        applied_filters = (ArrayMap<String, List<String>>) result;
+        appliedFilters = (ArrayMap<String, List<String>>) result;
 
         if (result.toString().equalsIgnoreCase("swiped_down")) {
             //do something or nothing
@@ -538,6 +548,24 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
             if (result != null) {
                 ArrayMap<String, List<String>> appliedFilters = (ArrayMap<String, List<String>>) result;
                 if (appliedFilters.size() != 0) {
+
+                    for (Map.Entry<String, List<String>> entry : appliedFilters.entrySet()) {
+                        Log.d(TAG, "saved filter key: " + entry.getKey());
+                        if (entry.getKey().equalsIgnoreCase("category")) {
+                            if (entry.getValue().size() == 1) {
+                                selectedMusicCategory = entry.getValue().get(0);
+                                Log.d(TAG, "selectedMusicCategory: " + selectedMusicCategory);
+                            }
+                        } else if (entry.getKey().equalsIgnoreCase("state")) {
+                            if (entry.getValue().size() == 1) {
+                                selectedState = entry.getValue().get(0);
+                                Log.d(TAG, "selectedState: " + selectedState);
+                            }
+                        }
+                    }
+
+                    searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
+
 //                    List<Music> filteredList = mData.getAllMusics();
 //                    //iterate over arraymap
 //                    for (Map.Entry<String, List<String>> entry : appliedFilters.entrySet()) {
@@ -563,6 +591,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
             }
             //handle result
         }
+
     }
 
     @Override
