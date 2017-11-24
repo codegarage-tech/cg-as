@@ -1,7 +1,7 @@
 package com.reversecoder.mh.fragment;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -34,34 +34,36 @@ import java.util.Map;
 
 public class FilterFragment extends AAH_FabulousFragment {
 
-    ArrayMap<String, List<String>> applied_filters = new ArrayMap<>();
+    static ArrayMap<String, List<String>> applied_filters = new ArrayMap<>();
     List<TextView> textviews = new ArrayList<>();
 
     TabLayout tabs_types;
 
     ImageButton imgbtn_refresh, imgbtn_apply;
     SectionsPagerAdapter mAdapter;
-    private DisplayMetrics metrics;
 
-    private String TAG = FilterFragment.class.getSimpleName();
+    private static String TAG = FilterFragment.class.getSimpleName();
 
-    public static FilterFragment newInstance() {
+    public static FilterFragment newInstance(ArrayMap<String, List<String>> data) {
+        applied_filters = data;
+
+        Log.d(TAG, "=====================Opening======================");
+        for (Map.Entry<String, List<String>> entry : applied_filters.entrySet()) {
+            Log.d(TAG, "saved filter key: " + entry.getKey());
+            for (String s : entry.getValue()) {
+                Log.d(TAG, "saved item: " + s);
+            }
+        }
+        Log.d(TAG, "======================Opening=====================");
+
         FilterFragment mff = new FilterFragment();
+
         return mff;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        applied_filters = ((SearchActivity) getActivity()).getApplied_filters();
-        metrics = this.getResources().getDisplayMetrics();
-
-        for (Map.Entry<String, List<String>> entry : applied_filters.entrySet()) {
-            Log.d("k9res", "from activity: " + entry.getKey());
-            for (String s : entry.getValue()) {
-                Log.d("k9res", "from activity val: " + s);
-            }
-        }
     }
 
 //    @Override
@@ -85,7 +87,21 @@ public class FilterFragment extends AAH_FabulousFragment {
         imgbtn_apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                closeFilter(applied_filters);
+                ArrayMap<String, List<String>> selectedItem = getSelectedData(new ArrayList<String>() {{
+                    add("category");
+                    add("state");
+                }});
+
+                Log.d(TAG, "=====================Saving======================");
+                for (Map.Entry<String, List<String>> entry : selectedItem.entrySet()) {
+                    Log.d(TAG, "saved filter key: " + entry.getKey());
+                    for (String s : entry.getValue()) {
+                        Log.d(TAG, "saved item: " + s);
+                    }
+                }
+                Log.d(TAG, "======================Saving=====================");
+
+                closeFilter(selectedItem);
             }
         });
         imgbtn_refresh.setOnClickListener(new View.OnClickListener() {
@@ -185,14 +201,14 @@ public class FilterFragment extends AAH_FabulousFragment {
                 @Override
                 public void onClick(View v) {
                     //For multiple selection
-//                    if (tv.getTag() != null && tv.getTag().equals("selected")) {
-//                        removeFromMultiSelectedMap(filter_category, finalKeys.get(finalI), tv);
-//                    } else {
-//                        addToMultiSelectedMap(filter_category, finalKeys.get(finalI), tv);
-//                    }
+                    if (tv.getTag() != null && tv.getTag().equals("selected")) {
+                        removeFromMultiSelectedMap(filter_category, finalKeys.get(finalI), tv);
+                    } else {
+                        addToMultiSelectedMap(filter_category, finalKeys.get(finalI), tv);
+                    }
 
-                    //For single selection
-                    addToSingleSelectedMap(filter_category, finalKeys.get(finalI), tv);
+//                    //For single selection
+//                    singleChoiseSelectedMap(filter_category, finalKeys.get(finalI), tv);
                 }
             });
             try {
@@ -219,35 +235,89 @@ public class FilterFragment extends AAH_FabulousFragment {
 
     }
 
-    private void addToMultiSelectedMap(String key, String value, TextView textView) {
-        if (applied_filters.get(key) != null && !applied_filters.get(key).contains(value)) {
-            applied_filters.get(key).add(value);
-        } else {
-            List<String> temp = new ArrayList<>();
-            temp.add(value);
-            applied_filters.put(key, temp);
+    private ArrayMap<String, List<String>> getSelectedData(ArrayList<String> filterKeys) {
+        ArrayMap<String, List<String>> tempSelectedData = new ArrayMap<>();
+
+        for (int i = 0; i < filterKeys.size(); i++) {
+            List<String> keys = null;
+            switch (filterKeys.get(i)) {
+                case "state":
+                    keys = ((SearchActivity) getActivity()).getData().getUniqueStateKeys();
+                    break;
+                case "category":
+                    keys = ((SearchActivity) getActivity()).getData().getUniqueCategoryKeys();
+                    break;
+            }
+
+            for (TextView textView : textviews) {
+                for (int j = 0; j < keys.size(); j++) {
+                    if (textView.getText().toString().equalsIgnoreCase(keys.get(j))) {
+                        if (textView.getTag().equals("selected")) {
+                            String currentFilterKey = filterKeys.get(i);
+                            String currentKey = keys.get(j);
+                            if (tempSelectedData.get(currentFilterKey) != null && !tempSelectedData.get(currentFilterKey).contains(currentKey)) {
+                                tempSelectedData.get(currentFilterKey).add(currentKey);
+                            } else {
+                                List<String> temp = new ArrayList<>();
+                                temp.add(currentKey);
+                                tempSelectedData.put(currentFilterKey, temp);
+                            }
+                        }
+                    }
+                }
+            }
         }
+
+        return tempSelectedData;
+    }
+
+//    private void singleChoiseSelectedMap(String key, String value, TextView textView) {
+//
+//        refreshAllSelectedData(key);
+//
+//        TextView updatedTextView;
+//        if (textView.getTag() != null && textView.getTag().equals("selected")) {
+//            updatedTextView = removeFromMultiSelectedMap(key, value, textView);
+//        } else {
+//            updatedTextView = addToMultiSelectedMap(key, value, textView);
+//        }
+//        updateTextView(updatedTextView);
+//    }
+
+    private void addToMultiSelectedMap(String key, String value, TextView textView) {
+//        if (applied_filters.get(key) != null && !applied_filters.get(key).contains(value)) {
+//            applied_filters.get(key).add(value);
+//        } else {
+//            List<String> temp = new ArrayList<>();
+//            temp.add(value);
+//            applied_filters.put(key, temp);
+//        }
 
         textView.setTag("selected");
         textView.setBackgroundResource(R.drawable.chip_selected);
         textView.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
+
+        updateTextView(textView);
     }
 
     private void removeFromMultiSelectedMap(String key, String value, TextView textView) {
-        if (applied_filters.get(key) != null) {
-            if (applied_filters.get(key).size() == 1) {
-                applied_filters.remove(key);
-            } else {
-                applied_filters.get(key).remove(value);
-            }
+//        if (applied_filters.get(key) != null) {
+//            if (applied_filters.get(key).size() == 1) {
+//                applied_filters.remove(key);
+//            } else {
+//                applied_filters.get(key).remove(value);
+//            }
 
-            textView.setTag("unselected");
-            textView.setBackgroundResource(R.drawable.chip_unselected);
-            textView.setTextColor(ContextCompat.getColor(getContext(), R.color.filters_header));
-        }
+        textView.setTag("unselected");
+        textView.setBackgroundResource(R.drawable.chip_unselected);
+        textView.setTextColor(ContextCompat.getColor(getContext(), R.color.filters_header));
+
+        updateTextView(textView);
+
+//        }
     }
 
-    private void addToSingleSelectedMap(String key, String value, TextView textView) {
+    /*private void addToSingleSelectedMap(String key, String value, TextView textView) {
 
         //Remove all previous selected data
         List<String> values = null;
@@ -303,7 +373,56 @@ public class FilterFragment extends AAH_FabulousFragment {
 //            }
 //        }
 //        Log.d(TAG, "==========================================================");
+    }*/
+
+    private TextView getTextView(String value) {
+        for (TextView tv : textviews) {
+            if (tv.getText().toString().equalsIgnoreCase(value)) {
+                return tv;
+            }
+        }
+        return null;
     }
+
+    private int getTextViewPosition(String value) {
+        for (int i = 0; i < textviews.size(); i++) {
+            if (textviews.get(i).getText().toString().equalsIgnoreCase(value)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void updateTextView(TextView textView) {
+        int position = getTextViewPosition(textView.getText().toString());
+        textviews.remove(position);
+        textviews.add(position, textView);
+
+//        mAdapter.notifyDataSetChanged();
+    }
+//
+//    private void refreshAllSelectedData(String key) {
+//        for (TextView tv : textviews) {
+//            if (tv.getTag().equals("selected")) {
+//                TextView updatedTextView = removeFromMultiSelectedMap(key, tv.getText().toString(), tv);
+//
+//                updateTextView(updatedTextView);
+//            }
+//        }
+//    }
+//
+//    private void refreshAllSelectedData(String key, String value) {
+//        for (TextView tv : textviews) {
+//            if (value.equalsIgnoreCase(tv.getText().toString())) {
+//                if (tv.getTag().equals("selected")) {
+//
+//                    TextView updatedTextView = removeFromMultiSelectedMap(key, value, tv);
+//
+//                    updateTextView(updatedTextView);
+//                }
+//            }
+//        }
+//    }
 
     private void refreshAllSelectedData() {
         for (TextView tv : textviews) {

@@ -61,11 +61,13 @@ public class SearchActivity extends AppCompatActivity implements AAH_FabulousFra
         lvMusic.setAdapter(musicListViewAdapter);
         musicListViewAdapter.setData(new ArrayList<Music>(mList));
 
-        dialogFrag = FilterFragment.newInstance();
-        dialogFrag.setParentFab(fabFilter);
         fabFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                dialogFrag = FilterFragment.newInstance(getApplied_filters());
+                dialogFrag.setParentFab(fabFilter);
+
                 dialogFrag.show(getSupportFragmentManager(), dialogFrag.getTag());
             }
         });
@@ -100,16 +102,17 @@ public class SearchActivity extends AppCompatActivity implements AAH_FabulousFra
     @Override
     public void onResult(Object result) {
         Log.d("k9res", "onResult: " + result.toString());
+        applied_filters = (ArrayMap<String, List<String>>) result;
 
         if (result.toString().equalsIgnoreCase("swiped_down")) {
             //do something or nothing
         } else {
             if (result != null) {
-                ArrayMap<String, List<String>> applied_filters = (ArrayMap<String, List<String>>) result;
-                if (applied_filters.size() != 0) {
+                ArrayMap<String, List<String>> appliedFilters = (ArrayMap<String, List<String>>) result;
+                if (appliedFilters.size() != 0) {
                     List<Music> filteredList = mData.getAllMusics();
                     //iterate over arraymap
-                    for (Map.Entry<String, List<String>> entry : applied_filters.entrySet()) {
+                    for (Map.Entry<String, List<String>> entry : appliedFilters.entrySet()) {
                         Log.d("k9res", "entry.key: " + entry.getKey());
                         switch (entry.getKey()) {
                             case "category":
