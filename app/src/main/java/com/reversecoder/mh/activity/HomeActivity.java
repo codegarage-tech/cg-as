@@ -6,36 +6,36 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 import com.reversecoder.library.event.OnSingleClickListener;
 import com.reversecoder.library.network.NetworkManager;
 import com.reversecoder.library.storage.SessionManager;
 import com.reversecoder.mh.R;
-import com.reversecoder.mh.adapter.CommonSpinnerAdapter;
 import com.reversecoder.mh.adapter.MusicListViewAdapter;
+import com.reversecoder.mh.fragment.FilterFragment;
 import com.reversecoder.mh.model.City;
 import com.reversecoder.mh.model.Music;
 import com.reversecoder.mh.model.MusicCategory;
 import com.reversecoder.mh.model.MusicCategoryData;
 import com.reversecoder.mh.model.ResponseCountry;
 import com.reversecoder.mh.model.ResponseMusic;
-import com.reversecoder.mh.model.SpinnerItem;
 import com.reversecoder.mh.model.TimeZone;
 import com.reversecoder.mh.model.UserData;
 import com.reversecoder.mh.service.MediaService;
@@ -45,6 +45,10 @@ import com.reversecoder.mh.util.AppUtils;
 import com.reversecoder.mh.util.HttpRequestManager;
 import com.yalantis.guillotine.animation.GuillotineAnimation;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static com.reversecoder.mh.util.AllConstants.INTENT_FILTER_ACTIVITY_UPDATE;
 import static com.reversecoder.mh.util.AllConstants.INTENT_KEY_OWN_MUSIC_LIST_FROM_MENU;
 import static com.reversecoder.mh.util.AllConstants.INTENT_KEY_OWN_MUSIC_LIST_ITEM_USER;
@@ -52,7 +56,6 @@ import static com.reversecoder.mh.util.AllConstants.KEY_INTENT_EXTRA_MUSIC_UPDAT
 import static com.reversecoder.mh.util.AllConstants.SESSION_CITY_WITH_COUNTRY;
 import static com.reversecoder.mh.util.AllConstants.SESSION_IS_USER_LOGGED_IN;
 import static com.reversecoder.mh.util.AllConstants.SESSION_MUSIC_CATEGORY;
-import static com.reversecoder.mh.util.AllConstants.SESSION_SELECTED_CITY;
 import static com.reversecoder.mh.util.AllConstants.SESSION_SELECTED_ZONE;
 import static com.reversecoder.mh.util.AllConstants.SESSION_USER_DATA;
 import static com.reversecoder.mh.util.AppUtils.isServiceRunning;
@@ -61,7 +64,7 @@ import static com.reversecoder.mh.util.AppUtils.isServiceRunning;
  * @author Md. Rashadul Alam
  *         Email: rashed.droid@gmail.com
  */
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragment.Callbacks, AAH_FabulousFragment.AnimationListener {
 
     private static final long RIPPLE_DURATION = 250;
 
@@ -72,17 +75,25 @@ public class HomeActivity extends AppCompatActivity {
     TextView tvTitle;
     LinearLayout llLogOut, llHome, llProfile, llOwnMusic, llBoughtMusic, llZone;
     private static final String TAG = HomeActivity.class.getSimpleName();
-//    Spinner spinnerMusicCategory, spinnerCity;
+    //    Spinner spinnerMusicCategory, spinnerCity;
 //    CommonSpinnerAdapter spinnerMusicCategoryAdapter, spinnerCityAdapter;
     MusicCategoryData wrapperMusicCategoryData;
     ResponseCountry wrapperCityWithCountryData;
     UserData user;
-//    Button btnConfirm;
+    //    Button btnConfirm;
     ListView lvMusic;
     ProgressDialog loadingDialog;
     MusicListViewAdapter musicListViewAdapter;
     TimeZone timeZone;
     String strTimeZone;
+
+    //Fabulous Filter
+    private ArrayMap<String, List<String>> applied_filters = new ArrayMap<>();
+    FilterFragment dialogFrag;
+    FloatingActionButton fabFilter;
+    List<Music> mList = new ArrayList<>();
+    List<String> mCategoryKey = new ArrayList<>();
+    List<String> mStateKey = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,7 +102,7 @@ public class HomeActivity extends AppCompatActivity {
 
         initUI();
 
-        initMenuAction();
+        initActions();
     }
 
     private void initUI() {
@@ -106,7 +117,21 @@ public class HomeActivity extends AppCompatActivity {
             strTimeZone = SessionManager.getStringSetting(HomeActivity.this, SESSION_SELECTED_ZONE);
         }
 
+        if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY))) {
+            wrapperMusicCategoryData = MusicCategoryData.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY), MusicCategoryData.class);
+            mCategoryKey = getUniqueCategoryKeys(wrapperMusicCategoryData.getMusicCategory());
+        }
+
+        if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY))) {
+            wrapperCityWithCountryData = ResponseCountry.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY), ResponseCountry.class);
+            Log.d(TAG, "before setting spinner: " + wrapperCityWithCountryData.toString());
+
+            timeZone = wrapperCityWithCountryData.getAnyTimezone(strTimeZone);
+            mStateKey = getUniqueStateKeys(timeZone.getCity());
+        }
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        fabFilter = (FloatingActionButton) findViewById(R.id.fab_filter);
         root = (FrameLayout) findViewById(R.id.root);
         contentHamburger = (ImageView) findViewById(R.id.content_hamburger);
         tvTitle = (TextView) findViewById(R.id.text_title);
@@ -149,6 +174,21 @@ public class HomeActivity extends AppCompatActivity {
                 .build();
 
         ((TextView) guillotineMenu.findViewById(R.id.text_title)).setText(getString(R.string.title_menu));
+    }
+
+    private void initActions() {
+        initMenuAction();
+
+        fabFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialogFrag = FilterFragment.newInstance(applied_filters);
+                dialogFrag.setParentFab(fabFilter);
+
+                dialogFrag.show(getSupportFragmentManager(), dialogFrag.getTag());
+            }
+        });
     }
 
     private void initMenuAction() {
@@ -325,7 +365,6 @@ public class HomeActivity extends AppCompatActivity {
 //
 //        searchMusic();
 //    }
-
     private void setCityWithCountry() {
         if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY))) {
             SessionManager.setStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY, AllConstants.getDefaultCountryData());
@@ -473,5 +512,102 @@ public class HomeActivity extends AppCompatActivity {
         if (musicListViewAdapter != null) {
             musicListViewAdapter.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    /***************************
+     * Fabulous Filter methods *
+     ***************************/
+
+    @Override
+    public void onResult(Object result) {
+        Log.d("k9res", "onResult: " + result.toString());
+        applied_filters = (ArrayMap<String, List<String>>) result;
+
+        if (result.toString().equalsIgnoreCase("swiped_down")) {
+            //do something or nothing
+        } else {
+            if (result != null) {
+                ArrayMap<String, List<String>> appliedFilters = (ArrayMap<String, List<String>>) result;
+                if (appliedFilters.size() != 0) {
+//                    List<Music> filteredList = mData.getAllMusics();
+//                    //iterate over arraymap
+//                    for (Map.Entry<String, List<String>> entry : appliedFilters.entrySet()) {
+//                        Log.d("k9res", "entry.key: " + entry.getKey());
+//                        switch (entry.getKey()) {
+//                            case "category":
+//                                filteredList = mData.getCategoryFilteredMusics(entry.getValue(), filteredList);
+//                                break;
+//                            case "state":
+//                                filteredList = mData.getStateFilteredMusics(entry.getValue(), filteredList);
+//                                break;
+//                        }
+//                    }
+//                    Log.d("k9res", "new size: " + filteredList.size());
+//                    mList.clear();
+//                    mList.addAll(filteredList);
+//                    musicListViewAdapter.setData(new ArrayList<Music>(mList));
+
+                } else {
+//                    mList.addAll(mData.getAllMusics());
+//                    musicListViewAdapter.setData(new ArrayList<Music>(mList));
+                }
+            }
+            //handle result
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (dialogFrag.isAdded()) {
+            dialogFrag.dismiss();
+            dialogFrag.show(getSupportFragmentManager(), dialogFrag.getTag());
+        }
+    }
+
+    @Override
+    public void onOpenAnimationStart() {
+        Log.d("aah_animation", "onOpenAnimationStart: ");
+    }
+
+    @Override
+    public void onOpenAnimationEnd() {
+        Log.d("aah_animation", "onOpenAnimationEnd: ");
+    }
+
+    @Override
+    public void onCloseAnimationStart() {
+        Log.d("aah_animation", "onCloseAnimationStart: ");
+    }
+
+    @Override
+    public void onCloseAnimationEnd() {
+        Log.d("aah_animation", "onCloseAnimationEnd: ");
+    }
+
+    public List<String> getUniqueCategoryKeys(ArrayList<MusicCategory> musicCategories) {
+        List<String> categories = new ArrayList<>();
+        for (MusicCategory musicCategory : musicCategories) {
+            categories.add(musicCategory.getName());
+        }
+        Collections.sort(categories);
+        return categories;
+    }
+
+    public List<String> getUniqueStateKeys(ArrayList<City> states) {
+        List<String> cities = new ArrayList<>();
+        for (City city : states) {
+            cities.add(city.getName());
+        }
+        Collections.sort(cities);
+        return cities;
+    }
+
+    public List<String> getCategoryKey() {
+        return mCategoryKey;
+    }
+
+    public List<String> getStateKey() {
+        return mStateKey;
     }
 }

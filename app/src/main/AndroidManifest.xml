@@ -62,7 +62,7 @@
             android:name="com.reversecoder.mh.activity.HomeActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.FabulousFilter" />
 
         <activity
             android:name="com.reversecoder.mh.activity.ProfileActivity"

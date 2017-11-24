@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 import com.google.android.flexbox.FlexboxLayout;
 import com.reversecoder.mh.R;
-import com.reversecoder.mh.activity.SearchActivity;
+import com.reversecoder.mh.activity.HomeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,10 +181,10 @@ public class FilterFragment extends AAH_FabulousFragment {
         List<String> keys = new ArrayList<>();
         switch (filter_category) {
             case "state":
-                keys = ((SearchActivity) getActivity()).getData().getUniqueStateKeys();
+                keys = ((HomeActivity) getActivity()).getStateKey();
                 break;
             case "category":
-                keys = ((SearchActivity) getActivity()).getData().getUniqueCategoryKeys();
+                keys = ((HomeActivity) getActivity()).getCategoryKey();
                 break;
         }
 
@@ -235,10 +235,10 @@ public class FilterFragment extends AAH_FabulousFragment {
             List<String> keys = null;
             switch (filterKeys.get(i)) {
                 case "state":
-                    keys = ((SearchActivity) getActivity()).getData().getUniqueStateKeys();
+                    keys = ((HomeActivity) getActivity()).getStateKey();
                     break;
                 case "category":
-                    keys = ((SearchActivity) getActivity()).getData().getUniqueCategoryKeys();
+                    keys = ((HomeActivity) getActivity()).getCategoryKey();
                     break;
             }
 
@@ -336,10 +336,10 @@ public class FilterFragment extends AAH_FabulousFragment {
         List<String> keys = null;
         switch (filterKey) {
             case "state":
-                keys = ((SearchActivity) getActivity()).getData().getUniqueStateKeys();
+                keys = ((HomeActivity) getActivity()).getStateKey();
                 break;
             case "category":
-                keys = ((SearchActivity) getActivity()).getData().getUniqueCategoryKeys();
+                keys = ((HomeActivity) getActivity()).getCategoryKey();
                 break;
         }
 
@@ -369,10 +369,10 @@ public class FilterFragment extends AAH_FabulousFragment {
         List<String> keys = null;
         switch (filterKey) {
             case "state":
-                keys = ((SearchActivity) getActivity()).getData().getUniqueStateKeys();
+                keys = ((HomeActivity) getActivity()).getStateKey();
                 break;
             case "category":
-                keys = ((SearchActivity) getActivity()).getData().getUniqueCategoryKeys();
+                keys = ((HomeActivity) getActivity()).getCategoryKey();
                 break;
         }
 
