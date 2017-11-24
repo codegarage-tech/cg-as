@@ -13,24 +13,24 @@ public class MusicCategoryData extends ResponseBase {
         this.data = data;
     }
 
-//    public ArrayList<MusicCategory> getMusicCategory() {
-//        return data;
-//    }
+    public ArrayList<MusicCategory> getMusicCategory() {
+        return data;
+    }
 
     private void setMusicCategory(ArrayList<MusicCategory> data) {
         this.data = data;
     }
 
-    public ArrayList<MusicCategory> getMusicCategory() {
-        ArrayList<MusicCategory> mCategory = new ArrayList<MusicCategory>();
-        for (int i = 0; i < data.size(); i++) {
-            mCategory.add(new MusicCategory(data.get(i).getId(), data.get(i).getName()));
-        }
-        if (!isItemExist(mCategory, "Choose music category")) {
-            mCategory.add(0, new MusicCategory("42343434343", "Choose music category"));
-        }
-        return mCategory;
-    }
+//    public ArrayList<MusicCategory> getMusicCategory() {
+//        ArrayList<MusicCategory> mCategory = new ArrayList<MusicCategory>();
+//        for (int i = 0; i < data.size(); i++) {
+//            mCategory.add(new MusicCategory(data.get(i).getId(), data.get(i).getName()));
+//        }
+//        if (!isItemExist(mCategory, "Choose music category")) {
+//            mCategory.add(0, new MusicCategory("42343434343", "Choose music category"));
+//        }
+//        return mCategory;
+//    }
 
     private boolean isItemExist(ArrayList<MusicCategory> data, String itemName) {
         boolean isExist = false;

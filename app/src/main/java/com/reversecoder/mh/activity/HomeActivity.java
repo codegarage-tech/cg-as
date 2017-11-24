@@ -72,12 +72,12 @@ public class HomeActivity extends AppCompatActivity {
     TextView tvTitle;
     LinearLayout llLogOut, llHome, llProfile, llOwnMusic, llBoughtMusic, llZone;
     private static final String TAG = HomeActivity.class.getSimpleName();
-    Spinner spinnerMusicCategory, spinnerCity;
-    CommonSpinnerAdapter spinnerMusicCategoryAdapter, spinnerCityAdapter;
+//    Spinner spinnerMusicCategory, spinnerCity;
+//    CommonSpinnerAdapter spinnerMusicCategoryAdapter, spinnerCityAdapter;
     MusicCategoryData wrapperMusicCategoryData;
     ResponseCountry wrapperCityWithCountryData;
     UserData user;
-    Button btnConfirm;
+//    Button btnConfirm;
     ListView lvMusic;
     ProgressDialog loadingDialog;
     MusicListViewAdapter musicListViewAdapter;
@@ -123,13 +123,13 @@ public class HomeActivity extends AppCompatActivity {
         llBoughtMusic = (LinearLayout) findViewById(R.id.ll_bought_music);
         llZone = (LinearLayout) findViewById(R.id.ll_zone);
 
-        btnConfirm = (Button) findViewById(R.id.btn_confirm);
+//        btnConfirm = (Button) findViewById(R.id.btn_confirm);
         lvMusic = (ListView) findViewById(R.id.lv_music);
 
         musicListViewAdapter = new MusicListViewAdapter(HomeActivity.this);
         lvMusic.setAdapter(musicListViewAdapter);
 
-        initSpinnerData();
+//        initSpinnerData();
     }
 
     private void initMenu() {
@@ -231,36 +231,34 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        spinnerCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                City item = (City) parent.getItemAtPosition(position);
-//                Toast.makeText(SignUpActivity.this, item.getName(), Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        spinnerMusicCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                SpinnerItem item = (SpinnerItem) parent.getItemAtPosition(position);
-//                Toast.makeText(SignUpActivity.this, item.getName(), Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        btnConfirm.setOnClickListener(new OnSingleClickListener() {
-            @Override
-            public void onSingleClick(View view) {
-                searchMusic();
-            }
-        });
+//        spinnerCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                City item = (City) parent.getItemAtPosition(position);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
+//
+//        spinnerMusicCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                SpinnerItem item = (SpinnerItem) parent.getItemAtPosition(position);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
+//
+//        btnConfirm.setOnClickListener(new OnSingleClickListener() {
+//            @Override
+//            public void onSingleClick(View view) {
+//                searchMusic();
+//            }
+//        });
 
     }
 
@@ -269,23 +267,23 @@ public class HomeActivity extends AppCompatActivity {
             Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_please_stop_music_before_searching), Toast.LENGTH_SHORT).show();
             return;
         }
-        String spinnerSelectedMusicCategoryId = ((MusicCategory) spinnerMusicCategory.getSelectedItem()).getName().equalsIgnoreCase(getString(R.string.txt_default_music_category)) ? "" : ((MusicCategory) spinnerMusicCategory.getSelectedItem()).getId();
-        String spinnerSelectedCityId = ((City) spinnerCity.getSelectedItem()).getName().equalsIgnoreCase(getString(R.string.txt_default_city)) ? "" : ((City) spinnerCity.getSelectedItem()).getId();
-
+//        String spinnerSelectedMusicCategoryId = ((MusicCategory) spinnerMusicCategory.getSelectedItem()).getName().equalsIgnoreCase(getString(R.string.txt_default_music_category)) ? "" : ((MusicCategory) spinnerMusicCategory.getSelectedItem()).getId();
+//        String spinnerSelectedCityId = ((City) spinnerCity.getSelectedItem()).getName().equalsIgnoreCase(getString(R.string.txt_default_city)) ? "" : ((City) spinnerCity.getSelectedItem()).getId();
+//
 //                if (spinnerSelectedMusicCategoryId.equalsIgnoreCase("")) {
 //                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_empty_music_category_field), Toast.LENGTH_SHORT).show();
 //                    return;
 //                }
-        if (spinnerSelectedCityId.equalsIgnoreCase("")) {
-            Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_empty_city_field), Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!NetworkManager.isConnected(HomeActivity.this)) {
-            Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        new GetMusicList(HomeActivity.this, user.getId(), spinnerSelectedMusicCategoryId, spinnerSelectedCityId).execute();
+//        if (spinnerSelectedCityId.equalsIgnoreCase("")) {
+//            Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_empty_city_field), Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        if (!NetworkManager.isConnected(HomeActivity.this)) {
+//            Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        new GetMusicList(HomeActivity.this, user.getId(), spinnerSelectedMusicCategoryId, spinnerSelectedCityId).execute();
     }
 
     private void closeMenu() {
@@ -308,25 +306,25 @@ public class HomeActivity extends AppCompatActivity {
     /***********************
      * Update spinner data *
      ***********************/
-    private void initSpinnerData() {
-        spinnerMusicCategory = (Spinner) findViewById(R.id.spinner_music_category);
-        spinnerCity = (Spinner) findViewById(R.id.spinner_city);
-
-        spinnerMusicCategoryAdapter = new CommonSpinnerAdapter(HomeActivity.this, CommonSpinnerAdapter.ADAPTER_TYPE.MUSIC_CATEGORY);
-        spinnerMusicCategory.setAdapter(spinnerMusicCategoryAdapter);
-
-        spinnerCityAdapter = new CommonSpinnerAdapter(HomeActivity.this, CommonSpinnerAdapter.ADAPTER_TYPE.CITY);
-        spinnerCity.setAdapter(spinnerCityAdapter);
-
-        //Get spinner data
-        setMusicCategory();
-        setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.MUSIC_CATEGORY);
-
-        setCityWithCountry();
-        setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.CITY);
-
-        searchMusic();
-    }
+//    private void initSpinnerData() {
+//        spinnerMusicCategory = (Spinner) findViewById(R.id.spinner_music_category);
+//        spinnerCity = (Spinner) findViewById(R.id.spinner_city);
+//
+//        spinnerMusicCategoryAdapter = new CommonSpinnerAdapter(HomeActivity.this, CommonSpinnerAdapter.ADAPTER_TYPE.MUSIC_CATEGORY);
+//        spinnerMusicCategory.setAdapter(spinnerMusicCategoryAdapter);
+//
+//        spinnerCityAdapter = new CommonSpinnerAdapter(HomeActivity.this, CommonSpinnerAdapter.ADAPTER_TYPE.CITY);
+//        spinnerCity.setAdapter(spinnerCityAdapter);
+//
+//        //Get spinner data
+//        setMusicCategory();
+//        setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.MUSIC_CATEGORY);
+//
+//        setCityWithCountry();
+//        setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.CITY);
+//
+//        searchMusic();
+//    }
 
     private void setCityWithCountry() {
         if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY))) {
@@ -406,28 +404,28 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE adapterType) {
-
-        if (adapterType == CommonSpinnerAdapter.ADAPTER_TYPE.MUSIC_CATEGORY) {
-            //set music category spinner data
-            if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY))) {
-                wrapperMusicCategoryData = MusicCategoryData.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY), MusicCategoryData.class);
-
-                spinnerMusicCategoryAdapter.setData(wrapperMusicCategoryData.getMusicCategory());
-                spinnerMusicCategory.setSelection(0);
-            }
-        } else if (adapterType == CommonSpinnerAdapter.ADAPTER_TYPE.CITY) {
-            //set city spinner data
-            if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY))) {
-                wrapperCityWithCountryData = ResponseCountry.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY), ResponseCountry.class);
-                Log.d(TAG, "before setting spinner: " + wrapperCityWithCountryData.toString());
-
-                timeZone = wrapperCityWithCountryData.getAnyTimezone(strTimeZone);
-                spinnerCityAdapter.setData(timeZone.getCity());
-                spinnerCity.setSelection(spinnerCityAdapter.getItemPosition(SessionManager.getStringSetting(HomeActivity.this, SESSION_SELECTED_CITY)));
-            }
-        }
-    }
+//    private void setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE adapterType) {
+//
+//        if (adapterType == CommonSpinnerAdapter.ADAPTER_TYPE.MUSIC_CATEGORY) {
+//            //set music category spinner data
+//            if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY))) {
+//                wrapperMusicCategoryData = MusicCategoryData.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY), MusicCategoryData.class);
+//
+//                spinnerMusicCategoryAdapter.setData(wrapperMusicCategoryData.getMusicCategory());
+//                spinnerMusicCategory.setSelection(0);
+//            }
+//        } else if (adapterType == CommonSpinnerAdapter.ADAPTER_TYPE.CITY) {
+//            //set city spinner data
+//            if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY))) {
+//                wrapperCityWithCountryData = ResponseCountry.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY), ResponseCountry.class);
+//                Log.d(TAG, "before setting spinner: " + wrapperCityWithCountryData.toString());
+//
+//                timeZone = wrapperCityWithCountryData.getAnyTimezone(strTimeZone);
+//                spinnerCityAdapter.setData(timeZone.getCity());
+//                spinnerCity.setSelection(spinnerCityAdapter.getItemPosition(SessionManager.getStringSetting(HomeActivity.this, SESSION_SELECTED_CITY)));
+//            }
+//        }
+//    }
 
     /*****************************
      * Broadcast activity update *
