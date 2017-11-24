@@ -27,9 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by krupenghetiya on 23/06/17.
+ * @author Md. Rashadul Alam
  */
-
 public class FilterFragment extends AAH_FabulousFragment {
 
     static ArrayMap<String, List<String>> applied_filters = new ArrayMap<>();
@@ -67,7 +66,7 @@ public class FilterFragment extends AAH_FabulousFragment {
 //    @Override
 //    public void onCancel(DialogInterface dialog) {
 //        super.onCancel(dialog);
-//        refreshAllSelectedData();
+//        clearAllSelectedData();
 //    }
 
     @Override
@@ -105,7 +104,7 @@ public class FilterFragment extends AAH_FabulousFragment {
         imgbtn_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                refreshAllSelectedData();
+                clearAllSelectedData();
             }
         });
 
@@ -199,21 +198,17 @@ public class FilterFragment extends AAH_FabulousFragment {
                 @Override
                 public void onClick(View v) {
                     //For multiple selection
-//                    if (tv.getTag() != null && tv.getTag().equals("selected")) {
-//                        removeFromMultiSelectedMap(tv);
-//                    } else {
-//                        addToMultiSelectedMap(tv);
-//                    }
+//                    multiChoiceSelectedMap(tv);
 
-//                    //For single selection
+                    //For single selection
                     singleChoiceSelectedMap(filter_category, tv);
                 }
             });
             try {
-                Log.d("k9res", "key: " + filter_category + " |val:" + keys.get(finalI));
-                Log.d("k9res", "applied_filters != null: " + (applied_filters != null));
-                Log.d("k9res", "applied_filters.get(key) != null: " + (applied_filters.get(filter_category) != null));
-                Log.d("k9res", "applied_filters.get(key).contains(keys.get(finalI)): " + (applied_filters.get(filter_category).contains(keys.get(finalI))));
+                Log.d(TAG, "key: " + filter_category + " |val:" + keys.get(finalI));
+                Log.d(TAG, "applied_filters != null: " + (applied_filters != null));
+                Log.d(TAG, "applied_filters.get(key) != null: " + (applied_filters.get(filter_category) != null));
+                Log.d(TAG, "applied_filters.get(key).contains(keys.get(finalI)): " + (applied_filters.get(filter_category).contains(keys.get(finalI))));
             } catch (Exception e) {
 
             }
@@ -269,7 +264,75 @@ public class FilterFragment extends AAH_FabulousFragment {
         return tempSelectedData;
     }
 
-    private void refreshAllSelectedDataExceptCurrent(String filterKey, TextView textView) {
+    private void multiChoiceSelectedMap(TextView textView) {
+        if (textView.getTag().equals("selected")) {
+            unSelectTextView(textView);
+        } else {
+            selectTextView(textView);
+        }
+    }
+
+    private void singleChoiceSelectedMap(String key, TextView textView) {
+        clearAllSelectedDataExceptCurrent(key, textView);
+
+        if (textView.getTag().equals("selected")) {
+            unSelectTextView(textView);
+        } else {
+            selectTextView(textView);
+        }
+    }
+
+    private void selectTextView(TextView textView) {
+        textView.setTag("selected");
+        textView.setBackgroundResource(R.drawable.chip_selected);
+        textView.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
+
+        updateTextView(textView);
+    }
+
+    private void unSelectTextView(TextView textView) {
+        textView.setTag("unselected");
+        textView.setBackgroundResource(R.drawable.chip_unselected);
+        textView.setTextColor(ContextCompat.getColor(getContext(), R.color.filters_header));
+
+        updateTextView(textView);
+    }
+
+    private TextView getTextView(String value) {
+        for (TextView tv : textviews) {
+            if (tv.getText().toString().equalsIgnoreCase(value)) {
+                return tv;
+            }
+        }
+        return null;
+    }
+
+    private int getTextViewPosition(String value) {
+        for (int i = 0; i < textviews.size(); i++) {
+            if (textviews.get(i).getText().toString().equalsIgnoreCase(value)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private TextView updateTextView(TextView textView) {
+        int position = getTextViewPosition(textView.getText().toString());
+        textviews.remove(position);
+        textviews.add(position, textView);
+        return textviews.get(position);
+    }
+
+    private void clearAllSelectedData() {
+        for (TextView tv : textviews) {
+            tv.setTag("unselected");
+            tv.setBackgroundResource(R.drawable.chip_unselected);
+            tv.setTextColor(ContextCompat.getColor(getContext(), R.color.filters_header));
+        }
+        applied_filters.clear();
+    }
+
+    private void clearAllSelectedDataExceptCurrent(String filterKey, TextView textView) {
         List<String> keys = null;
         switch (filterKey) {
             case "state":
@@ -302,7 +365,7 @@ public class FilterFragment extends AAH_FabulousFragment {
         }
     }
 
-    private void refreshAllSelectedData(String filterKey) {
+    private void clearAllSelectedData(String filterKey) {
         List<String> keys = null;
         switch (filterKey) {
             case "state":
@@ -329,136 +392,5 @@ public class FilterFragment extends AAH_FabulousFragment {
                 }
             }
         }
-    }
-
-    private void singleChoiceSelectedMap(String key, TextView textView) {
-        refreshAllSelectedDataExceptCurrent(key, textView);
-
-        if (textView.getTag().equals("selected")) {
-            removeFromMultiSelectedMap(textView);
-        } else {
-            addToMultiSelectedMap(textView);
-        }
-    }
-
-    private void addToMultiSelectedMap(TextView textView) {
-        textView.setTag("selected");
-        textView.setBackgroundResource(R.drawable.chip_selected);
-        textView.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
-
-        updateTextView(textView);
-    }
-
-    private void removeFromMultiSelectedMap(TextView textView) {
-        textView.setTag("unselected");
-        textView.setBackgroundResource(R.drawable.chip_unselected);
-        textView.setTextColor(ContextCompat.getColor(getContext(), R.color.filters_header));
-
-        updateTextView(textView);
-    }
-
-    /*private void addToSingleSelectedMap(String key, String value, TextView textView) {
-
-        //Remove all previous selected data
-        List<String> values = null;
-        switch (key) {
-            case "state":
-                values = ((SearchActivity) getActivity()).getData().getUniqueStateKeys();
-                break;
-            case "category":
-                values = ((SearchActivity) getActivity()).getData().getUniqueCategoryKeys();
-                break;
-        }
-
-        for (int i = 0; i < values.size(); i++) {
-            for (TextView tv : textviews) {
-                if (tv.getText().toString().equalsIgnoreCase(values.get(i)) && !tv.getText().toString().equalsIgnoreCase(textView.getText().toString())) {
-                    if (tv.getTag().equals("selected")) {
-                        removeFromMultiSelectedMap(key, values.get(i), tv);
-                    }
-                }
-            }
-        }
-
-        if (textView.getTag().equals("selected")) {
-            removeFromMultiSelectedMap(key, value, textView);
-        } else {
-            addToMultiSelectedMap(key, value, textView);
-        }
-
-//        for (int i = 0; i < values.size(); i++) {
-//            for (TextView tv : textviews) {
-//                if (tv.getText().toString().equalsIgnoreCase(values.get(i))) {
-//                    Log.d(TAG, "data matched");
-////                    if (tv.getTag() != null && tv.getTag().equals("selected")) {
-////                        Log.d(TAG, "data selected");
-//                    removeFromMultiSelectedMap(key, tv.getText().toString(), tv);
-////                    }
-//                }
-//            }
-//        }
-//
-//        //Input current selected data
-////        if (textView.getTag() != null && textView.getTag().equals("selected")) {
-////            removeFromMultiSelectedMap(key, value, textView);
-////        } else {
-//        addToMultiSelectedMap(key, value, textView);
-////        }
-
-//        Log.d(TAG, "=========================after============================");
-//        if (applied_filters.get(key) != null) {
-//            Log.d(TAG, "selected date size: " + applied_filters.get(key).size() + "");
-//            for (int i = 0; i < applied_filters.get(key).size(); i++) {
-//                Log.d(TAG, "selected data " + i + " " + applied_filters.get(key).get(i));
-//            }
-//        }
-//        Log.d(TAG, "==========================================================");
-    }*/
-
-    private TextView getTextView(String value) {
-        for (TextView tv : textviews) {
-            if (tv.getText().toString().equalsIgnoreCase(value)) {
-                return tv;
-            }
-        }
-        return null;
-    }
-
-    private int getTextViewPosition(String value) {
-        for (int i = 0; i < textviews.size(); i++) {
-            if (textviews.get(i).getText().toString().equalsIgnoreCase(value)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private TextView updateTextView(TextView textView) {
-        int position = getTextViewPosition(textView.getText().toString());
-        textviews.remove(position);
-        textviews.add(position, textView);
-        return textviews.get(position);
-    }
-
-//    private void refreshAllSelectedData(String key, String value) {
-//        for (TextView tv : textviews) {
-//            if (value.equalsIgnoreCase(tv.getText().toString())) {
-//                if (tv.getTag().equals("selected")) {
-//
-//                    TextView updatedTextView = removeFromMultiSelectedMap(key, value, tv);
-//
-//                    updateTextView(updatedTextView);
-//                }
-//            }
-//        }
-//    }
-
-    private void refreshAllSelectedData() {
-        for (TextView tv : textviews) {
-            tv.setTag("unselected");
-            tv.setBackgroundResource(R.drawable.chip_unselected);
-            tv.setTextColor(ContextCompat.getColor(getContext(), R.color.filters_header));
-        }
-        applied_filters.clear();
     }
 }
