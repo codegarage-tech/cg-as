@@ -1,6 +1,7 @@
 package com.reversecoder.mh.fragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -62,6 +63,12 @@ public class FilterFragment extends AAH_FabulousFragment {
             }
         }
     }
+
+//    @Override
+//    public void onCancel(DialogInterface dialog) {
+//        super.onCancel(dialog);
+//        refreshAllSelectedData();
+//    }
 
     @Override
 
