@@ -36,7 +36,7 @@ public class FilterFragment extends AAH_FabulousFragment {
 
     TabLayout tabs_types;
 
-    ImageButton imgbtn_refresh, imgbtn_apply;
+    ImageButton imgbtn_apply;
     SectionsPagerAdapter mAdapter;
 
     private static String TAG = FilterFragment.class.getSimpleName();
@@ -75,8 +75,8 @@ public class FilterFragment extends AAH_FabulousFragment {
         View contentView = View.inflate(getContext(), R.layout.filter_view, null);
 
         RelativeLayout rl_content = (RelativeLayout) contentView.findViewById(R.id.rl_content);
-        LinearLayout ll_buttons = (LinearLayout) contentView.findViewById(R.id.ll_buttons);
-        imgbtn_refresh = (ImageButton) contentView.findViewById(R.id.imgbtn_refresh);
+//        LinearLayout ll_buttons = (LinearLayout) contentView.findViewById(R.id.ll_buttons);
+//        imgbtn_refresh = (ImageButton) contentView.findViewById(R.id.imgbtn_refresh);
         imgbtn_apply = (ImageButton) contentView.findViewById(R.id.imgbtn_apply);
         ViewPager vp_types = (ViewPager) contentView.findViewById(R.id.vp_types);
         tabs_types = (TabLayout) contentView.findViewById(R.id.tabs_types);
@@ -101,12 +101,12 @@ public class FilterFragment extends AAH_FabulousFragment {
                 closeFilter(selectedItem);
             }
         });
-        imgbtn_refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clearAllSelectedData();
-            }
-        });
+//        imgbtn_refresh.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                clearAllSelectedData();
+//            }
+//        });
 
         mAdapter = new SectionsPagerAdapter();
         vp_types.setOffscreenPageLimit(4);
@@ -119,7 +119,7 @@ public class FilterFragment extends AAH_FabulousFragment {
         setPeekHeight(300); // optional; default 400dp
         setCallbacks((Callbacks) getActivity()); //optional; to get back result
         setAnimationListener((AnimationListener) getActivity()); //optional; to get animation callbacks
-        setViewgroupStatic(ll_buttons); // optional; layout to stick at bottom on slide
+//        setViewgroupStatic(ll_buttons); // optional; layout to stick at bottom on slide
         setViewPager(vp_types); //optional; if you use viewpager that has scrollview
         setViewMain(rl_content); //necessary; main bottomsheet view
         setMainContentView(contentView); // necessary; call at end before super

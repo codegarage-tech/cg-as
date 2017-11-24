@@ -48,7 +48,6 @@ import com.yalantis.guillotine.animation.GuillotineAnimation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static com.reversecoder.mh.util.AllConstants.INTENT_FILTER_ACTIVITY_UPDATE;
 import static com.reversecoder.mh.util.AllConstants.INTENT_KEY_OWN_MUSIC_LIST_FROM_MENU;
@@ -201,6 +200,11 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         fabFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (isServiceRunning(getApplicationContext(), MediaService.class)) {
+                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_please_stop_music_before_searching), Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 dialogFrag = FilterFragment.newInstance(appliedFilters);
                 dialogFrag.setParentFab(fabFilter);
@@ -540,53 +544,34 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     @Override
     public void onResult(Object result) {
         Log.d("k9res", "onResult: " + result.toString());
-        appliedFilters = (ArrayMap<String, List<String>>) result;
 
-        if (result.toString().equalsIgnoreCase("swiped_down")) {
-            //do something or nothing
-        } else {
-            if (result != null) {
+        if (result != null) {
+
+            if (result.toString().equalsIgnoreCase("swiped_down")) {
+                //do something or nothing
+            } else {
+
+                appliedFilters = (ArrayMap<String, List<String>>) result;
                 ArrayMap<String, List<String>> appliedFilters = (ArrayMap<String, List<String>>) result;
                 if (appliedFilters.size() != 0) {
 
-                    for (Map.Entry<String, List<String>> entry : appliedFilters.entrySet()) {
-                        Log.d(TAG, "saved filter key: " + entry.getKey());
-                        if (entry.getKey().equalsIgnoreCase("category")) {
-                            if (entry.getValue().size() == 1) {
-                                selectedMusicCategory = entry.getValue().get(0);
-                                Log.d(TAG, "selectedMusicCategory: " + selectedMusicCategory);
-                            }
-                        } else if (entry.getKey().equalsIgnoreCase("state")) {
-                            if (entry.getValue().size() == 1) {
-                                selectedState = entry.getValue().get(0);
-                                Log.d(TAG, "selectedState: " + selectedState);
-                            }
+                    if (appliedFilters.get("category") != null) {
+                        if (appliedFilters.get("category").size() == 1) {
+                            selectedMusicCategory = appliedFilters.get("category").get(0);
+                        } else {
+                            selectedMusicCategory = "";
+                        }
+                    } else {
+                        selectedMusicCategory = "";
+                    }
+
+                    if (appliedFilters.get("state") != null) {
+                        if (appliedFilters.get("state").size() == 1) {
+                            selectedState = appliedFilters.get("state").get(0);
                         }
                     }
 
                     searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
-
-//                    List<Music> filteredList = mData.getAllMusics();
-//                    //iterate over arraymap
-//                    for (Map.Entry<String, List<String>> entry : appliedFilters.entrySet()) {
-//                        Log.d("k9res", "entry.key: " + entry.getKey());
-//                        switch (entry.getKey()) {
-//                            case "category":
-//                                filteredList = mData.getCategoryFilteredMusics(entry.getValue(), filteredList);
-//                                break;
-//                            case "state":
-//                                filteredList = mData.getStateFilteredMusics(entry.getValue(), filteredList);
-//                                break;
-//                        }
-//                    }
-//                    Log.d("k9res", "new size: " + filteredList.size());
-//                    mList.clear();
-//                    mList.addAll(filteredList);
-//                    musicListViewAdapter.setData(new ArrayList<Music>(mList));
-
-                } else {
-//                    mList.addAll(mData.getAllMusics());
-//                    musicListViewAdapter.setData(new ArrayList<Music>(mList));
                 }
             }
             //handle result
