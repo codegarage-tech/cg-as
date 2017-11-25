@@ -29,6 +29,7 @@ import com.reversecoder.mh.util.AllUrls;
 import com.reversecoder.mh.util.AppUtils;
 import com.reversecoder.mh.util.HttpRequestManager;
 
+import static com.reversecoder.mh.util.AllConstants.KEY_INTENT_EXTRA_ZONE;
 import static com.reversecoder.mh.util.AllConstants.SESSION_CITY_WITH_COUNTRY;
 import static com.reversecoder.mh.util.AllConstants.SESSION_MUSIC_CATEGORY;
 import static com.reversecoder.mh.util.AllConstants.SESSION_SELECTED_CITY;
@@ -49,6 +50,8 @@ public class ZoneActivity extends AppCompatActivity {
     ImageView ivBack;
     ResponseCountry wrapperCityWithCountryData;
 
+    boolean isFromMenu = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +62,11 @@ public class ZoneActivity extends AppCompatActivity {
     }
 
     private void initZoneUI() {
+
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra(KEY_INTENT_EXTRA_ZONE, false)) {
+            isFromMenu = intent.getBooleanExtra(KEY_INTENT_EXTRA_ZONE, false);
+        }
 
         tvTitle = (TextView) findViewById(R.id.text_title);
         tvTitle.setText(getString(R.string.title_activity_zone));
@@ -81,13 +89,13 @@ public class ZoneActivity extends AppCompatActivity {
         }
     }
 
-    private void setDefaultCityWithCountry(){
+    private void setDefaultCityWithCountry() {
         if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(ZoneActivity.this, SESSION_CITY_WITH_COUNTRY))) {
             SessionManager.setStringSetting(ZoneActivity.this, SESSION_CITY_WITH_COUNTRY, AllConstants.getDefaultCountryData());
         }
     }
 
-    private void setDefaultMusicCategory(){
+    private void setDefaultMusicCategory() {
         if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(ZoneActivity.this, SESSION_MUSIC_CATEGORY))) {
             SessionManager.setStringSetting(ZoneActivity.this, SESSION_MUSIC_CATEGORY, AllConstants.getDefaultMusicCategoryData());
         }
@@ -174,7 +182,7 @@ public class ZoneActivity extends AppCompatActivity {
 
                     dialog.dismiss();
 
-                    goHome();
+                    goNext();
 
                 } else {
                     Toast.makeText(ZoneActivity.this, getString(R.string.toast_please_select_any_city), Toast.LENGTH_SHORT).show();
@@ -193,10 +201,18 @@ public class ZoneActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void goHome() {
-        Intent intent = new Intent(ZoneActivity.this, HomeActivity.class);
-        startActivity(intent);
-        finish();
+    private void goNext() {
+        Intent intentNext = null;
+        if (isFromMenu) {
+            intentNext = new Intent();
+            intentNext.putExtra(KEY_INTENT_EXTRA_ZONE, true);
+            setResult(RESULT_OK, intentNext);
+            finish();
+        } else {
+            intentNext = new Intent(ZoneActivity.this, HomeActivity.class);
+            startActivity(intentNext);
+            finish();
+        }
     }
 
     public class GetCityWithCountry extends AsyncTask<String, String, HttpRequestManager.HttpResponse> {

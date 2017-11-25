@@ -53,6 +53,9 @@ import static com.reversecoder.mh.util.AllConstants.INTENT_FILTER_ACTIVITY_UPDAT
 import static com.reversecoder.mh.util.AllConstants.INTENT_KEY_OWN_MUSIC_LIST_FROM_MENU;
 import static com.reversecoder.mh.util.AllConstants.INTENT_KEY_OWN_MUSIC_LIST_ITEM_USER;
 import static com.reversecoder.mh.util.AllConstants.KEY_INTENT_EXTRA_MUSIC_UPDATE;
+import static com.reversecoder.mh.util.AllConstants.KEY_INTENT_EXTRA_ZONE;
+import static com.reversecoder.mh.util.AllConstants.REQUEST_CODE_PAYPAL;
+import static com.reversecoder.mh.util.AllConstants.REQUEST_CODE_ZONE;
 import static com.reversecoder.mh.util.AllConstants.SESSION_CITY_WITH_COUNTRY;
 import static com.reversecoder.mh.util.AllConstants.SESSION_IS_USER_LOGGED_IN;
 import static com.reversecoder.mh.util.AllConstants.SESSION_MUSIC_CATEGORY;
@@ -74,6 +77,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     ImageView contentHamburger;
     GuillotineAnimation guillotineAnimation;
     TextView tvTitle;
+    TextView tvNoInfoFound;
     LinearLayout llLogOut, llHome, llProfile, llOwnMusic, llBoughtMusic, llZone;
     private static final String TAG = HomeActivity.class.getSimpleName();
     //    Spinner spinnerMusicCategory, spinnerCity;
@@ -112,6 +116,40 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     private void initUI() {
 
         //Set data from session
+        initSessionData();
+
+        //Initialize views
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        fabFilter = (FloatingActionButton) findViewById(R.id.fab_filter);
+        root = (FrameLayout) findViewById(R.id.root);
+        contentHamburger = (ImageView) findViewById(R.id.content_hamburger);
+        tvTitle = (TextView) findViewById(R.id.text_title);
+        tvNoInfoFound = (TextView) findViewById(R.id.tv_no_info_found);
+
+        contentHamburger.setVisibility(View.VISIBLE);
+        tvTitle.setText(getString(R.string.title_activity_home));
+
+        initMenu();
+
+        llLogOut = (LinearLayout) findViewById(R.id.ll_logout);
+        llHome = (LinearLayout) findViewById(R.id.ll_home);
+        llProfile = (LinearLayout) findViewById(R.id.ll_profile);
+        llOwnMusic = (LinearLayout) findViewById(R.id.ll_own_music);
+        llBoughtMusic = (LinearLayout) findViewById(R.id.ll_bought_music);
+        llZone = (LinearLayout) findViewById(R.id.ll_zone);
+
+//        btnConfirm = (Button) findViewById(R.id.btn_confirm);
+        lvMusic = (ListView) findViewById(R.id.lv_music);
+
+        musicListViewAdapter = new MusicListViewAdapter(HomeActivity.this);
+        lvMusic.setAdapter(musicListViewAdapter);
+
+//        initSpinnerData();
+        searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
+    }
+
+    private void initSessionData() {
+
         if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_USER_DATA))) {
             Log.d(TAG, "Session data: " + SessionManager.getStringSetting(HomeActivity.this, SESSION_USER_DATA));
             user = UserData.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_USER_DATA), UserData.class);
@@ -145,34 +183,6 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
                 appliedFilters.put(currentFilterKey, temp);
             }
         }
-
-        //Initialize views
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        fabFilter = (FloatingActionButton) findViewById(R.id.fab_filter);
-        root = (FrameLayout) findViewById(R.id.root);
-        contentHamburger = (ImageView) findViewById(R.id.content_hamburger);
-        tvTitle = (TextView) findViewById(R.id.text_title);
-
-        contentHamburger.setVisibility(View.VISIBLE);
-        tvTitle.setText(getString(R.string.title_activity_home));
-
-        initMenu();
-
-        llLogOut = (LinearLayout) findViewById(R.id.ll_logout);
-        llHome = (LinearLayout) findViewById(R.id.ll_home);
-        llProfile = (LinearLayout) findViewById(R.id.ll_profile);
-        llOwnMusic = (LinearLayout) findViewById(R.id.ll_own_music);
-        llBoughtMusic = (LinearLayout) findViewById(R.id.ll_bought_music);
-        llZone = (LinearLayout) findViewById(R.id.ll_zone);
-
-//        btnConfirm = (Button) findViewById(R.id.btn_confirm);
-        lvMusic = (ListView) findViewById(R.id.lv_music);
-
-        musicListViewAdapter = new MusicListViewAdapter(HomeActivity.this);
-        lvMusic.setAdapter(musicListViewAdapter);
-
-//        initSpinnerData();
-        searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
     }
 
     private void initMenu() {
@@ -290,7 +300,8 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
             @Override
             public void onSingleClick(View view) {
                 Intent zoneIntent = new Intent(HomeActivity.this, ZoneActivity.class);
-                startActivity(zoneIntent);
+                zoneIntent.putExtra(KEY_INTENT_EXTRA_ZONE, true);
+                startActivityForResult(zoneIntent, REQUEST_CODE_ZONE);
             }
         });
 
@@ -457,12 +468,26 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
 //                    Log.d(TAG, "success response from session: " + SessionManager.getStringSetting(mContext, SESSION_MUSIC_LIST));
 
                     musicListViewAdapter.setData(responseData.getData());
+                    visibleMusicList(true);
                 } else {
-                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_no_info_found), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_no_info_found), Toast.LENGTH_SHORT).show();
+
+                    musicListViewAdapter.setData(new ArrayList<Music>());
+                    visibleMusicList(false);
                 }
             } else {
                 Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_could_not_retrieve_info), Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    private void visibleMusicList(boolean isListView) {
+        if (isListView) {
+            tvNoInfoFound.setVisibility(View.GONE);
+            lvMusic.setVisibility(View.VISIBLE);
+        } else {
+            tvNoInfoFound.setVisibility(View.VISIBLE);
+            lvMusic.setVisibility(View.GONE);
         }
     }
 
@@ -532,8 +557,27 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (musicListViewAdapter != null) {
-            musicListViewAdapter.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_PAYPAL: {
+                if (musicListViewAdapter != null) {
+                    musicListViewAdapter.onActivityResult(requestCode, resultCode, data);
+                }
+            }
+            break;
+
+            case REQUEST_CODE_ZONE: {
+
+                Log.d(TAG, "onActivityResult" + " REQUEST_CODE_ZONE");
+                if (resultCode == RESULT_OK) {
+
+                    Log.d(TAG, "onActivityResult" + " RESULT_OK");
+
+                    initSessionData();
+
+                    searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
+                }
+            }
+            break;
         }
     }
 

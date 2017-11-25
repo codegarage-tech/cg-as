@@ -12,11 +12,13 @@ public class AllConstants {
 
     //Request code
     public static final int REQUEST_CODE_PAYPAL = 420;
+    public static final int REQUEST_CODE_ZONE = 4200;
 
     //Intent extra
     public static final String KEY_INTENT_EXTRA_ACTION = "KEY_INTENT_EXTRA_ACTION";
     public static final String KEY_INTENT_EXTRA_MUSIC = "KEY_INTENT_EXTRA_MUSIC";
     public static final String KEY_INTENT_EXTRA_MUSIC_UPDATE = "KEY_INTENT_EXTRA_MUSIC_UPDATE";
+    public static final String KEY_INTENT_EXTRA_ZONE = "KEY_INTENT_EXTRA_ZONE";
     public static final int EXTRA_ACTION_START = 0;
     public static final int EXTRA_ACTION_STOP = 1;
 
