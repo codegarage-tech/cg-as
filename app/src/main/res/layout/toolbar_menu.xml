@@ -11,7 +11,7 @@
         style="@style/ImageView.Hamburger"
         android:src="@drawable/ic_back" />
 
-    <com.reversecoder.mh.view.CanaroTextView
+    <com.rc.abovesound.view.CanaroTextView
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
