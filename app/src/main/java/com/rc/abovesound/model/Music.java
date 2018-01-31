@@ -8,6 +8,7 @@ import android.os.Parcelable;
  */
 public class Music extends ResponseBase implements Parcelable {
 
+    private long primaryKey = -1;
     private String music_title = "";
     private String description = "";
     private String state_name = "";
@@ -26,6 +27,7 @@ public class Music extends ResponseBase implements Parcelable {
     private int isPlaying = 0;
 
     public Music(String music_title, String description, String state_name, String music_category, String file_path, String is_paid, String price, String user_id, String first_name, String last_name, String id, String full_paid_price, String profile_image) {
+//        this.primaryKey = RandomManager.getRandom(6);
         this.music_title = music_title;
         this.description = description;
         this.state_name = state_name;
@@ -40,6 +42,15 @@ public class Music extends ResponseBase implements Parcelable {
         this.full_paid_price = full_paid_price;
         this.profile_image = profile_image;
     }
+
+    public long getPrimaryKey() {
+        primaryKey = (getFile_path() + getMusic_title()).hashCode();
+        return primaryKey;
+    }
+
+//    public void setPrimaryKey(long primaryKey) {
+//        this.primaryKey = primaryKey;
+//    }
 
     public String getMusic_title() {
         return music_title;
@@ -172,6 +183,7 @@ public class Music extends ResponseBase implements Parcelable {
     @Override
     public String toString() {
         return "{" +
+                "primaryKey='" + getPrimaryKey() + '\'' +
                 "music_title='" + music_title + '\'' +
                 ", description='" + description + '\'' +
                 ", state_name='" + state_name + '\'' +
@@ -199,6 +211,7 @@ public class Music extends ResponseBase implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(getPrimaryKey());
         dest.writeString(music_title);
         dest.writeString(description);
         dest.writeString(state_name);
@@ -231,6 +244,7 @@ public class Music extends ResponseBase implements Parcelable {
 
     // "De-parcel object
     public Music(Parcel in) {
+        primaryKey = in.readLong();
         music_title = in.readString();
         description = in.readString();
         state_name = in.readString();

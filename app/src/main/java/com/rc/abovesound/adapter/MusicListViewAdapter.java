@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+import com.rc.abovesound.R;
 import com.rc.abovesound.activity.OwnMusicListActivity;
 import com.rc.abovesound.model.Music;
 import com.rc.abovesound.model.UserData;
@@ -25,7 +26,6 @@ import com.rc.abovesound.util.AppUtils;
 import com.reversecoder.library.event.OnSingleClickListener;
 import com.reversecoder.library.network.NetworkManager;
 import com.reversecoder.library.storage.SessionManager;
-import com.rc.abovesound.R;
 
 import java.util.ArrayList;
 
@@ -65,13 +65,12 @@ public class MusicListViewAdapter extends BaseAdapter {
 
     public int getItemPosition(Music music) {
         for (int i = 0; i < mData.size(); i++) {
-            if ((mData.get(i)).getMusic_title().contains(music.getMusic_title())) {
+            if (mData.get(i).getPrimaryKey() == music.getPrimaryKey()) {
                 return i;
             }
         }
         return -1;
     }
-
 
     @Override
     public int getCount() {
@@ -85,15 +84,16 @@ public class MusicListViewAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return getItem(position).getPrimaryKey();
     }
 
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
 
         View vi = convertView;
-        if (convertView == null)
+        if (convertView == null) {
             vi = inflater.inflate(R.layout.list_row_music, null);
+        }
 
         final Music mMusicFile = getItem(position);
 

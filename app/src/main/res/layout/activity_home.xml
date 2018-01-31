@@ -20,14 +20,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_no_info_found"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:gravity="center"
                 android:text="@string/toast_no_info_found"
                 android:textColor="@color/black"
@@ -37,10 +37,9 @@
 
             <ListView
                 android:id="@+id/lv_music"
+                android:divider="@null"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@color/colorPrimaryDark"
-                android:dividerHeight="1dp"
                 android:visibility="visible" />
 
         </LinearLayout>
