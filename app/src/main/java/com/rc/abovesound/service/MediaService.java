@@ -123,9 +123,12 @@ public class MediaService extends Service {
                     music.setIsPlaying(AllConstants.MEDIA_PLAYER_RUNNING);
                     music.setTotalTime((int) audioPlayer.getDuration());
                     music.setLastPlayed((int) audioPlayer.getCurrentPosition());
-//                    if ((int) audioPlayer.getDuration() > 0) {
-//                        music.setProgress((int) (((int) audioPlayer.getCurrentPosition() / (int) audioPlayer.getDuration()) * 100));
-//                    }
+                    if ((int) audioPlayer.getDuration() > 0) {
+                        Log.d("UpdateTest: ","getCurrentPosition: "+audioPlayer.getCurrentPosition()+"");
+                        Log.d("UpdateTest: ","getDuration: "+audioPlayer.getDuration()+"");
+                        music.setProgress((int) (((float) ((int)audioPlayer.getCurrentPosition()) / ((int)audioPlayer.getDuration())) * 100));
+                        Log.d("UpdateTest: ",music.getProgress()+"");
+                    }
 
                     sendUpdateToActivity(music);
 

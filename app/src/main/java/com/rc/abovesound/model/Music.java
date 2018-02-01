@@ -2,6 +2,8 @@ package com.rc.abovesound.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.gson.annotations.Expose;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
@@ -13,10 +15,11 @@ import com.reversecoder.library.random.RandomManager;
 public class Music extends ResponseBase implements Parcelable {
 
     private long primaryKey = -1;
-//    private static long mId = -1;
-
-    private volatile Integer progress = 0;
-    private transient CircularProgressBar circularProgressBar = null;
+    private int progress = 0;
+    private transient CircularProgressBar progressBar = null;
+    private transient ImageView equalizer;
+    private transient TextView spentTime = null;
+    private transient ImageView playPauseButton = null;
 
     private String music_title = "";
     private String description = "";
@@ -36,17 +39,11 @@ public class Music extends ResponseBase implements Parcelable {
     private int isPlaying = 0;
 
     public Music() {
-//        this.primaryKey = mId++;
         this.primaryKey = RandomManager.getRandom(10000000);
-        this.progress = 0;
-        this.circularProgressBar = null;
     }
 
     public Music(String music_title, String description, String state_name, String music_category, String file_path, String is_paid, String price, String user_id, String first_name, String last_name, String id, String full_paid_price, String profile_image) {
-//        this.primaryKey = mId++;
         this.primaryKey = RandomManager.getRandom(10000000);
-        this.progress = 0;
-        this.circularProgressBar = null;
 
         this.music_title = music_title;
         this.description = description;
@@ -72,7 +69,7 @@ public class Music extends ResponseBase implements Parcelable {
 //        this.primaryKey = primaryKey;
 //    }
 
-    public Integer getProgress() {
+    public int getProgress() {
         return progress;
     }
 
@@ -80,12 +77,40 @@ public class Music extends ResponseBase implements Parcelable {
         this.progress = progress;
     }
 
-    public CircularProgressBar getCircularProgressBar() {
-        return circularProgressBar;
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 
-    public void setCircularProgressBar(CircularProgressBar circularProgressBar) {
-        this.circularProgressBar = circularProgressBar;
+    public CircularProgressBar getProgressBar() {
+        return progressBar;
+    }
+
+    public ImageView getEqualizer() {
+        return equalizer;
+    }
+
+    public void setEqualizer(ImageView equalizer) {
+        this.equalizer = equalizer;
+    }
+
+    public void setProgressBar(CircularProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
+
+    public TextView getSpentTime() {
+        return spentTime;
+    }
+
+    public void setSpentTime(TextView spentTime) {
+        this.spentTime = spentTime;
+    }
+
+    public ImageView getPlayPauseButton() {
+        return playPauseButton;
+    }
+
+    public void setPlayPauseButton(ImageView playPauseButton) {
+        this.playPauseButton = playPauseButton;
     }
 
     public String getMusic_title() {
