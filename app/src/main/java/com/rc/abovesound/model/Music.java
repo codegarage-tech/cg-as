@@ -3,12 +3,21 @@ package com.rc.abovesound.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+import com.reversecoder.library.random.RandomManager;
+
 /**
  * Md. Rashadul Alam
  */
 public class Music extends ResponseBase implements Parcelable {
 
     private long primaryKey = -1;
+//    private static long mId = -1;
+
+    private volatile Integer progress = 0;
+    private transient CircularProgressBar circularProgressBar = null;
+
     private String music_title = "";
     private String description = "";
     private String state_name = "";
@@ -26,8 +35,19 @@ public class Music extends ResponseBase implements Parcelable {
     private int lastPlayed = -1;
     private int isPlaying = 0;
 
+    public Music() {
+//        this.primaryKey = mId++;
+        this.primaryKey = RandomManager.getRandom(10000000);
+        this.progress = 0;
+        this.circularProgressBar = null;
+    }
+
     public Music(String music_title, String description, String state_name, String music_category, String file_path, String is_paid, String price, String user_id, String first_name, String last_name, String id, String full_paid_price, String profile_image) {
-//        this.primaryKey = RandomManager.getRandom(6);
+//        this.primaryKey = mId++;
+        this.primaryKey = RandomManager.getRandom(10000000);
+        this.progress = 0;
+        this.circularProgressBar = null;
+
         this.music_title = music_title;
         this.description = description;
         this.state_name = state_name;
@@ -44,13 +64,29 @@ public class Music extends ResponseBase implements Parcelable {
     }
 
     public long getPrimaryKey() {
-        primaryKey = (getFile_path() + getMusic_title()).hashCode();
+//        primaryKey = (getFile_path() + getMusic_title()).hashCode();
         return primaryKey;
     }
 
 //    public void setPrimaryKey(long primaryKey) {
 //        this.primaryKey = primaryKey;
 //    }
+
+    public Integer getProgress() {
+        return progress;
+    }
+
+    public void setProgress(Integer progress) {
+        this.progress = progress;
+    }
+
+    public CircularProgressBar getCircularProgressBar() {
+        return circularProgressBar;
+    }
+
+    public void setCircularProgressBar(CircularProgressBar circularProgressBar) {
+        this.circularProgressBar = circularProgressBar;
+    }
 
     public String getMusic_title() {
         return music_title;
@@ -184,7 +220,8 @@ public class Music extends ResponseBase implements Parcelable {
     public String toString() {
         return "{" +
                 "primaryKey='" + getPrimaryKey() + '\'' +
-                "music_title='" + music_title + '\'' +
+                ", progress='" + progress + '\'' +
+                ", music_title='" + music_title + '\'' +
                 ", description='" + description + '\'' +
                 ", state_name='" + state_name + '\'' +
                 ", music_category='" + music_category + '\'' +
@@ -212,6 +249,7 @@ public class Music extends ResponseBase implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(getPrimaryKey());
+        dest.writeInt(progress);
         dest.writeString(music_title);
         dest.writeString(description);
         dest.writeString(state_name);
@@ -245,6 +283,7 @@ public class Music extends ResponseBase implements Parcelable {
     // "De-parcel object
     public Music(Parcel in) {
         primaryKey = in.readLong();
+        progress = in.readInt();
         music_title = in.readString();
         description = in.readString();
         state_name = in.readString();
