@@ -52,6 +52,7 @@ dependencies {
     compile project(":ExoMedia")
     compile project(":musicindicator")
     compile project(":fabulousfilter")
+    compile project(":reminder")
 
     compile 'com.reversecoder.permission:rc-permission:1.0.1-SNAPSHOT'
     compile 'com.reversecoder.library:rc-library:1.0.1-SNAPSHOT'
