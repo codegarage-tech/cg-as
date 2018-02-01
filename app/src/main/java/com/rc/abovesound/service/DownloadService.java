@@ -11,13 +11,13 @@ import android.util.Log;
 
 import com.devbrackets.android.exomedia.AudioPlayer;
 import com.devbrackets.android.exomedia.listener.OnCompletionListener;
-import com.rc.abovesound.model.Music;
+import com.rc.abovesound.model.DownloadInfo;
 import com.rc.abovesound.util.AllConstants;
 import com.rc.abovesound.util.AppUtils;
 
-public class MediaServiceNew extends Service {
+public class DownloadService extends Service {
 
-    Music music = null;
+    DownloadInfo downloadInfo = null;
     AudioPlayer audioPlayer = null;
     Intent broadcastIntentActivityUpdate;
     private Handler handler = new Handler();
@@ -37,27 +37,27 @@ public class MediaServiceNew extends Service {
             switch (action) {
                 case AllConstants.EXTRA_ACTION_START: {
                     if (intent.getParcelableExtra(AllConstants.KEY_INTENT_EXTRA_MUSIC) != null) {
-                        music = intent.getParcelableExtra(AllConstants.KEY_INTENT_EXTRA_MUSIC);
-                        Log.d("From service: ", music.toString());
+                        downloadInfo = intent.getParcelableExtra(AllConstants.KEY_INTENT_EXTRA_MUSIC);
+                        Log.d("From service: ", downloadInfo.toString());
 
                         audioPlayer = new AudioPlayer(getApplicationContext());
                         audioPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                        audioPlayer.setDataSource(Uri.parse(music.getFile_path()));
+                        audioPlayer.setDataSource(Uri.parse(downloadInfo.getFilePath()));
 
-                        //Set music listener
+                        //Set downloadInfo listener
                         audioPlayer.setOnCompletionListener(new OnCompletionListener() {
                             @Override
                             public void onCompletion() {
                                 if (audioPlayer != null) {
                                     audioPlayer.pause();
 
-                                    music.setIsPlaying(AllConstants.MEDIA_PLAYBACK_FINISHED);
-                                    sendUpdateToActivity(music);
+//                                    downloadInfo.setIsPlaying(AllConstants.MEDIA_PLAYBACK_FINISHED);
+                                    sendUpdateToActivity(downloadInfo);
                                 }
                             }
                         });
 
-                        //Start music
+                        //Start downloadInfo
                         audioPlayer.prepareAsync();
                         audioPlayer.start();
 
@@ -94,8 +94,8 @@ public class MediaServiceNew extends Service {
 
     private void destroyService() {
         if (audioPlayer.isPlaying()) {
-            music.setIsPlaying(AllConstants.MEDIA_PLAYBACK_STOPPED);
-            sendUpdateToActivity(music);
+//            downloadInfo.setIsPlaying(AllConstants.MEDIA_PLAYBACK_STOPPED);
+            sendUpdateToActivity(downloadInfo);
 
             audioPlayer.stopPlayback();
             audioPlayer.release();
@@ -106,7 +106,7 @@ public class MediaServiceNew extends Service {
         handler = null;
     }
 
-    private void sendUpdateToActivity(Music music) {
+    private void sendUpdateToActivity(DownloadInfo music) {
         broadcastIntentActivityUpdate.putExtra(AllConstants.KEY_INTENT_EXTRA_MUSIC_UPDATE, music);
         sendBroadcast(broadcastIntentActivityUpdate);
     }
@@ -114,23 +114,28 @@ public class MediaServiceNew extends Service {
     private void updateSeekProgress() {
         if (audioPlayer != null) {
             if (audioPlayer.isPlaying()) {
-                if (music.getIs_paid().equalsIgnoreCase("1") && AppUtils.isPlayedFor(audioPlayer.getCurrentPosition(), AllConstants.DEFAULT_PAID_PLAYBACK)) {
-                    audioPlayer.pause();
+//                if (downloadInfo.getIs_paid().equalsIgnoreCase("1") && AppUtils.isPlayedFor(audioPlayer.getCurrentPosition(), AllConstants.DEFAULT_PAID_PLAYBACK)) {
+//                    audioPlayer.pause();
+//
+//                    downloadInfo.setIsPlaying(AllConstants.MEDIA_PLAYBACK_PAID);
+//                    sendUpdateToActivity(downloadInfo);
+//                } else {
+//                    downloadInfo.setIsPlaying(AllConstants.MEDIA_PLAYER_RUNNING);
+//                    downloadInfo.setTotalTime((int) audioPlayer.getDuration());
+//                    downloadInfo.setLastPlayed((int) audioPlayer.getCurrentPosition());
+                    if ((int) audioPlayer.getDuration() > 0) {
+                        Log.d("UpdateTest: ","getCurrentPosition: "+audioPlayer.getCurrentPosition()+"");
+                        Log.d("UpdateTest: ","getDuration: "+audioPlayer.getDuration()+"");
+                        downloadInfo.setProgress((int) (((float) ((int)audioPlayer.getCurrentPosition()) / ((int)audioPlayer.getDuration())) * 100));
+                        Log.d("UpdateTest: ",downloadInfo.getProgress()+"");
+                    }
 
-                    music.setIsPlaying(AllConstants.MEDIA_PLAYBACK_PAID);
-                    sendUpdateToActivity(music);
-                } else {
-                    music.setIsPlaying(AllConstants.MEDIA_PLAYER_RUNNING);
-                    music.setTotalTime((int) audioPlayer.getDuration());
-                    music.setLastPlayed((int) audioPlayer.getCurrentPosition());
-                    music.setProgress((int) (((int) audioPlayer.getCurrentPosition() / (int) audioPlayer.getDuration()) * 100));
-
-                    sendUpdateToActivity(music);
+                    sendUpdateToActivity(downloadInfo);
 
                     handler.postDelayed(runnableUpdate, 1000);
-                }
+//                }
             } else {
-                music.setIsPlaying(AllConstants.MEDIA_PLAYBACK_STOPPED);
+//                downloadInfo.setIsPlaying(AllConstants.MEDIA_PLAYBACK_STOPPED);
             }
         }
     }

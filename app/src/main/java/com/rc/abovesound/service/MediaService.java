@@ -44,7 +44,7 @@ public class MediaService extends Service {
                         audioPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                         audioPlayer.setDataSource(Uri.parse(music.getFile_path()));
 
-                        //Set music listener
+                        //Set downloadInfo listener
                         audioPlayer.setOnCompletionListener(new OnCompletionListener() {
                             @Override
                             public void onCompletion() {
@@ -57,7 +57,7 @@ public class MediaService extends Service {
                             }
                         });
 
-                        //Start music
+                        //Start downloadInfo
                         audioPlayer.prepareAsync();
                         audioPlayer.start();
 
@@ -123,9 +123,9 @@ public class MediaService extends Service {
                     music.setIsPlaying(AllConstants.MEDIA_PLAYER_RUNNING);
                     music.setTotalTime((int) audioPlayer.getDuration());
                     music.setLastPlayed((int) audioPlayer.getCurrentPosition());
-                    if ((int) audioPlayer.getDuration() > 0) {
-                        music.setProgress((int) (((int) audioPlayer.getCurrentPosition() / (int) audioPlayer.getDuration()) * 100));
-                    }
+//                    if ((int) audioPlayer.getDuration() > 0) {
+//                        music.setProgress((int) (((int) audioPlayer.getCurrentPosition() / (int) audioPlayer.getDuration()) * 100));
+//                    }
 
                     sendUpdateToActivity(music);
 
