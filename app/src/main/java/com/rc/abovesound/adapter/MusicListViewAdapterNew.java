@@ -132,16 +132,16 @@ public class MusicListViewAdapterNew extends BaseAdapter {
         } else {
             holder = (ViewHolder) row.getTag();
 
-            holder.music.setCircularProgressBar(null);
+//            holder.music.setCircularProgressBar(null);
             holder.music = mMusicFile;
-            holder.music.setCircularProgressBar(holder.circularProgressBar);
+//            holder.music.setCircularProgressBar(holder.circularProgressBar);
         }
 
         holder.musicName.setText(mMusicFile.getMusic_title());
         holder.musicDescription.setText(AppUtils.getUnderlinedText(mMusicFile.getFirst_name() + " " + mMusicFile.getLast_name()));
 
-        holder.circularProgressBar.setProgress(mMusicFile.getProgress());
-        mMusicFile.setCircularProgressBar(holder.circularProgressBar);
+//        holder.circularProgressBar.setProgress(mMusicFile.getProgress());
+//        mMusicFile.setCircularProgressBar(holder.circularProgressBar);
 
 //        if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYER_RUNNING) {
 //            Drawable stopDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_stop);
@@ -197,19 +197,19 @@ public class MusicListViewAdapterNew extends BaseAdapter {
 //            Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_buy_song_for_listening_full_song), Toast.LENGTH_LONG).show();
 //        }
 //
-//        if (user.getId().equalsIgnoreCase(mMusicFile.getUser_id())) {
-//            holder.musicFreePaid.setVisibility(View.GONE);
-//
-//            //Set music as free
-//            mMusicFile.setIs_paid("0");
-//        } else {
-//            if (mMusicFile.getIs_paid().equalsIgnoreCase("1")) {
-//                holder.musicFreePaid.setVisibility(View.VISIBLE);
-//                holder.musicFreePaid.setText(AppUtils.getUnderlinedText("$" + mMusicFile.getPrice()));
-//            } else {
-//                holder.musicFreePaid.setVisibility(View.GONE);
-//            }
-//        }
+        if (user.getId().equalsIgnoreCase(mMusicFile.getUser_id())) {
+            holder.musicFreePaid.setVisibility(View.GONE);
+
+            //Set music as free
+            mMusicFile.setIs_paid("0");
+        } else {
+            if (mMusicFile.getIs_paid().equalsIgnoreCase("1")) {
+                holder.musicFreePaid.setVisibility(View.VISIBLE);
+                holder.musicFreePaid.setText(AppUtils.getUnderlinedText("$" + mMusicFile.getPrice()));
+            } else {
+                holder.musicFreePaid.setVisibility(View.GONE);
+            }
+        }
 //
 //        holder.musicFreePaid.setOnClickListener(new OnSingleClickListener() {
 //            @Override

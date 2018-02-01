@@ -42,18 +42,6 @@ public class MusicListViewAdapter extends BaseAdapter {
     private String TAG = MusicListViewAdapter.class.getSimpleName();
     private UserData user;
 
-    private static class ViewHolder {
-        TextView musicName;
-        TextView musicDescription;
-        TextView musicSpentTime;
-        TextView musicFreePaid;
-        ImageView musicPlayStop;
-        ImageView musicEqualizer;
-        CircularProgressBar circularProgressBar;
-
-        Music music;
-    }
-
     public MusicListViewAdapter(Activity activity) {
         mActivity = activity;
         mData = new ArrayList<Music>();
@@ -77,14 +65,7 @@ public class MusicListViewAdapter extends BaseAdapter {
 
     public int getItemPosition(Music music) {
         for (int i = 0; i < mData.size(); i++) {
-            if ((mData.get(i).getPrimaryKey() == music.getPrimaryKey()
-//                    && (mData.get(i).getFile_path().equalsIgnoreCase(music.getFile_path()))
-
-            )) {
-                Log.d(TAG, "getItemPosition==================================================");
-                Log.d(TAG, "getItemPositionListview: " + mData.get(i).toString());
-                Log.d(TAG, "getItemPositionUpdate: " + music.toString());
-                Log.d(TAG, "getItemPosition==================================================");
+            if (mData.get(i).getPrimaryKey() == music.getPrimaryKey()) {
                 return i;
             }
         }
@@ -109,51 +90,30 @@ public class MusicListViewAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
 
-        View row = convertView;
-        final Music mMusicFile = getItem(position);
-        ViewHolder holder = null;
-
-        if (row == null) {
-            row = inflater.inflate(R.layout.list_row_music, parent, false);
-
-            holder = new ViewHolder();
-
-            holder.musicName = (TextView) row.findViewById(R.id.tv_music_name);
-            holder.musicDescription = (TextView) row.findViewById(R.id.tv_music_description);
-            holder.musicSpentTime = (TextView) row.findViewById(R.id.tv_spent_time);
-            holder.musicFreePaid = (TextView) row.findViewById(R.id.tv_music_free_paid);
-            holder.musicPlayStop = (ImageView) row.findViewById(R.id.iv_music_play_stop);
-            holder.musicEqualizer = (ImageView) row.findViewById(R.id.iv_equalizer);
-            holder.circularProgressBar = (CircularProgressBar) row.findViewById(R.id.cp_streaming_music);
-
-            holder.music = mMusicFile;
-
-            row.setTag(holder);
-        } else {
-            holder = (ViewHolder) row.getTag();
-
-            holder.music.setCircularProgressBar(null);
-            holder.music = mMusicFile;
-            holder.music.setCircularProgressBar(holder.circularProgressBar);
+        View vi = convertView;
+        if (convertView == null) {
+            vi = inflater.inflate(R.layout.list_row_music, null);
         }
 
-//        TextView musicName = (TextView) row.findViewById(R.id.tv_music_name);
-//        TextView musicDescription = (TextView) row.findViewById(R.id.tv_music_description);
-//        TextView musicSpentTime = (TextView) row.findViewById(R.id.tv_spent_time);
-//        TextView musicFreePaid = (TextView) row.findViewById(R.id.tv_music_free_paid);
-//        ImageView musicPlayStop = (ImageView) row.findViewById(R.id.iv_music_play_stop);
-//        ImageView musicEqualizer = (ImageView) row.findViewById(R.id.iv_equalizer);
-//        CircularProgressBar circularProgressBar = (CircularProgressBar) row.findViewById(R.id.cp_streaming_music);
+        final Music mMusicFile = getItem(position);
 
-        holder.musicName.setText(mMusicFile.getMusic_title());
-        holder.musicDescription.setText(AppUtils.getUnderlinedText(mMusicFile.getFirst_name() + " " + mMusicFile.getLast_name()));
+        TextView musicName = (TextView) vi.findViewById(R.id.tv_music_name);
+        TextView musicDescription = (TextView) vi.findViewById(R.id.tv_music_description);
+        TextView musicSpentTime = (TextView) vi.findViewById(R.id.tv_spent_time);
+        TextView musicFreePaid = (TextView) vi.findViewById(R.id.tv_music_free_paid);
+        ImageView musicPlayStop = (ImageView) vi.findViewById(R.id.iv_music_play_stop);
+        ImageView musicEqualizer = (ImageView) vi.findViewById(R.id.iv_equalizer);
+        CircularProgressBar circularProgressBar = (CircularProgressBar) vi.findViewById(R.id.cp_streaming_music);
+
+        musicName.setText(mMusicFile.getMusic_title());
+        musicDescription.setText(AppUtils.getUnderlinedText(mMusicFile.getFirst_name() + " " + mMusicFile.getLast_name()));
 
         if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYER_RUNNING) {
             Drawable stopDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_stop);
-            holder.musicPlayStop.setImageDrawable(stopDrawable);
+            musicPlayStop.setImageDrawable(stopDrawable);
 
             Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.PLAYING);
-            holder.musicEqualizer.setImageDrawable(drawable);
+            musicEqualizer.setImageDrawable(drawable);
 
             //to avoid arethmetic exception
             if (mMusicFile.getTotalTime() > 0) {
@@ -161,36 +121,36 @@ public class MusicListViewAdapter extends BaseAdapter {
                 Log.d(TAG, "last progress: " + mMusicFile.getLastPlayed() + "");
                 int progress = (int) (((float) mMusicFile.getLastPlayed() / mMusicFile.getTotalTime()) * 100);
                 Log.d(TAG, "progress: " + progress + "");
-                holder.circularProgressBar.setProgress(progress);
+                circularProgressBar.setProgress(progress);
             }
-            holder.musicSpentTime.setText(AppUtils.milliSecondsToTimer(mMusicFile.getLastPlayed()) + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
+            musicSpentTime.setText(AppUtils.milliSecondsToTimer(mMusicFile.getLastPlayed()) + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
         } else if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_STOPPED) {
             Drawable playDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_play);
-            holder.musicPlayStop.setImageDrawable(playDrawable);
+            musicPlayStop.setImageDrawable(playDrawable);
 
             Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
-            holder.musicEqualizer.setImageDrawable(drawable);
+            musicEqualizer.setImageDrawable(drawable);
 
-            holder.musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
-            holder.circularProgressBar.setProgressWithAnimation(0);
+            musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
+            circularProgressBar.setProgressWithAnimation(0);
         } else if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_FINISHED) {
             Drawable playDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_play);
-            holder.musicPlayStop.setImageDrawable(playDrawable);
+            musicPlayStop.setImageDrawable(playDrawable);
 //
             Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
-            holder.musicEqualizer.setImageDrawable(drawable);
+            musicEqualizer.setImageDrawable(drawable);
 
-            holder.musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
-            holder.circularProgressBar.setProgressWithAnimation(0);
+            musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
+            circularProgressBar.setProgressWithAnimation(0);
         } else if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_PAID) {
             Drawable playDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_play);
-            holder.musicPlayStop.setImageDrawable(playDrawable);
+            musicPlayStop.setImageDrawable(playDrawable);
 
             Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
-            holder.musicEqualizer.setImageDrawable(drawable);
+            musicEqualizer.setImageDrawable(drawable);
 
-            holder.musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
-            holder.circularProgressBar.setProgressWithAnimation(0);
+            musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
+            circularProgressBar.setProgressWithAnimation(0);
 
             //stop music service
             if (AppUtils.isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
@@ -203,20 +163,20 @@ public class MusicListViewAdapter extends BaseAdapter {
         }
 
         if (user.getId().equalsIgnoreCase(mMusicFile.getUser_id())) {
-            holder.musicFreePaid.setVisibility(View.GONE);
+            musicFreePaid.setVisibility(View.GONE);
 
             //Set music as free
             mMusicFile.setIs_paid("0");
         } else {
             if (mMusicFile.getIs_paid().equalsIgnoreCase("1")) {
-                holder.musicFreePaid.setVisibility(View.VISIBLE);
-                holder.musicFreePaid.setText(AppUtils.getUnderlinedText("$" + mMusicFile.getPrice()));
+                musicFreePaid.setVisibility(View.VISIBLE);
+                musicFreePaid.setText(AppUtils.getUnderlinedText("$" + mMusicFile.getPrice()));
             } else {
-                holder.musicFreePaid.setVisibility(View.GONE);
+                musicFreePaid.setVisibility(View.GONE);
             }
         }
 
-        holder.musicFreePaid.setOnClickListener(new OnSingleClickListener() {
+        musicFreePaid.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
                 if (AppUtils.isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
@@ -237,7 +197,7 @@ public class MusicListViewAdapter extends BaseAdapter {
             }
         });
 
-        holder.musicPlayStop.setOnClickListener(new OnSingleClickListener() {
+        musicPlayStop.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
                 Intent intentMediaService = null;
@@ -254,7 +214,7 @@ public class MusicListViewAdapter extends BaseAdapter {
             }
         });
 
-        holder.musicDescription.setOnClickListener(new OnSingleClickListener() {
+        musicDescription.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
                 if (AppUtils.isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
@@ -276,7 +236,7 @@ public class MusicListViewAdapter extends BaseAdapter {
             }
         });
 
-        return row;
+        return vi;
     }
 
     public void updateMusic(Music music) {

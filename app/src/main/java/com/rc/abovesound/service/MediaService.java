@@ -123,6 +123,9 @@ public class MediaService extends Service {
                     music.setIsPlaying(AllConstants.MEDIA_PLAYER_RUNNING);
                     music.setTotalTime((int) audioPlayer.getDuration());
                     music.setLastPlayed((int) audioPlayer.getCurrentPosition());
+                    if ((int) audioPlayer.getDuration() > 0) {
+                        music.setProgress((int) (((int) audioPlayer.getCurrentPosition() / (int) audioPlayer.getDuration()) * 100));
+                    }
 
                     sendUpdateToActivity(music);
 

@@ -18,6 +18,8 @@
         <include layout="@layout/toolbar_base" />
 
         <LinearLayout
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -26,8 +28,6 @@
                 android:id="@+id/tv_no_info_found"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:gravity="center"
                 android:text="@string/toast_no_info_found"
                 android:textColor="@color/black"
@@ -37,7 +37,8 @@
 
             <ListView
                 android:id="@+id/lv_music"
-                android:divider="@null"
+                android:divider="@color/colorPrimaryDark"
+                android:dividerHeight="1dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="visible" />
