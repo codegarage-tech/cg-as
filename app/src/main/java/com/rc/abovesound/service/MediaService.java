@@ -2,15 +2,18 @@ package com.rc.abovesound.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.devbrackets.android.exomedia.AudioPlayer;
 import com.devbrackets.android.exomedia.listener.OnCompletionListener;
+import com.rc.abovesound.R;
 import com.rc.abovesound.model.Music;
 import com.rc.abovesound.util.AllConstants;
 import com.rc.abovesound.util.AppUtils;
@@ -124,11 +127,17 @@ public class MediaService extends Service {
                     music.setTotalTime((int) audioPlayer.getDuration());
                     music.setLastPlayed((int) audioPlayer.getCurrentPosition());
                     if ((int) audioPlayer.getDuration() > 0) {
-                        Log.d("UpdateTest: ","getCurrentPosition: "+audioPlayer.getCurrentPosition()+"");
-                        Log.d("UpdateTest: ","getDuration: "+audioPlayer.getDuration()+"");
-                        music.setProgress((int) (((float) ((int)audioPlayer.getCurrentPosition()) / ((int)audioPlayer.getDuration())) * 100));
-                        Log.d("UpdateTest: ",music.getProgress()+"");
+                        Log.d("UpdateTest: ", "getCurrentPosition: " + audioPlayer.getCurrentPosition() + "");
+                        Log.d("UpdateTest: ", "getDuration: " + audioPlayer.getDuration() + "");
+                        music.setProgress((int) (((float) ((int) audioPlayer.getCurrentPosition()) / ((int) audioPlayer.getDuration())) * 100));
+                        Log.d("UpdateTest: ", music.getProgress() + "");
+                        music.setSpentTimeText(AppUtils.milliSecondsToTimer(music.getLastPlayed()) + "/" + AppUtils.milliSecondsToTimer(music.getTotalTime()));
                     }
+
+                    music.setBgEqualizer(1);
+
+                    Drawable stopDrawable = ContextCompat.getDrawable(this, R.drawable.ic_stop);
+                    music.setBgPlayPauseButton(stopDrawable);
 
                     sendUpdateToActivity(music);
 

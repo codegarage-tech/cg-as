@@ -1,12 +1,17 @@
 package com.rc.abovesound.model;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.annotations.Expose;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+import com.rc.abovesound.R;
+import com.rc.abovesound.application.AboveSoundApplication;
 import com.reversecoder.library.random.RandomManager;
 
 /**
@@ -16,6 +21,9 @@ public class Music extends ResponseBase implements Parcelable {
 
     private long primaryKey = -1;
     private int progress = 0;
+    private String spentTimeText = "00:00/00:00";
+    private int bgEqualizer = 0;
+    private Drawable bgPlayPauseButton = ContextCompat.getDrawable(AboveSoundApplication.getGlobalContext(), R.drawable.ic_play);
     private transient CircularProgressBar progressBar = null;
     private transient ImageView equalizer;
     private transient TextView spentTime = null;
@@ -61,13 +69,8 @@ public class Music extends ResponseBase implements Parcelable {
     }
 
     public long getPrimaryKey() {
-//        primaryKey = (getFile_path() + getMusic_title()).hashCode();
         return primaryKey;
     }
-
-//    public void setPrimaryKey(long primaryKey) {
-//        this.primaryKey = primaryKey;
-//    }
 
     public int getProgress() {
         return progress;
@@ -79,6 +82,30 @@ public class Music extends ResponseBase implements Parcelable {
 
     public void setProgress(int progress) {
         this.progress = progress;
+    }
+
+    public String getSpentTimeText() {
+        return spentTimeText;
+    }
+
+    public void setSpentTimeText(String spentTimeText) {
+        this.spentTimeText = spentTimeText;
+    }
+
+    public int getBgEqualizer() {
+        return bgEqualizer;
+    }
+
+    public void setBgEqualizer(int bgEqualizer) {
+        this.bgEqualizer = bgEqualizer;
+    }
+
+    public Drawable getBgPlayPauseButton() {
+        return bgPlayPauseButton;
+    }
+
+    public void setBgPlayPauseButton(Drawable bgPlayPauseButton) {
+        this.bgPlayPauseButton = bgPlayPauseButton;
     }
 
     public CircularProgressBar getProgressBar() {
@@ -246,6 +273,8 @@ public class Music extends ResponseBase implements Parcelable {
         return "{" +
                 "primaryKey='" + getPrimaryKey() + '\'' +
                 ", progress='" + progress + '\'' +
+                ", spentTimeText='" + spentTimeText + '\'' +
+                ", bgEqualizer='" + bgEqualizer + '\'' +
                 ", music_title='" + music_title + '\'' +
                 ", description='" + description + '\'' +
                 ", state_name='" + state_name + '\'' +
@@ -275,6 +304,9 @@ public class Music extends ResponseBase implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(getPrimaryKey());
         dest.writeInt(progress);
+        dest.writeString(spentTimeText);
+        dest.writeInt(bgEqualizer);
+        dest.writeValue(((BitmapDrawable) bgPlayPauseButton).getBitmap());
         dest.writeString(music_title);
         dest.writeString(description);
         dest.writeString(state_name);
@@ -309,6 +341,9 @@ public class Music extends ResponseBase implements Parcelable {
     public Music(Parcel in) {
         primaryKey = in.readLong();
         progress = in.readInt();
+        spentTimeText = in.readString();
+        bgEqualizer = in.readInt();
+        bgPlayPauseButton = new BitmapDrawable(((Bitmap) in.readValue(Bitmap.class.getClassLoader())));
         music_title = in.readString();
         description = in.readString();
         state_name = in.readString();

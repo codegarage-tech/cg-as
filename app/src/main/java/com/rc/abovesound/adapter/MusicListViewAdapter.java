@@ -3,8 +3,6 @@ package com.rc.abovesound.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -136,55 +134,61 @@ public class MusicListViewAdapter extends BaseAdapter {
             holder.music.setSpentTime(holder.musicSpentTime);
         }
 
-        holder.progressBar.setProgress(mMusic.getProgress());
         mMusic.setProgressBar(holder.progressBar);
+        mMusic.setSpentTime(holder.musicSpentTime);
+        mMusic.setEqualizer(holder.musicEqualizer);
+        mMusic.setPlayPauseButton(holder.musicPlayStop);
 
+        holder.progressBar.setProgress(mMusic.getProgress());
+        holder.musicSpentTime.setText(mMusic.getSpentTimeText());
+        holder.musicPlayStop.setImageDrawable(mMusic.getBgPlayPauseButton());
+        holder.musicEqualizer.setImageDrawable((mMusic.getBgEqualizer() == 1) ? AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.PLAYING) : AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE));
         holder.musicName.setText(mMusic.getMusic_title());
         holder.musicDescription.setText(AppUtils.getUnderlinedText(mMusic.getFirst_name() + " " + mMusic.getLast_name()));
 ////////////////////////////////////
-//        if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYER_RUNNING) {
+//        if (mMusic.getIsPlaying() == AllConstants.MEDIA_PLAYER_RUNNING) {
 //            Drawable stopDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_stop);
-//            musicPlayStop.setImageDrawable(stopDrawable);
+//            holder.musicPlayStop.setImageDrawable(stopDrawable);
 //
 //            Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.PLAYING);
-//            musicEqualizer.setImageDrawable(drawable);
+//            holder.musicEqualizer.setImageDrawable(drawable);
 //
 //            //to avoid arethmetic exception
-//            if (mMusicFile.getTotalTime() > 0) {
-//                Log.d(TAG, "total: " + mMusicFile.getTotalTime() + "");
-//                Log.d(TAG, "last progress: " + mMusicFile.getLastPlayed() + "");
-//                int progress = (int) (((float) mMusicFile.getLastPlayed() / mMusicFile.getTotalTime()) * 100);
+//            if (mMusic.getTotalTime() > 0) {
+//                Log.d(TAG, "total: " + mMusic.getTotalTime() + "");
+//                Log.d(TAG, "last progress: " + mMusic.getLastPlayed() + "");
+//                int progress = (int) (((float) mMusic.getLastPlayed() / mMusic.getTotalTime()) * 100);
 //                Log.d(TAG, "progress: " + progress + "");
-//                circularProgressBar.setProgress(progress);
+//                holder.progressBar.setProgress(progress);
 //            }
-//            musicSpentTime.setText(AppUtils.milliSecondsToTimer(mMusicFile.getLastPlayed()) + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
-//        } else if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_STOPPED) {
+//            holder.musicSpentTime.setText(AppUtils.milliSecondsToTimer(mMusic.getLastPlayed()) + "/" + AppUtils.milliSecondsToTimer(mMusic.getTotalTime()));
+//        } else if (mMusic.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_STOPPED) {
 //            Drawable playDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_play);
-//            musicPlayStop.setImageDrawable(playDrawable);
+//            holder.musicPlayStop.setImageDrawable(playDrawable);
 //
 //            Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
-//            musicEqualizer.setImageDrawable(drawable);
+//            holder.musicEqualizer.setImageDrawable(drawable);
 //
-//            musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
-//            circularProgressBar.setProgressWithAnimation(0);
-//        } else if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_FINISHED) {
+//            holder.musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusic.getTotalTime()));
+//            holder.progressBar.setProgressWithAnimation(0);
+//        } else if (mMusic.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_FINISHED) {
 //            Drawable playDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_play);
-//            musicPlayStop.setImageDrawable(playDrawable);
-////
-//            Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
-//            musicEqualizer.setImageDrawable(drawable);
-//
-//            musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
-//            circularProgressBar.setProgressWithAnimation(0);
-//        } else if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_PAID) {
-//            Drawable playDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_play);
-//            musicPlayStop.setImageDrawable(playDrawable);
+//            holder.musicPlayStop.setImageDrawable(playDrawable);
 //
 //            Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
-//            musicEqualizer.setImageDrawable(drawable);
+//            holder.musicEqualizer.setImageDrawable(drawable);
 //
-//            musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
-//            circularProgressBar.setProgressWithAnimation(0);
+//            holder.musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusic.getTotalTime()));
+//            holder.progressBar.setProgressWithAnimation(0);
+//        } else if (mMusic.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_PAID) {
+//            Drawable playDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_play);
+//            holder.musicPlayStop.setImageDrawable(playDrawable);
+//
+//            Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
+//            holder.musicEqualizer.setImageDrawable(drawable);
+//
+//            holder.musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusic.getTotalTime()));
+//            holder.progressBar.setProgressWithAnimation(0);
 //
 //            //stop music service
 //            if (AppUtils.isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
@@ -285,60 +289,66 @@ public class MusicListViewAdapter extends BaseAdapter {
             progressBar.setProgress(music.getProgress());
             progressBar.invalidate();
         }
-
-//        if (music.getIsPlaying() == AllConstants.MEDIA_PLAYER_RUNNING) {
-//            if (musicPlayStop != null) {
+        if (musicPlayStop != null) {
+            musicPlayStop.setImageDrawable(music.getBgPlayPauseButton());
+            musicPlayStop.invalidate();
+        }
+        if (musicEqualizer != null) {
+            musicEqualizer.setImageDrawable((music.getBgEqualizer() == 1) ? AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.PLAYING) : AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE));
+            musicEqualizer.invalidate();
+        }
+        if (musicSpentTime != null) {
+            musicSpentTime.setText(music.getSpentTimeText());
+            musicSpentTime.invalidate();
+        }
+/////////////////////////////////////
+//        if (musicPlayStop != null && musicEqualizer != null && musicSpentTime != null) {
+//            if (music.getIsPlaying() == AllConstants.MEDIA_PLAYER_RUNNING) {
 //                Drawable stopDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_stop);
 //                musicPlayStop.setImageDrawable(stopDrawable);
-//            }
+//                musicPlayStop.invalidate();
 //
-//            if (musicEqualizer != null) {
 //                Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.PLAYING);
 //                musicEqualizer.setImageDrawable(drawable);
-//            }
-//            if (musicSpentTime != null) {
+//
 //                musicSpentTime.setText(AppUtils.milliSecondsToTimer(music.getLastPlayed()) + "/" + AppUtils.milliSecondsToTimer(music.getTotalTime()));
+//            } else if (music.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_STOPPED) {
+//                Drawable playDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_play);
+//                musicPlayStop.setImageDrawable(playDrawable);
+//
+//                Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
+//                musicEqualizer.setImageDrawable(drawable);
+//
+//                musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(music.getTotalTime()));
+//                progressBar.setProgressWithAnimation(0);
+//            } else if (music.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_FINISHED) {
+//                Drawable playDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_play);
+//                musicPlayStop.setImageDrawable(playDrawable);
+//
+//                Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
+//                musicEqualizer.setImageDrawable(drawable);
+//
+//                musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(music.getTotalTime()));
+//                progressBar.setProgressWithAnimation(0);
+//            } else if (music.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_PAID) {
+//                Drawable playDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_play);
+//                musicPlayStop.setImageDrawable(playDrawable);
+//
+//                Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
+//                musicEqualizer.setImageDrawable(drawable);
+//
+//                musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(music.getTotalTime()));
+//                progressBar.setProgressWithAnimation(0);
+//
+//                //stop music service
+//                if (AppUtils.isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
+//                    Intent intentMediaService = new Intent(mActivity.getApplicationContext(), MediaService.class);
+//                    intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_ACTION, AllConstants.EXTRA_ACTION_STOP);
+//                    mActivity.getApplicationContext().stopService(intentMediaService);
+//                }
+//
+//                Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_buy_song_for_listening_full_song), Toast.LENGTH_LONG).show();
 //            }
-//        }
-
-
-
-//        else if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_STOPPED) {
-//            Drawable playDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_play);
-//            musicPlayStop.setImageDrawable(playDrawable);
-//
-//            Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
-//            musicEqualizer.setImageDrawable(drawable);
-//
-//            musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
-//            circularProgressBar.setProgressWithAnimation(0);
-//        } else if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_FINISHED) {
-//            Drawable playDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_play);
-//            musicPlayStop.setImageDrawable(playDrawable);
-////
-//            Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
-//            musicEqualizer.setImageDrawable(drawable);
-//
-//            musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
-//            circularProgressBar.setProgressWithAnimation(0);
-//        } else if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_PAID) {
-//            Drawable playDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_play);
-//            musicPlayStop.setImageDrawable(playDrawable);
-//
-//            Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
-//            musicEqualizer.setImageDrawable(drawable);
-//
-//            musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
-//            circularProgressBar.setProgressWithAnimation(0);
-//
-//            //stop music service
-//            if (AppUtils.isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
-//                Intent intentMediaService = new Intent(mActivity.getApplicationContext(), MediaService.class);
-//                intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_ACTION, AllConstants.EXTRA_ACTION_STOP);
-//                mActivity.getApplicationContext().stopService(intentMediaService);
-//            }
-//
-//            Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_buy_song_for_listening_full_song), Toast.LENGTH_LONG).show();
 //        }
     }
 
