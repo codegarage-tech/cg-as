@@ -18,6 +18,8 @@ import com.rc.abovesound.model.Music;
 import com.rc.abovesound.util.AllConstants;
 import com.rc.abovesound.util.AppUtils;
 
+import static com.rc.abovesound.util.AllConstants.DEFAULT_SPENT_TIME_TEXT;
+
 public class MediaService extends Service {
 
     Music music = null;
@@ -55,6 +57,13 @@ public class MediaService extends Service {
                                     audioPlayer.pause();
 
                                     music.setIsPlaying(AllConstants.MEDIA_PLAYBACK_FINISHED);
+
+                                    music.setProgress(0);
+                                    music.setBgEqualizer(0);
+                                    Drawable playDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_play);
+                                    music.setBgPlayPauseButton(playDrawable);
+                                    music.setSpentTimeText(DEFAULT_SPENT_TIME_TEXT);
+
                                     sendUpdateToActivity(music);
                                 }
                             }
@@ -98,6 +107,13 @@ public class MediaService extends Service {
     private void destroyService() {
         if (audioPlayer.isPlaying()) {
             music.setIsPlaying(AllConstants.MEDIA_PLAYBACK_STOPPED);
+
+            music.setProgress(0);
+            music.setBgEqualizer(0);
+            Drawable playDrawable = ContextCompat.getDrawable(this, R.drawable.ic_play);
+            music.setBgPlayPauseButton(playDrawable);
+            music.setSpentTimeText(DEFAULT_SPENT_TIME_TEXT);
+
             sendUpdateToActivity(music);
 
             audioPlayer.stopPlayback();
@@ -121,6 +137,12 @@ public class MediaService extends Service {
                     audioPlayer.pause();
 
                     music.setIsPlaying(AllConstants.MEDIA_PLAYBACK_PAID);
+                    music.setProgress(0);
+                    music.setBgEqualizer(0);
+                    Drawable playDrawable = ContextCompat.getDrawable(this, R.drawable.ic_play);
+                    music.setBgPlayPauseButton(playDrawable);
+                    music.setSpentTimeText(DEFAULT_SPENT_TIME_TEXT);
+
                     sendUpdateToActivity(music);
                 } else {
                     music.setIsPlaying(AllConstants.MEDIA_PLAYER_RUNNING);
@@ -133,9 +155,7 @@ public class MediaService extends Service {
                         Log.d("UpdateTest: ", music.getProgress() + "");
                         music.setSpentTimeText(AppUtils.milliSecondsToTimer(music.getLastPlayed()) + "/" + AppUtils.milliSecondsToTimer(music.getTotalTime()));
                     }
-
                     music.setBgEqualizer(1);
-
                     Drawable stopDrawable = ContextCompat.getDrawable(this, R.drawable.ic_stop);
                     music.setBgPlayPauseButton(stopDrawable);
 
@@ -145,6 +165,12 @@ public class MediaService extends Service {
                 }
             } else {
                 music.setIsPlaying(AllConstants.MEDIA_PLAYBACK_STOPPED);
+
+                music.setProgress(0);
+                music.setBgEqualizer(0);
+                Drawable playDrawable = ContextCompat.getDrawable(this, R.drawable.ic_play);
+                music.setBgPlayPauseButton(playDrawable);
+                music.setSpentTimeText(DEFAULT_SPENT_TIME_TEXT);
             }
         }
     }

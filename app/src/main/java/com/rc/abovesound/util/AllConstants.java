@@ -32,6 +32,9 @@ public class AllConstants {
     public static final String INTENT_KEY_OWN_MUSIC_LIST_FROM_MENU = "INTENT_KEY_OWN_MUSIC_LIST_FROM_MENU";
     public static final String INTENT_KEY_OWN_MUSIC_LIST_ITEM_USER= "INTENT_KEY_OWN_MUSIC_LIST_ITEM_USER";
 
+    //Model
+    public static final String DEFAULT_SPENT_TIME_TEXT = "00:00/00:00";
+
     //Media playback
     public static final int MEDIA_PLAYER_RUNNING = 1;
     public static final int MEDIA_PLAYBACK_STOPPED = 2;

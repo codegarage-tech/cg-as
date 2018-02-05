@@ -14,6 +14,8 @@ import com.rc.abovesound.R;
 import com.rc.abovesound.application.AboveSoundApplication;
 import com.reversecoder.library.random.RandomManager;
 
+import static com.rc.abovesound.util.AllConstants.DEFAULT_SPENT_TIME_TEXT;
+
 /**
  * Md. Rashadul Alam
  */
@@ -21,7 +23,7 @@ public class Music extends ResponseBase implements Parcelable {
 
     private long primaryKey = -1;
     private int progress = 0;
-    private String spentTimeText = "00:00/00:00";
+    private String spentTimeText = DEFAULT_SPENT_TIME_TEXT;
     private int bgEqualizer = 0;
     private Drawable bgPlayPauseButton = ContextCompat.getDrawable(AboveSoundApplication.getGlobalContext(), R.drawable.ic_play);
     private transient CircularProgressBar progressBar = null;
@@ -74,10 +76,6 @@ public class Music extends ResponseBase implements Parcelable {
 
     public int getProgress() {
         return progress;
-    }
-
-    public void setProgress(Integer progress) {
-        this.progress = progress;
     }
 
     public void setProgress(int progress) {
