@@ -24,6 +24,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
+import com.onecodelabs.reminder.Remindable;
+import com.onecodelabs.reminder.Reminder;
+import com.onecodelabs.reminder.bundle.ReminderBundle;
+import com.rc.abovesound.model.DataMusic;
 import com.rc.abovesound.model.Music;
 import com.rc.abovesound.model.TimeZone;
 import com.rc.abovesound.util.AppUtils;
@@ -62,6 +66,7 @@ import static com.rc.abovesound.util.AllConstants.SESSION_MUSIC_CATEGORY;
 import static com.rc.abovesound.util.AllConstants.SESSION_SELECTED_CITY;
 import static com.rc.abovesound.util.AllConstants.SESSION_SELECTED_ZONE;
 import static com.rc.abovesound.util.AllConstants.SESSION_USER_DATA;
+import static com.rc.abovesound.util.AllConstants.SNAPSHOT_DATASET;
 
 /**
  * @author Md. Rashadul Alam
@@ -142,8 +147,25 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         musicListViewAdapter = new MusicListViewAdapter(HomeActivity.this);
         lvMusic.setAdapter(musicListViewAdapter);
 
-//        initSpinnerData();
         searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
+
+//        Reminder.remind(new Remindable() {
+//            @Override
+//            public void saveSnapshot(ReminderBundle snapshot) {
+//                snapshot.put(SNAPSHOT_DATASET, new DataMusic(musicListViewAdapter.getData()));
+//            }
+//
+//            @Override
+//            public void onSnapshotAvailable(ReminderBundle snapshot) {
+//                ArrayList<Music> music = snapshot.get(SNAPSHOT_DATASET, DataMusic.class).getMusics();
+//                musicListViewAdapter.setData(music);
+//            }
+//
+//            @Override
+//            public void onSnapshotNotFound() {
+//                searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
+//            }
+//        });
     }
 
     private void initSessionData() {
@@ -302,36 +324,6 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
                 startActivityForResult(zoneIntent, REQUEST_CODE_ZONE);
             }
         });
-
-//        spinnerCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                City item = (City) parent.getItemAtPosition(position);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//            }
-//        });
-//
-//        spinnerMusicCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                SpinnerItem item = (SpinnerItem) parent.getItemAtPosition(position);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//            }
-//        });
-//
-//        btnConfirm.setOnClickListener(new OnSingleClickListener() {
-//            @Override
-//            public void onSingleClick(View view) {
-//                searchMusic();
-//            }
-//        });
-
     }
 
     private void searchMusic(String category, String state) {
@@ -339,17 +331,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
             Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_please_stop_music_before_searching), Toast.LENGTH_SHORT).show();
             return;
         }
-//        String spinnerSelectedMusicCategoryId = ((MusicCategory) spinnerMusicCategory.getSelectedItem()).getName().equalsIgnoreCase(getString(R.string.txt_default_music_category)) ? "" : ((MusicCategory) spinnerMusicCategory.getSelectedItem()).getId();
-//        String spinnerSelectedCityId = ((City) spinnerCity.getSelectedItem()).getName().equalsIgnoreCase(getString(R.string.txt_default_city)) ? "" : ((City) spinnerCity.getSelectedItem()).getId();
-//
-//                if (spinnerSelectedMusicCategoryId.equalsIgnoreCase("")) {
-//                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_empty_music_category_field), Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//        if (spinnerSelectedCityId.equalsIgnoreCase("")) {
-//            Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_empty_city_field), Toast.LENGTH_SHORT).show();
-//            return;
-//        }
+
         if (!NetworkManager.isConnected(HomeActivity.this)) {
             Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
             return;

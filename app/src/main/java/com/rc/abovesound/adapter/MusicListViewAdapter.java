@@ -54,7 +54,6 @@ public class MusicListViewAdapter extends BaseAdapter {
         Music music;
     }
 
-
     public MusicListViewAdapter(Activity activity) {
         mActivity = activity;
         mData = new ArrayList<Music>();

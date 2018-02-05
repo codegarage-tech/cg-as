@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.Typeface;
 
+import com.onecodelabs.reminder.Reminder;
+
 /**
  * @author Md. Rashadul Alam
  *         Email: rashed.droid@gmail.com
@@ -21,6 +23,9 @@ public class AboveSoundApplication extends Application {
         mContext = this;
 
         initTypeface();
+
+        //Set reminder
+        Reminder.init(this);
     }
 
     private void initTypeface() {

@@ -10,6 +10,9 @@ import java.util.ArrayList;
  */
 public class AllConstants {
 
+    // Reminder
+    public static final String SNAPSHOT_DATASET = "SNAPSHOT_DATASET";
+
     //Request code
     public static final int REQUEST_CODE_PAYPAL = 420;
     public static final int REQUEST_CODE_ZONE = 4200;
