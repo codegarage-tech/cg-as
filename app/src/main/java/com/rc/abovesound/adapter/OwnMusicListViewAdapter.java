@@ -155,6 +155,7 @@ public class OwnMusicListViewAdapter extends BaseAdapter {
         holder.musicEqualizer.setImageDrawable((mMusic.getBgEqualizer() == 1) ? AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.PLAYING) : AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE));
         holder.musicName.setText(mMusic.getMusic_title());
         holder.musicDescription.setText(AppUtils.getUnderlinedText(mMusic.getFirst_name() + " " + mMusic.getLast_name()));
+        holder.musicDescription.setVisibility(View.GONE);
 
         if (((OwnMusicListActivity) mActivity).isFromMenu) {
             holder.musicFreePaid.setVisibility(View.GONE);
