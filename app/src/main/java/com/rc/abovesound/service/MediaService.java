@@ -26,12 +26,13 @@ public class MediaService extends Service {
     AudioPlayer audioPlayer = null;
     Intent broadcastIntentActivityUpdate;
     private Handler handler = new Handler();
+    TYPE type;
+
+    public enum TYPE {HOME_MUSIC, OWN_MUSIC, BOUGHT_MUSIC}
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        broadcastIntentActivityUpdate = new Intent(AllConstants.INTENT_FILTER_ACTIVITY_UPDATE);
     }
 
     @Override
@@ -44,12 +45,27 @@ public class MediaService extends Service {
                     if (intent.getParcelableExtra(AllConstants.KEY_INTENT_EXTRA_MUSIC) != null) {
                         music = intent.getParcelableExtra(AllConstants.KEY_INTENT_EXTRA_MUSIC);
                         Log.d("From service: ", music.toString());
+                        type = TYPE.valueOf(intent.getStringExtra(AllConstants.KEY_INTENT_EXTRA_TYPE));
 
+                        //Set update broad cast type
+                        switch (type) {
+                            case HOME_MUSIC:
+                                broadcastIntentActivityUpdate = new Intent(AllConstants.INTENT_FILTER_HOME_MUSIC_UPDATE);
+                                break;
+                            case OWN_MUSIC:
+                                broadcastIntentActivityUpdate = new Intent(AllConstants.INTENT_FILTER_OWN_MUSIC_UPDATE);
+                                break;
+                            case BOUGHT_MUSIC:
+                                broadcastIntentActivityUpdate = new Intent(AllConstants.INTENT_FILTER_BOUGHT_MUSIC_UPDATE);
+                                break;
+                        }
+
+                        //Set player
                         audioPlayer = new AudioPlayer(getApplicationContext());
                         audioPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                         audioPlayer.setDataSource(Uri.parse(music.getFile_path()));
 
-                        //Set downloadInfo listener
+                        //Set player listener
                         audioPlayer.setOnCompletionListener(new OnCompletionListener() {
                             @Override
                             public void onCompletion() {
@@ -69,7 +85,7 @@ public class MediaService extends Service {
                             }
                         });
 
-                        //Start downloadInfo
+                        //Start player
                         audioPlayer.prepareAsync();
                         audioPlayer.start();
 

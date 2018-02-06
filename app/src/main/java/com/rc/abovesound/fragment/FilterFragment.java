@@ -15,10 +15,14 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 import com.google.android.flexbox.FlexboxLayout;
+import com.rc.abovesound.R;
 import com.rc.abovesound.activity.HomeActivity;
+import com.rc.abovesound.service.MediaService;
+import com.rc.abovesound.util.AppUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +86,12 @@ public class FilterFragment extends AAH_FabulousFragment {
         imgbtn_apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (AppUtils.isServiceRunning(getActivity().getApplicationContext(), MediaService.class)) {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.toast_please_stop_music_before_searching), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 ArrayMap<String, List<String>> selectedItem = getSelectedData(new ArrayList<String>() {{
                     add("category");
                     add("state");

@@ -35,6 +35,7 @@ allprojects {
     ext.supportlibraryVersion = '27.0.2'
     ext.glideVersion = '4.5.0'
     ext.paypalVersion = '2.15.3'
+    ext.gsonVersion = '2.8.1'
 }
 
 task clean(type: Delete) {

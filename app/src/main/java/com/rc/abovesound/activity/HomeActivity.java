@@ -27,33 +27,33 @@ import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 import com.onecodelabs.reminder.Remindable;
 import com.onecodelabs.reminder.Reminder;
 import com.onecodelabs.reminder.bundle.ReminderBundle;
-import com.rc.abovesound.model.DataMusic;
-import com.rc.abovesound.model.Music;
-import com.rc.abovesound.model.TimeZone;
-import com.rc.abovesound.util.AppUtils;
-import com.reversecoder.library.event.OnSingleClickListener;
-import com.reversecoder.library.network.NetworkManager;
-import com.reversecoder.library.storage.SessionManager;
 import com.rc.abovesound.R;
 import com.rc.abovesound.adapter.MusicListViewAdapter;
 import com.rc.abovesound.fragment.FilterFragment;
 import com.rc.abovesound.model.City;
+import com.rc.abovesound.model.DataMusic;
+import com.rc.abovesound.model.Music;
 import com.rc.abovesound.model.MusicCategory;
 import com.rc.abovesound.model.MusicCategoryData;
 import com.rc.abovesound.model.ResponseCountry;
 import com.rc.abovesound.model.ResponseMusic;
+import com.rc.abovesound.model.TimeZone;
 import com.rc.abovesound.model.UserData;
 import com.rc.abovesound.service.MediaService;
 import com.rc.abovesound.util.AllConstants;
 import com.rc.abovesound.util.AllUrls;
+import com.rc.abovesound.util.AppUtils;
 import com.rc.abovesound.util.HttpRequestManager;
+import com.reversecoder.library.event.OnSingleClickListener;
+import com.reversecoder.library.network.NetworkManager;
+import com.reversecoder.library.storage.SessionManager;
 import com.yalantis.guillotine.animation.GuillotineAnimation;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.rc.abovesound.util.AllConstants.INTENT_FILTER_ACTIVITY_UPDATE;
+import static com.rc.abovesound.util.AllConstants.INTENT_FILTER_HOME_MUSIC_UPDATE;
 import static com.rc.abovesound.util.AllConstants.INTENT_KEY_OWN_MUSIC_LIST_FROM_MENU;
 import static com.rc.abovesound.util.AllConstants.INTENT_KEY_OWN_MUSIC_LIST_ITEM_USER;
 import static com.rc.abovesound.util.AllConstants.KEY_INTENT_EXTRA_MUSIC_UPDATE;
@@ -66,13 +66,13 @@ import static com.rc.abovesound.util.AllConstants.SESSION_MUSIC_CATEGORY;
 import static com.rc.abovesound.util.AllConstants.SESSION_SELECTED_CITY;
 import static com.rc.abovesound.util.AllConstants.SESSION_SELECTED_ZONE;
 import static com.rc.abovesound.util.AllConstants.SESSION_USER_DATA;
-import static com.rc.abovesound.util.AllConstants.SNAPSHOT_DATASET;
+import static com.rc.abovesound.util.AllConstants.SNAPSHOT_DATASET_HOME;
 
 /**
  * @author Md. Rashadul Alam
  *         Email: rashed.droid@gmail.com
  */
-public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragment.Callbacks, AAH_FabulousFragment.AnimationListener {
+public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragment.Callbacks, AAH_FabulousFragment.AnimationListener, Remindable {
 
     private static final long RIPPLE_DURATION = 250;
 
@@ -84,12 +84,9 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     TextView tvNoInfoFound;
     LinearLayout llLogOut, llHome, llProfile, llOwnMusic, llBoughtMusic, llZone;
     private static final String TAG = HomeActivity.class.getSimpleName();
-    //    Spinner spinnerMusicCategory, spinnerCity;
-//    CommonSpinnerAdapter spinnerMusicCategoryAdapter, spinnerCityAdapter;
     MusicCategoryData wrapperMusicCategoryData;
     ResponseCountry wrapperCityWithCountryData;
     UserData user;
-    //    Button btnConfirm;
     ListView lvMusic;
     ProgressDialog loadingDialog;
     MusicListViewAdapter musicListViewAdapter;
@@ -140,32 +137,12 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         llOwnMusic = (LinearLayout) findViewById(R.id.ll_own_music);
         llBoughtMusic = (LinearLayout) findViewById(R.id.ll_bought_music);
         llZone = (LinearLayout) findViewById(R.id.ll_zone);
-
-//        btnConfirm = (Button) findViewById(R.id.btn_confirm);
         lvMusic = (ListView) findViewById(R.id.lv_music);
 
         musicListViewAdapter = new MusicListViewAdapter(HomeActivity.this);
         lvMusic.setAdapter(musicListViewAdapter);
 
-        searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
-
-//        Reminder.remind(new Remindable() {
-//            @Override
-//            public void saveSnapshot(ReminderBundle snapshot) {
-//                snapshot.put(SNAPSHOT_DATASET, new DataMusic(musicListViewAdapter.getData()));
-//            }
-//
-//            @Override
-//            public void onSnapshotAvailable(ReminderBundle snapshot) {
-//                ArrayList<Music> music = snapshot.get(SNAPSHOT_DATASET, DataMusic.class).getMusics();
-//                musicListViewAdapter.setData(music);
-//            }
-//
-//            @Override
-//            public void onSnapshotNotFound() {
-//                searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
-//            }
-//        });
+        Reminder.remind(this);
     }
 
     private void initSessionData() {
@@ -211,7 +188,6 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
             getSupportActionBar().setTitle(null);
         }
 
-//        View guillotineMenu = LayoutInflater.from(this).inflate(R.layout.layout_menu, null);
         View guillotineMenu = LayoutInflater.from(this).inflate(R.layout.menu_screen, null);
         root.addView(guillotineMenu);
 
@@ -231,10 +207,10 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
             @Override
             public void onClick(View v) {
 
-                if (AppUtils.isServiceRunning(getApplicationContext(), MediaService.class)) {
-                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_please_stop_music_before_searching), Toast.LENGTH_SHORT).show();
-                    return;
-                }
+//                if (AppUtils.isServiceRunning(getApplicationContext(), MediaService.class)) {
+//                    Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_please_stop_music_before_searching), Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
 
                 dialogFrag = FilterFragment.newInstance(appliedFilters);
                 dialogFrag.setParentFab(fabFilter);
@@ -271,10 +247,10 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         llOwnMusic.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                if (AppUtils.isServiceRunning(getApplicationContext(), MediaService.class)) {
-                    Toast.makeText(HomeActivity.this, getString(R.string.toast_please_stop_music_before_checking_list), Toast.LENGTH_LONG).show();
-                    return;
-                }
+//                if (AppUtils.isServiceRunning(getApplicationContext(), MediaService.class)) {
+//                    Toast.makeText(HomeActivity.this, getString(R.string.toast_please_stop_music_before_checking_list), Toast.LENGTH_LONG).show();
+//                    return;
+//                }
 
                 if (!NetworkManager.isConnected(HomeActivity.this)) {
                     Toast.makeText(HomeActivity.this, getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
@@ -291,10 +267,10 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         llBoughtMusic.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                if (AppUtils.isServiceRunning(getApplicationContext(), MediaService.class)) {
-                    Toast.makeText(HomeActivity.this, getString(R.string.toast_please_stop_music_before_checking_list), Toast.LENGTH_LONG).show();
-                    return;
-                }
+//                if (AppUtils.isServiceRunning(getApplicationContext(), MediaService.class)) {
+//                    Toast.makeText(HomeActivity.this, getString(R.string.toast_please_stop_music_before_checking_list), Toast.LENGTH_LONG).show();
+//                    return;
+//                }
 
                 if (!NetworkManager.isConnected(HomeActivity.this)) {
                     Toast.makeText(HomeActivity.this, getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
@@ -350,44 +326,12 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     public void onBackPressed() {
         if (guillotineAnimation.isOpened()) {
             guillotineAnimation.close();
-        } else if (AppUtils.isServiceRunning(getApplicationContext(), MediaService.class)) {
-            Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_please_stop_music_before_closing), Toast.LENGTH_SHORT).show();
-        } else {
+        }
+//        else if (AppUtils.isServiceRunning(getApplicationContext(), MediaService.class)) {
+//            Toast.makeText(HomeActivity.this, getResources().getString(R.string.toast_please_stop_music_before_closing), Toast.LENGTH_SHORT).show();
+//        }
+        else {
             super.onBackPressed();
-        }
-    }
-
-    /***********************
-     * Update spinner data *
-     ***********************/
-//    private void initSpinnerData() {
-//        spinnerMusicCategory = (Spinner) findViewById(R.id.spinner_music_category);
-//        spinnerCity = (Spinner) findViewById(R.id.spinner_city);
-//
-//        spinnerMusicCategoryAdapter = new CommonSpinnerAdapter(HomeActivity.this, CommonSpinnerAdapter.ADAPTER_TYPE.MUSIC_CATEGORY);
-//        spinnerMusicCategory.setAdapter(spinnerMusicCategoryAdapter);
-//
-//        spinnerCityAdapter = new CommonSpinnerAdapter(HomeActivity.this, CommonSpinnerAdapter.ADAPTER_TYPE.CITY);
-//        spinnerCity.setAdapter(spinnerCityAdapter);
-//
-//        //Get spinner data
-//        setMusicCategory();
-//        setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.MUSIC_CATEGORY);
-//
-//        setCityWithCountry();
-//        setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE.CITY);
-//
-//        searchMusic();
-//    }
-    private void setCityWithCountry() {
-        if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY))) {
-            SessionManager.setStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY, AllConstants.getDefaultCountryData());
-        }
-    }
-
-    private void setMusicCategory() {
-        if (AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY))) {
-            SessionManager.setStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY, AllConstants.getDefaultMusicCategoryData());
         }
     }
 
@@ -471,29 +415,6 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         }
     }
 
-//    private void setSpinnerData(CommonSpinnerAdapter.ADAPTER_TYPE adapterType) {
-//
-//        if (adapterType == CommonSpinnerAdapter.ADAPTER_TYPE.MUSIC_CATEGORY) {
-//            //set music category spinner data
-//            if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY))) {
-//                wrapperMusicCategoryData = MusicCategoryData.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_MUSIC_CATEGORY), MusicCategoryData.class);
-//
-//                spinnerMusicCategoryAdapter.setData(wrapperMusicCategoryData.getMusicCategory());
-//                spinnerMusicCategory.setSelection(0);
-//            }
-//        } else if (adapterType == CommonSpinnerAdapter.ADAPTER_TYPE.CITY) {
-//            //set city spinner data
-//            if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY))) {
-//                wrapperCityWithCountryData = ResponseCountry.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_CITY_WITH_COUNTRY), ResponseCountry.class);
-//                Log.d(TAG, "before setting spinner: " + wrapperCityWithCountryData.toString());
-//
-//                timeZone = wrapperCityWithCountryData.getAnyTimezone(strTimeZone);
-//                spinnerCityAdapter.setData(timeZone.getCity());
-//                spinnerCity.setSelection(spinnerCityAdapter.getItemPosition(SessionManager.getStringSetting(HomeActivity.this, SESSION_SELECTED_CITY)));
-//            }
-//        }
-//    }
-
     /*****************************
      * Broadcast activity update *
      *****************************/
@@ -519,7 +440,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     protected void onResume() {
         super.onResume();
         try {
-            registerReceiver(broadcastReceiver, new IntentFilter(INTENT_FILTER_ACTIVITY_UPDATE));
+            registerReceiver(broadcastReceiver, new IntentFilter(INTENT_FILTER_HOME_MUSIC_UPDATE));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -564,7 +485,6 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     /***************************
      * Fabulous Filter methods *
      ***************************/
-
     @Override
     public void onResult(Object result) {
         Log.d("k9res", "onResult: " + result.toString());
@@ -598,7 +518,6 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
                     searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
                 }
             }
-            //handle result
         }
 
     }
@@ -674,5 +593,35 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
             }
         }
         return new City("", "");
+    }
+
+    /**********************
+     * Remindable methods *
+     **********************/
+    @Override
+    public void saveSnapshot(ReminderBundle snapshot) {
+        if (musicListViewAdapter.getCount() > 0) {
+            DataMusic dataMusic = new DataMusic(musicListViewAdapter.getData());
+            snapshot.put(SNAPSHOT_DATASET_HOME, dataMusic);
+            Log.d(TAG, "Remindable(saveSnapshot): " + dataMusic.getMusics().size() + "");
+        }
+    }
+
+    @Override
+    public void onSnapshotAvailable(ReminderBundle snapshot) {
+        DataMusic dataMusic = snapshot.get(SNAPSHOT_DATASET_HOME, DataMusic.class);
+        if (dataMusic != null) {
+            ArrayList<Music> music = dataMusic.getMusics();
+            musicListViewAdapter.setData(music);
+            Log.d(TAG, "Remindable(onSnapshotAvailable): " + music.size() + "");
+        }else{
+            searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
+        }
+    }
+
+    @Override
+    public void onSnapshotNotFound() {
+        Log.d(TAG, "Remindable(onSnapshotNotFound): " + "Searching new data");
+        searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
     }
 }

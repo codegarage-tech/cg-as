@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rc.abovesound.R;
+import com.rc.abovesound.adapter.BoughtMusicListViewAdapter;
 import com.rc.abovesound.model.Music;
 import com.rc.abovesound.model.ResponseBoughtMusic;
 import com.rc.abovesound.model.UserData;
@@ -24,8 +26,6 @@ import com.rc.abovesound.util.AppUtils;
 import com.rc.abovesound.util.HttpRequestManager;
 import com.reversecoder.library.event.OnSingleClickListener;
 import com.reversecoder.library.storage.SessionManager;
-import com.rc.abovesound.R;
-import com.rc.abovesound.adapter.BoughtMusicListViewAdapter;
 
 /**
  * @author Md. Rashadul Alam
@@ -118,11 +118,11 @@ public class BoughtMusicListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (AppUtils.isServiceRunning(getApplicationContext(), MediaService.class)) {
-            Toast.makeText(BoughtMusicListActivity.this, getResources().getString(R.string.toast_please_stop_music_before_closing), Toast.LENGTH_SHORT).show();
-        } else {
+//        if (AppUtils.isServiceRunning(getApplicationContext(), MediaService.class)) {
+//            Toast.makeText(BoughtMusicListActivity.this, getResources().getString(R.string.toast_please_stop_music_before_closing), Toast.LENGTH_SHORT).show();
+//        } else {
             super.onBackPressed();
-        }
+//        }
     }
 
     /*****************************
@@ -151,7 +151,7 @@ public class BoughtMusicListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         try {
-            registerReceiver(broadcastReceiver, new IntentFilter(AllConstants.INTENT_FILTER_ACTIVITY_UPDATE));
+            registerReceiver(broadcastReceiver, new IntentFilter(AllConstants.INTENT_FILTER_BOUGHT_MUSIC_UPDATE));
         } catch (Exception e) {
             e.printStackTrace();
         }

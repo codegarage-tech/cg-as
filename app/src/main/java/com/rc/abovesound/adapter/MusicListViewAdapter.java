@@ -217,10 +217,10 @@ public class MusicListViewAdapter extends BaseAdapter {
         holder.musicFreePaid.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                if (AppUtils.isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
-                    Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_stop_music_before_buying), Toast.LENGTH_LONG).show();
-                    return;
-                }
+//                if (AppUtils.isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
+//                    Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_stop_music_before_buying), Toast.LENGTH_LONG).show();
+//                    return;
+//                }
 
                 if (!NetworkManager.isConnected(mActivity)) {
                     Toast.makeText(mActivity, mActivity.getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
@@ -257,6 +257,7 @@ public class MusicListViewAdapter extends BaseAdapter {
                 intentMediaService = new Intent(mActivity.getApplicationContext(), MediaService.class);
                 intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_ACTION, AllConstants.EXTRA_ACTION_START);
                 intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_MUSIC, mMusic);
+                intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_TYPE, MediaService.TYPE.HOME_MUSIC.name());
                 mActivity.getApplicationContext().startService(intentMediaService);
 
                 lastSelectedMusic = mMusic;
@@ -266,10 +267,10 @@ public class MusicListViewAdapter extends BaseAdapter {
         holder.musicDescription.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                if (AppUtils.isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
-                    Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_stop_music_before_checking_list), Toast.LENGTH_LONG).show();
-                    return;
-                }
+//                if (AppUtils.isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
+//                    Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_stop_music_before_checking_list), Toast.LENGTH_LONG).show();
+//                    return;
+//                }
 
                 if (!NetworkManager.isConnected(mActivity)) {
                     Toast.makeText(mActivity, mActivity.getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();

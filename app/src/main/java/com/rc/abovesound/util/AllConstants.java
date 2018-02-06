@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class AllConstants {
 
     // Reminder
-    public static final String SNAPSHOT_DATASET = "SNAPSHOT_DATASET";
+    public static final String SNAPSHOT_DATASET_HOME = "SNAPSHOT_DATASET_HOME";
 
     //Request code
     public static final int REQUEST_CODE_PAYPAL = 420;
@@ -20,13 +20,16 @@ public class AllConstants {
     //Intent extra
     public static final String KEY_INTENT_EXTRA_ACTION = "KEY_INTENT_EXTRA_ACTION";
     public static final String KEY_INTENT_EXTRA_MUSIC = "KEY_INTENT_EXTRA_MUSIC";
+    public static final String KEY_INTENT_EXTRA_TYPE = "KEY_INTENT_EXTRA_TYPE";
     public static final String KEY_INTENT_EXTRA_MUSIC_UPDATE = "KEY_INTENT_EXTRA_MUSIC_UPDATE";
     public static final String KEY_INTENT_EXTRA_ZONE = "KEY_INTENT_EXTRA_ZONE";
     public static final int EXTRA_ACTION_START = 0;
     public static final int EXTRA_ACTION_STOP = 1;
 
     //Intent filter
-    public static final String INTENT_FILTER_ACTIVITY_UPDATE = "INTENT_FILTER_ACTIVITY_UPDATE";
+    public static final String INTENT_FILTER_HOME_MUSIC_UPDATE = "INTENT_FILTER_HOME_MUSIC_UPDATE";
+    public static final String INTENT_FILTER_OWN_MUSIC_UPDATE = "INTENT_FILTER_OWN_MUSIC_UPDATE";
+    public static final String INTENT_FILTER_BOUGHT_MUSIC_UPDATE = "INTENT_FILTER_HOME_MUSIC_UPDATE";
 
     //Intent key
     public static final String INTENT_KEY_PAYPAL_MUSIC_ITEM = "INTENT_KEY_PAYPAL_MUSIC_ITEM";

@@ -25,7 +25,7 @@ public class Music extends ResponseBase implements Parcelable {
     private int progress = 0;
     private String spentTimeText = DEFAULT_SPENT_TIME_TEXT;
     private int bgEqualizer = 0;
-    private Drawable bgPlayPauseButton = ContextCompat.getDrawable(AboveSoundApplication.getGlobalContext(), R.drawable.ic_play);
+    private transient Drawable bgPlayPauseButton = ContextCompat.getDrawable(AboveSoundApplication.getGlobalContext(), R.drawable.ic_play);
     private transient CircularProgressBar progressBar = null;
     private transient ImageView equalizer;
     private transient TextView spentTime = null;

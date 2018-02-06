@@ -18,19 +18,19 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.rc.abovesound.R;
 import com.rc.abovesound.adapter.OwnMusicListViewAdapter;
 import com.rc.abovesound.model.Music;
+import com.rc.abovesound.model.ResponseOwnMusic;
 import com.rc.abovesound.model.UserData;
 import com.rc.abovesound.service.MediaService;
 import com.rc.abovesound.util.AllConstants;
 import com.rc.abovesound.util.AllUrls;
 import com.rc.abovesound.util.AppUtils;
 import com.rc.abovesound.util.HttpRequestManager;
+import com.rc.abovesound.util.IntentManager;
 import com.reversecoder.library.event.OnSingleClickListener;
 import com.reversecoder.library.util.AllSettingsManager;
-import com.rc.abovesound.R;
-import com.rc.abovesound.model.ResponseOwnMusic;
-import com.rc.abovesound.util.IntentManager;
 
 /**
  * @author Md. Rashadul Alam
@@ -231,11 +231,11 @@ public class OwnMusicListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (AppUtils.isServiceRunning(getApplicationContext(), MediaService.class)) {
-            Toast.makeText(OwnMusicListActivity.this, getResources().getString(R.string.toast_please_stop_music_before_closing), Toast.LENGTH_SHORT).show();
-        } else {
+//        if (AppUtils.isServiceRunning(getApplicationContext(), MediaService.class)) {
+//            Toast.makeText(OwnMusicListActivity.this, getResources().getString(R.string.toast_please_stop_music_before_closing), Toast.LENGTH_SHORT).show();
+//        } else {
             super.onBackPressed();
-        }
+//        }
     }
 
     /*****************************
@@ -264,7 +264,7 @@ public class OwnMusicListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         try {
-            registerReceiver(broadcastReceiver, new IntentFilter(AllConstants.INTENT_FILTER_ACTIVITY_UPDATE));
+            registerReceiver(broadcastReceiver, new IntentFilter(AllConstants.INTENT_FILTER_OWN_MUSIC_UPDATE));
         } catch (Exception e) {
             e.printStackTrace();
         }
