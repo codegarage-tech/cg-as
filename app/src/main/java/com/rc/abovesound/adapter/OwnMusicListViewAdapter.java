@@ -83,6 +83,14 @@ public class OwnMusicListViewAdapter extends BaseAdapter {
         return -1;
     }
 
+    public int getItemPositionByPrimaryKey(Music music) {
+        for (int i = 0; i < mData.size(); i++) {
+            if (mData.get(i).getPrimaryKey() == music.getPrimaryKey()) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     @Override
     public int getCount() {
@@ -223,7 +231,7 @@ public class OwnMusicListViewAdapter extends BaseAdapter {
 
         int position = getItemPositionByFilePath(music);
         if (position != -1) {
-            Music listItem = getItem(getItemPositionByFilePath(music));
+            Music listItem = getItem(position);
             if (listItem != null) {
                 CircularProgressBar progressBar = listItem.getProgressBar();
                 ImageView musicPlayStop = listItem.getPlayPauseButton();
@@ -258,6 +266,15 @@ public class OwnMusicListViewAdapter extends BaseAdapter {
         }
     }
 
+    private void updateBoughtItem(Music music) {
+        int position = getItemPositionByPrimaryKey(music);
+        if (position != -1) {
+            mData.remove(position);
+            mData.add(position, music);
+            notifyDataSetChanged();
+        }
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult");
 
@@ -268,7 +285,7 @@ public class OwnMusicListViewAdapter extends BaseAdapter {
                     Log.d(TAG, "updated music: " + music.toString());
 
                     if (music != null) {
-                        updateMusic(music);
+                        updateBoughtItem(music);
                     }
                 }
                 break;

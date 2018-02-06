@@ -3,8 +3,6 @@ package com.rc.abovesound.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,6 +75,14 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
         return -1;
     }
 
+    public int getItemPositionByPrimaryKey(Music music) {
+        for (int i = 0; i < mData.size(); i++) {
+            if (mData.get(i).getPrimaryKey() == music.getPrimaryKey()) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     @Override
     public int getCount() {
@@ -221,7 +227,7 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
 
         int position = getItemPositionByFilePath(music);
         if (position != -1) {
-            Music listItem = getItem(getItemPositionByFilePath(music));
+            Music listItem = getItem(position);
             if (listItem != null) {
                 CircularProgressBar progressBar = listItem.getProgressBar();
                 ImageView musicPlayStop = listItem.getPlayPauseButton();
@@ -256,6 +262,15 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
         }
     }
 
+    private void updateBoughtItem(Music music) {
+        int position = getItemPositionByPrimaryKey(music);
+        if (position != -1) {
+            mData.remove(position);
+            mData.add(position, music);
+            notifyDataSetChanged();
+        }
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult");
 
@@ -266,7 +281,7 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
                     Log.d(TAG, "updated music: " + music.toString());
 
                     if (music != null) {
-                        updateMusic(music);
+                        updateBoughtItem(music);
                     }
                 }
                 break;
