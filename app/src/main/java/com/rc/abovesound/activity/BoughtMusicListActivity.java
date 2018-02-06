@@ -19,7 +19,6 @@ import com.rc.abovesound.adapter.BoughtMusicListViewAdapter;
 import com.rc.abovesound.model.Music;
 import com.rc.abovesound.model.ResponseBoughtMusic;
 import com.rc.abovesound.model.UserData;
-import com.rc.abovesound.service.MediaService;
 import com.rc.abovesound.util.AllConstants;
 import com.rc.abovesound.util.AllUrls;
 import com.rc.abovesound.util.AppUtils;
@@ -121,7 +120,7 @@ public class BoughtMusicListActivity extends AppCompatActivity {
 //        if (AppUtils.isServiceRunning(getApplicationContext(), MediaService.class)) {
 //            Toast.makeText(BoughtMusicListActivity.this, getResources().getString(R.string.toast_please_stop_music_before_closing), Toast.LENGTH_SHORT).show();
 //        } else {
-            super.onBackPressed();
+        super.onBackPressed();
 //        }
     }
 
@@ -133,7 +132,7 @@ public class BoughtMusicListActivity extends AppCompatActivity {
 
             Music music = intent.getParcelableExtra(AllConstants.KEY_INTENT_EXTRA_MUSIC_UPDATE);
 
-            if (musicListViewAdapter != null) {
+            if (musicListViewAdapter != null && music != null) {
                 musicListViewAdapter.updateMusic(music);
             }
 //            Toast.makeText(HomeActivity.this, AppUtils.milliSecondsToTimer(music.getLastPlayed()) + "/" + AppUtils.milliSecondsToTimer(music.getTotalTime()), Toast.LENGTH_SHORT).show();
@@ -152,6 +151,11 @@ public class BoughtMusicListActivity extends AppCompatActivity {
         super.onResume();
         try {
             registerReceiver(broadcastReceiver, new IntentFilter(AllConstants.INTENT_FILTER_BOUGHT_MUSIC_UPDATE));
+
+            //This is for refreshing music playing while playing before going to another activity
+            if (musicListViewAdapter != null) {
+                musicListViewAdapter.notifyDataSetChanged();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

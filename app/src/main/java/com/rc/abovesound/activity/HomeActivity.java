@@ -423,7 +423,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
 
             Music music = intent.getParcelableExtra(KEY_INTENT_EXTRA_MUSIC_UPDATE);
 
-            if (musicListViewAdapter != null) {
+            if (musicListViewAdapter != null && music != null) {
                 musicListViewAdapter.updateMusic(music);
             }
         }
@@ -441,6 +441,11 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         super.onResume();
         try {
             registerReceiver(broadcastReceiver, new IntentFilter(INTENT_FILTER_HOME_MUSIC_UPDATE));
+
+            //This is for refreshing music playing while playing before going to another activity
+            if (musicListViewAdapter != null) {
+                musicListViewAdapter.notifyDataSetChanged();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -614,7 +619,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
             ArrayList<Music> music = dataMusic.getMusics();
             musicListViewAdapter.setData(music);
             Log.d(TAG, "Remindable(onSnapshotAvailable): " + music.size() + "");
-        }else{
+        } else {
             searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
         }
     }

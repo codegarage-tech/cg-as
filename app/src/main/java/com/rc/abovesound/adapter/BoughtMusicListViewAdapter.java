@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+import com.rc.abovesound.R;
 import com.rc.abovesound.activity.OwnMusicListActivity;
 import com.rc.abovesound.model.Music;
 import com.rc.abovesound.paypal.PayPalActivity;
@@ -37,12 +38,25 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
     private ArrayList<Music> mData;
     private static LayoutInflater inflater = null;
     private String TAG = BoughtMusicListViewAdapter.class.getSimpleName();
+    private Music lastSelectedMusic = null;
+
+    private static class ViewHolder {
+
+        TextView musicName;
+        TextView musicDescription;
+        TextView musicSpentTime;
+        TextView musicFreePaid;
+        ImageView musicPlayStop;
+        ImageView musicEqualizer;
+        CircularProgressBar progressBar;
+
+        Music music;
+    }
 
     public BoughtMusicListViewAdapter(Activity activity) {
         mActivity = activity;
         mData = new ArrayList<Music>();
-        inflater = (LayoutInflater) activity
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public ArrayList<Music> getData() {
@@ -54,9 +68,9 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public int getItemPosition(Music music) {
+    public int getItemPositionByFilePath(Music music) {
         for (int i = 0; i < mData.size(); i++) {
-            if ((mData.get(i)).getMusic_title().contains(music.getMusic_title())) {
+            if ((mData.get(i)).getFile_path().contains(music.getFile_path())) {
                 return i;
             }
         }
@@ -83,138 +97,117 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, final ViewGroup parent) {
 
         View vi = convertView;
-        if (convertView == null)
-            vi = inflater.inflate(com.rc.abovesound.R.layout.list_row_music, null);
+        final Music mMusic = getItem(position);
+        ViewHolder holder = null;
 
-        final Music mMusicFile = getItem(position);
+        if (convertView == null) {
+            vi = inflater.inflate(R.layout.list_row_music, parent, false);
+            holder = new ViewHolder();
 
-        TextView musicName = (TextView) vi.findViewById(com.rc.abovesound.R.id.tv_music_name);
-        TextView musicDescription = (TextView) vi.findViewById(com.rc.abovesound.R.id.tv_music_description);
-        TextView musicSpentTime = (TextView) vi.findViewById(com.rc.abovesound.R.id.tv_spent_time);
-        TextView musicFreePaid = (TextView) vi.findViewById(com.rc.abovesound.R.id.tv_music_free_paid);
-        ImageView musicPlayStop = (ImageView) vi.findViewById(com.rc.abovesound.R.id.iv_music_play_stop);
-        ImageView musicEqualizer = (ImageView) vi.findViewById(com.rc.abovesound.R.id.iv_equalizer);
-        CircularProgressBar circularProgressBar = (CircularProgressBar) vi.findViewById(com.rc.abovesound.R.id.cp_streaming_music);
+            holder.musicName = (TextView) vi.findViewById(R.id.tv_music_name);
+            holder.musicDescription = (TextView) vi.findViewById(R.id.tv_music_description);
+            holder.musicSpentTime = (TextView) vi.findViewById(R.id.tv_spent_time);
+            holder.musicFreePaid = (TextView) vi.findViewById(R.id.tv_music_free_paid);
+            holder.musicPlayStop = (ImageView) vi.findViewById(R.id.iv_music_play_stop);
+            holder.musicEqualizer = (ImageView) vi.findViewById(R.id.iv_equalizer);
+            holder.progressBar = (CircularProgressBar) vi.findViewById(R.id.cp_streaming_music);
+            holder.music = mMusic;
 
-        musicName.setText(mMusicFile.getMusic_title());
-        musicDescription.setText(AppUtils.getUnderlinedText(mMusicFile.getFirst_name() + " " + mMusicFile.getLast_name()));
-
-        if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYER_RUNNING) {
-            Drawable stopDrawable = ContextCompat.getDrawable(mActivity, com.rc.abovesound.R.drawable.ic_stop);
-            musicPlayStop.setImageDrawable(stopDrawable);
-
-            Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.PLAYING);
-            musicEqualizer.setImageDrawable(drawable);
-
-            //to avoid arethmetic exception
-            if (mMusicFile.getTotalTime() > 0) {
-                Log.d(TAG, "total: " + mMusicFile.getTotalTime() + "");
-                Log.d(TAG, "last progress: " + mMusicFile.getLastPlayed() + "");
-                int progress = (int) (((float) mMusicFile.getLastPlayed() / mMusicFile.getTotalTime()) * 100);
-                Log.d(TAG, "progress: " + progress + "");
-                circularProgressBar.setProgress(progress);
-            }
-            musicSpentTime.setText(AppUtils.milliSecondsToTimer(mMusicFile.getLastPlayed()) + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
-        } else if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_STOPPED) {
-            Drawable playDrawable = ContextCompat.getDrawable(mActivity, com.rc.abovesound.R.drawable.ic_play);
-            musicPlayStop.setImageDrawable(playDrawable);
-
-            Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
-            musicEqualizer.setImageDrawable(drawable);
-
-            musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
-            circularProgressBar.setProgressWithAnimation(0);
-        } else if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_FINISHED) {
-            Drawable playDrawable = ContextCompat.getDrawable(mActivity, com.rc.abovesound.R.drawable.ic_play);
-            musicPlayStop.setImageDrawable(playDrawable);
-//
-            Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
-            musicEqualizer.setImageDrawable(drawable);
-
-            musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
-            circularProgressBar.setProgressWithAnimation(0);
-        } else if (mMusicFile.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_PAID) {
-            Drawable playDrawable = ContextCompat.getDrawable(mActivity, com.rc.abovesound.R.drawable.ic_play);
-            musicPlayStop.setImageDrawable(playDrawable);
-
-            Drawable drawable = AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE);
-            musicEqualizer.setImageDrawable(drawable);
-
-            musicSpentTime.setText("0.00" + "/" + AppUtils.milliSecondsToTimer(mMusicFile.getTotalTime()));
-            circularProgressBar.setProgressWithAnimation(0);
-
-            //stop music service
-            if (AppUtils.isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
-                Intent intentMediaService = new Intent(mActivity.getApplicationContext(), MediaService.class);
-                intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_ACTION, AllConstants.EXTRA_ACTION_STOP);
-                mActivity.getApplicationContext().stopService(intentMediaService);
-            }
-
-            Toast.makeText(mActivity, mActivity.getString(com.rc.abovesound.R.string.toast_please_buy_song_for_listening_full_song), Toast.LENGTH_LONG).show();
-        }
-
-        if (mMusicFile.getIs_paid().equalsIgnoreCase("1")) {
-            musicFreePaid.setVisibility(View.VISIBLE);
-            musicFreePaid.setText(AppUtils.getUnderlinedText("$" + mMusicFile.getPrice()));
+            vi.setTag(holder);
         } else {
-            musicFreePaid.setVisibility(View.GONE);
+            holder = (ViewHolder) vi.getTag();
+
+            holder.music.setProgressBar(null);
+            holder.music.setEqualizer(null);
+            holder.music.setPlayPauseButton(null);
+            holder.music.setSpentTime(null);
+
+            holder.music = mMusic;
+
+            holder.music.setProgressBar(holder.progressBar);
+            holder.music.setEqualizer(holder.musicEqualizer);
+            holder.music.setPlayPauseButton(holder.musicPlayStop);
+            holder.music.setSpentTime(holder.musicSpentTime);
         }
 
-        musicFreePaid.setOnClickListener(new OnSingleClickListener() {
+        mMusic.setProgressBar(holder.progressBar);
+        mMusic.setSpentTime(holder.musicSpentTime);
+        mMusic.setEqualizer(holder.musicEqualizer);
+        mMusic.setPlayPauseButton(holder.musicPlayStop);
+
+        holder.progressBar.setProgress(mMusic.getProgress());
+        holder.musicSpentTime.setText(mMusic.getSpentTimeText());
+        holder.musicPlayStop.setImageDrawable(mMusic.getBgPlayPauseButton());
+        holder.musicEqualizer.setImageDrawable((mMusic.getBgEqualizer() == 1) ? AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.PLAYING) : AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE));
+        holder.musicName.setText(mMusic.getMusic_title());
+        holder.musicDescription.setText(AppUtils.getUnderlinedText(mMusic.getFirst_name() + " " + mMusic.getLast_name()));
+
+        if (mMusic.getIs_paid().equalsIgnoreCase("1")) {
+            holder.musicFreePaid.setVisibility(View.VISIBLE);
+            holder.musicFreePaid.setText(AppUtils.getUnderlinedText("$" + mMusic.getPrice()));
+        } else {
+            holder.musicFreePaid.setVisibility(View.GONE);
+        }
+
+        holder.musicFreePaid.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                if (AppUtils.isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
-                    Toast.makeText(mActivity, mActivity.getString(com.rc.abovesound.R.string.toast_please_stop_music_before_buying), Toast.LENGTH_LONG).show();
-                    return;
-                }
 
                 if (!NetworkManager.isConnected(mActivity)) {
                     Toast.makeText(mActivity, mActivity.getResources().getString(com.rc.abovesound.R.string.toast_network_error), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (mMusicFile.getIs_paid().equalsIgnoreCase("1")) {
+                if (mMusic.getIs_paid().equalsIgnoreCase("1")) {
                     Intent intentPaypal = new Intent(mActivity, PayPalActivity.class);
-                    intentPaypal.putExtra(AllConstants.INTENT_KEY_PAYPAL_MUSIC_ITEM, mMusicFile);
+                    intentPaypal.putExtra(AllConstants.INTENT_KEY_PAYPAL_MUSIC_ITEM, mMusic);
                     mActivity.startActivityForResult(intentPaypal, AllConstants.REQUEST_CODE_PAYPAL);
                 }
             }
         });
 
-        musicPlayStop.setOnClickListener(new OnSingleClickListener() {
+        holder.musicPlayStop.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
+
                 Intent intentMediaService = null;
+
                 if (AppUtils.isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
                     intentMediaService = new Intent(mActivity.getApplicationContext(), MediaService.class);
                     intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_ACTION, AllConstants.EXTRA_ACTION_STOP);
                     mActivity.getApplicationContext().stopService(intentMediaService);
-                } else {
-                    intentMediaService = new Intent(mActivity.getApplicationContext(), MediaService.class);
-                    intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_ACTION, AllConstants.EXTRA_ACTION_START);
-                    intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_MUSIC, mMusicFile);
-                    mActivity.getApplicationContext().startService(intentMediaService);
+
+                    // For stopping running music
+                    if (lastSelectedMusic != null) {
+                        if (lastSelectedMusic.getFile_path().equalsIgnoreCase(mMusic.getFile_path())) {
+                            return;
+                        }
+                    }
                 }
+
+                intentMediaService = new Intent(mActivity.getApplicationContext(), MediaService.class);
+                intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_ACTION, AllConstants.EXTRA_ACTION_START);
+                intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_MUSIC, mMusic);
+                intentMediaService.putExtra(AllConstants.KEY_INTENT_EXTRA_TYPE, MediaService.TYPE.BOUGHT_MUSIC.name());
+                mActivity.getApplicationContext().startService(intentMediaService);
+
+                lastSelectedMusic = mMusic;
             }
         });
 
-        musicDescription.setOnClickListener(new OnSingleClickListener() {
+        holder.musicDescription.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                if (AppUtils.isServiceRunning(mActivity.getApplicationContext(), MediaService.class)) {
-                    Toast.makeText(mActivity, mActivity.getString(com.rc.abovesound.R.string.toast_please_stop_music_before_checking_list), Toast.LENGTH_LONG).show();
-                    return;
-                }
 
                 if (!NetworkManager.isConnected(mActivity)) {
                     Toast.makeText(mActivity, mActivity.getResources().getString(com.rc.abovesound.R.string.toast_network_error), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                Log.d(TAG, "music: adapter: " + mMusicFile.toString());
+                Log.d(TAG, "music: adapter: " + mMusic.toString());
 
                 Intent intentOwnMusicList = new Intent(mActivity, OwnMusicListActivity.class);
-                intentOwnMusicList.putExtra(AllConstants.INTENT_KEY_OWN_MUSIC_LIST_ITEM_MUSIC, mMusicFile);
+                intentOwnMusicList.putExtra(AllConstants.INTENT_KEY_OWN_MUSIC_LIST_ITEM_MUSIC, mMusic);
                 intentOwnMusicList.putExtra(AllConstants.INTENT_KEY_OWN_MUSIC_LIST_FROM_MENU, false);
                 mActivity.startActivity(intentOwnMusicList);
             }
@@ -224,10 +217,43 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
     }
 
     public void updateMusic(Music music) {
-        int position = getItemPosition(music);
-        mData.remove(position);
-        mData.add(position, music);
-        notifyDataSetChanged();
+        Log.d("UpdateTest: ", music.toString());
+
+        int position = getItemPositionByFilePath(music);
+        if (position != -1) {
+            Music listItem = getItem(getItemPositionByFilePath(music));
+            if (listItem != null) {
+                CircularProgressBar progressBar = listItem.getProgressBar();
+                ImageView musicPlayStop = listItem.getPlayPauseButton();
+                ImageView musicEqualizer = listItem.getEqualizer();
+                TextView musicSpentTime = listItem.getSpentTime();
+
+                if (progressBar != null) {
+                    if (music.getProgress() == 0) {
+                        progressBar.setProgressWithAnimation(music.getProgress());
+                    } else {
+                        progressBar.setProgress(music.getProgress());
+                    }
+                    progressBar.invalidate();
+                }
+                if (musicPlayStop != null) {
+                    musicPlayStop.setImageDrawable(music.getBgPlayPauseButton());
+                    musicPlayStop.invalidate();
+                }
+                if (musicEqualizer != null) {
+                    musicEqualizer.setImageDrawable((music.getBgEqualizer() == 1) ? AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.PLAYING) : AppUtils.getDrawableByState(mActivity, AppUtils.MEDIA_STATE.NONE));
+                    musicEqualizer.invalidate();
+                }
+                if (musicSpentTime != null) {
+                    musicSpentTime.setText(music.getSpentTimeText());
+                    musicSpentTime.invalidate();
+                }
+
+                if (music.getIsPlaying() == AllConstants.MEDIA_PLAYBACK_PAID) {
+                    Toast.makeText(mActivity, mActivity.getString(R.string.toast_please_buy_song_for_listening_full_song), Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -239,7 +265,9 @@ public class BoughtMusicListViewAdapter extends BaseAdapter {
                     Music music = data.getParcelableExtra(AllConstants.INTENT_KEY_PAYPAL_UPDATE_MUSIC_ITEM);
                     Log.d(TAG, "updated music: " + music.toString());
 
-                    updateMusic(music);
+                    if (music != null) {
+                        updateMusic(music);
+                    }
                 }
                 break;
             }

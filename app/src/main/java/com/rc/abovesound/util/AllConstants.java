@@ -29,7 +29,7 @@ public class AllConstants {
     //Intent filter
     public static final String INTENT_FILTER_HOME_MUSIC_UPDATE = "INTENT_FILTER_HOME_MUSIC_UPDATE";
     public static final String INTENT_FILTER_OWN_MUSIC_UPDATE = "INTENT_FILTER_OWN_MUSIC_UPDATE";
-    public static final String INTENT_FILTER_BOUGHT_MUSIC_UPDATE = "INTENT_FILTER_HOME_MUSIC_UPDATE";
+    public static final String INTENT_FILTER_BOUGHT_MUSIC_UPDATE = "INTENT_FILTER_BOUGHT_MUSIC_UPDATE";
 
     //Intent key
     public static final String INTENT_KEY_PAYPAL_MUSIC_ITEM = "INTENT_KEY_PAYPAL_MUSIC_ITEM";
