@@ -291,7 +291,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="65dp">
+                android:layout_height="65dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/iv_bio"
@@ -329,7 +330,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="65dp">
+                android:layout_height="65dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/iv_facebook_id"
@@ -367,7 +369,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="65dp">
+                android:layout_height="65dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/iv_twitter_id"
@@ -405,7 +408,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="65dp">
+                android:layout_height="65dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/iv_youtube_channel_id"

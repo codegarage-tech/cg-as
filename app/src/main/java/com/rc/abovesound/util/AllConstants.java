@@ -12,6 +12,7 @@ public class AllConstants {
 
     // Reminder
     public static final String SNAPSHOT_DATASET_HOME = "SNAPSHOT_DATASET_HOME";
+    public static final long MILLIS_HOUR = 1000 * 60 * 60;
 
     //Request code
     public static final int REQUEST_CODE_PAYPAL = 420;

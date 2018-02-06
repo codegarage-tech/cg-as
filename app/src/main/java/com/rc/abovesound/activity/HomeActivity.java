@@ -231,6 +231,10 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
                     getApplicationContext().stopService(intentMediaService);
                 }
                 SessionManager.setBooleanSetting(HomeActivity.this, SESSION_IS_USER_LOGGED_IN, false);
+
+                // Delete reminder data
+                Reminder.deleteAll();
+
                 Intent logoutIntent = new Intent(HomeActivity.this, LoginActivity.class);
                 startActivity(logoutIntent);
                 finish();
@@ -614,11 +618,20 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
 
     @Override
     public void onSnapshotAvailable(ReminderBundle snapshot) {
+
+//        //Check how old the snapshot is. Fetch new content if it's 8 hours old or more.
+//        if (snapshot.isMillisecondsOld(8 * MILLIS_HOUR)) {
+//        }
+
         DataMusic dataMusic = snapshot.get(SNAPSHOT_DATASET_HOME, DataMusic.class);
         if (dataMusic != null) {
             ArrayList<Music> music = dataMusic.getMusics();
-            musicListViewAdapter.setData(music);
-            Log.d(TAG, "Remindable(onSnapshotAvailable): " + music.size() + "");
+            if (music != null && music.size() > 0) {
+                musicListViewAdapter.setData(music);
+                Log.d(TAG, "Remindable(onSnapshotAvailable): " + music.size() + "");
+            } else {
+                searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
+            }
         } else {
             searchMusic(getSelectedMusicCategory(selectedMusicCategory).getId(), getSelectedCity(selectedState).getId());
         }
