@@ -63,8 +63,8 @@ public class LoginActivity extends AppCompatActivity {
 
         tvTitle.setText("Welcome");
 
-        edtEmail.setText("rashed.droid@gmail.com");
-        edtPassword.setText("123456");
+//        edtEmail.setText("rashed.droid@gmail.com");
+//        edtPassword.setText("123456");
 
         setupToolBar();
     }

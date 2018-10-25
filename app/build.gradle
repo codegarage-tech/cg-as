@@ -1,18 +1,22 @@
 apply plugin: 'com.android.application'
 
-repositories {
-    maven {
-        url "https://raw.github.com/reversecoder/rc-permission-androidstudio/snapshots"
-    }
-    maven {
-        url "https://raw.github.com/reversecoder/rc-librarydemo-androidstudio/snapshots"
-    }
-}
-
 android {
 
     compileSdkVersion appCompileSdkVersion
     buildToolsVersion appBuildToolsVersion
+
+    signingConfigs {
+        releaseConfig {
+            try {
+                keyAlias 'keydata.keystore'
+                keyPassword KEY_PASSWORD
+                storeFile file('../misc/keydata.keystore')
+                storePassword STORE_PASSWORD
+            } catch (ex) {
+                throw new InvalidUserDataException("You should define KEY_PASSWORD and STORE_PASSWORD in gradle.properties.")
+            }
+        }
+    }
 
     defaultConfig {
         applicationId "com.rc.abovesound"
@@ -23,14 +27,56 @@ android {
 
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
+
+        // define your base Applications name here
+        resValue 'string', 'app_name', 'AboveSound'
     }
 
     buildTypes {
+        debug {
+            shrinkResources false
+            minifyEnabled false
+            debuggable true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         release {
             shrinkResources true
             minifyEnabled true
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseConfig
+        }
+    }
+
+    //Flavor definition
+    flavorDimensions "appType"
+    productFlavors {
+        pro {
+            dimension "appType"
+        }
+    }
+
+    //Format output
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            println variant
+
+            //Rename the output apk file
+            def appName = variant.mergedFlavor.resValues.get('app_name').getValue()
+            def underScore = "_"
+            def hyphen = "-"
+            def flavor = variant.baseName.split("-")[0]
+            def version = variant.versionName
+            def buildType = variant.buildType.name
+            def releaseApkName = appName + underScore + convertToCamelCase(flavor) + underScore + version + underScore + convertToCamelCase(buildType) + ".apk"
+            outputFileName = releaseApkName
+
+            // set new resVale
+            def finalAppName = ""
+            if (flavor.equals('pro')) {
+                finalAppName = appName
+            }
+            variant.resValue 'string', 'app_name', finalAppName
         }
     }
 
@@ -40,6 +86,33 @@ android {
         // but continue the build even when errors are found:
         abortOnError false
     }
+}
+
+def static String convertToCamelCase(String str) {
+    if (str == null) {
+        return null
+    }
+
+    boolean space = true
+    StringBuilder builder = new StringBuilder(str)
+    final int len = builder.length()
+
+    for (int i = 0; i < len; ++i) {
+        char c = builder.charAt(i)
+        if (space) {
+            if (!Character.isWhitespace(c)) {
+                // Convert to title case and switch out of whitespace mode.
+                builder.setCharAt(i, Character.toTitleCase(c))
+                space = false
+            }
+        } else if (Character.isWhitespace(c)) {
+            space = true
+        } else {
+            builder.setCharAt(i, Character.toLowerCase(c))
+        }
+    }
+
+    return builder.toString()
 }
 
 dependencies {

@@ -112,7 +112,6 @@ public class MusicListViewAdapter extends BaseAdapter {
         View vi = convertView;
         final Music mMusic = getItem(position);
         ViewHolder holder = null;
-
         if (convertView == null) {
             vi = inflater.inflate(R.layout.list_row_music, parent, false);
             holder = new ViewHolder();
@@ -203,6 +202,11 @@ public class MusicListViewAdapter extends BaseAdapter {
                             return;
                         }
                     }
+                }
+
+                if (!NetworkManager.isConnected(mActivity)) {
+                    Toast.makeText(mActivity, mActivity.getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
                 intentMediaService = new Intent(mActivity.getApplicationContext(), MediaService.class);

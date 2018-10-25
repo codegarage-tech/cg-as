@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Above Sound</string>
     <string name="app_version_name" translatable="false">1.0.6</string>
 
     <!-- Activity Title -->
