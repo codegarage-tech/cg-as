@@ -3,6 +3,8 @@ package com.rc.abovesound.application;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.multidex.MultiDex;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.onecodelabs.reminder.Reminder;
 
@@ -22,7 +24,14 @@ public class AboveSoundApplication extends Application {
 
         mContext = this;
 
+        //For using vector drawable
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
+        //Initialize font
         initTypeface();
+
+        //Multidex initialization
+        MultiDex.install(this);
 
         //Set reminder
         Reminder.init(this);

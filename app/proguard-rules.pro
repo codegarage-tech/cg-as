@@ -1,6 +1,6 @@
 # Add project specific ProGuard rules here.
 # By default, the flags in this file are appended to flags specified
-# in /home/rashed/BattleField/Android_setup/Android_stuido_setup/sdk/tools/proguard/proguard-android.txt
+# in /Users/suzuki.ren/Library/Android/sdk/tools/proguard/proguard-android.txt
 # You can edit the include path and order by changing the proguardFiles
 # directive in build.gradle.
 #
@@ -16,37 +16,37 @@
 #   public *;
 #}
 
-#Default/common configuration for all project.
--optimizationpasses 5
--dontusemixedcaseclassnames
--allowaccessmodification
--dontskipnonpubliclibraryclasses
--dontskipnonpubliclibraryclassmembers
--dontpreverify
--dontoptimize
--ignorewarning
--useuniqueclassmembernames
--verbose
--dump class_files.txt
--printseeds seeds.txt
--printusage unused.txt
--printmapping mapping.txt
--optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
--keepattributes SourceFile,LineNumberTable
--keepattributes *Annotation*
--renamesourcefileattribute SourceFile
--repackageclasses ''
+# Uncomment this to preserve the line number information for
+# debugging stack traces.
+#-keepattributes SourceFile,LineNumberTable
 
--keep public class * extends android.app.Activity
--keep public class * extends android.app.Application
--keep public class * extends android.app.Service
--keep public class * extends android.content.BroadcastReceiver
--keep public class * extends android.content.ContentProvider
--keep public class * extends android.app.backup.BackupAgentHelper
--keep public class * extends android.preference.Preference
--keep public class com.android.vending.licensing.ILicensingService
--keep public class com.android.vending.billing.IInAppBillingService
--keep public class android.graphics.Canvas
+# If you keep the line number information, uncomment this to
+# hide the original source file name.
+#-renamesourcefileattribute SourceFile
+
+# Annotation, Exceptions, Signatureなどを難読化対象から外す
+
+-keepattributes *Annotation*,Exceptions,Signature,SourceFile,LineNumberTable,InnerClass
+
+# Activity, Application, Service, BroadcastReceiver等
+# Androidシステム上難読化できないクラスは除外
+
+-keep public class * extends android.app.*
+-keep public class * extends android.content.*
+-keep public class * extends android.os.Binder
+-keep public class * extends android.widget.*
+-keep public class * extends android.support.v4.app.Fragment
+-keep public class * extends android.support.v7.app.AppCompatActivity
+
+-keep public class * extends com.nttdocomo.dch.base.BaseActivity
+-keep public class * extends com.nttdocomo.dch.base.BaseFragment
+-keep public class * extends com.nttdocomo.dch.base.mvp.BasePresenter
+-keep public class * extends com.nttdocomo.dch.base.mvp.BaseView
+
+
+-keepclassmembers class * implements android.os.Parcelable {
+    static ** CREATOR;
+}
 
 -keep public class * extends android.view.View {
     public <init>(android.content.Context);
@@ -55,18 +55,8 @@
     public void set*(...);
 }
 
-# Preserve all native method names and the names of their classes.
--keepclassmembers class * {
-    native <methods>;
-}
-
--keepclasseswithmembernames class * {
-    native <methods>;
-}
-
 -keepclasseswithmembers class * {
     public <init>(android.content.Context, android.util.AttributeSet);
-    public boolean performClick();
 }
 
 -keepclasseswithmembers class * {
@@ -74,82 +64,73 @@
 }
 
 -keepclassmembers class * extends android.content.Context {
-    public void *(android.view.View);
-    public void *(android.view.MenuItem);
+   public void *(android.view.View);
+   public void *(android.view.MenuItem);
 }
 
--keep public class * {
-    public protected *;
-}
-
--keep class * implements android.os.Parcelable {
-  public static final android.os.Parcelable$Creator *;
+-keepclassmembers class **.R$* {
+    public static <fields>;
 }
 
 -keepnames class * implements java.io.Serializable
-
-# Explicitly preserve all serialization members. The Serializable interface
-# is only a marker interface, so it wouldn't save them.
 -keepclassmembers class * implements java.io.Serializable {
     static final long serialVersionUID;
     private static final java.io.ObjectStreamField[] serialPersistentFields;
     !static !transient <fields>;
+    !private <fields>;
+    !private <methods>;
     private void writeObject(java.io.ObjectOutputStream);
     private void readObject(java.io.ObjectInputStream);
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
 }
+-dontwarn android.security.**
+-dontwarn android.databinding.**
 
--keepclassmembers class * extends andriod.app.Activity {
-    public void *On*Click(android.view.View);
-    public void *on*Click(android.view.View);
-}
+########## Android Support Library ##########
+-dontwarn android.support.v4.**
+-keep class android.support.v4.** { *; }
+-dontwarn android.support.v7.**
+-keep class android.support.v7.** { *; }
+-keep interface android.support.v7.** { *; }
+-dontwarn android.support.design.**
+-keep class android.support.design.** { *; }
+-keep interface android.support.design.** { *; }
+-keep public class android.support.design.R$* { *; }
 
-# Preserve the special static methods that are required in all enumeration classes.
--keepclassmembers enum * {
-    public static **[] values();
-    public static ** valueOf(java.lang.String);
-}
+########## OkHttp3 ##########
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.* { *; }
+-keep class okio.** { *; }
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-dontwarn org.conscrypt.**
 
-# Preserve static fields of inner classes of R classes that might be accessed
-# through introspection.
--keepclassmembers class **.R$* {
-  public static <fields>;
-}
+########## SQLite ##########
+-keep class org.sqlite.** { *; }
+-keep class org.sqlite.database.** { *; }
 
-#To remove debug logs:
--assumenosideeffects class android.util.Log {
-    public static *** d(...);
-    public static *** v(...);
-}
-
-##---------------End: proguard configuration common for all Android apps ----------
-
-##--------------Start: Custom library projects and libs go here.
--keep class com.customviews.library.**{ *; }
--keep class com.customviewanimations.library.**{ *; }
--keep class com.android.volley.** { *; }
--keep class com.nineoldandroids.** { *; }
--keep class org.apache.** { *; }
--keep class com.android.internal.http.multipart.** { *; }
--keep class com.daimajia.easing.** { *; }
-
--keep class com.github.tamir7.contacts.** { *; }
--keep class com.diroag.floatingwindows.** { *; }
--keep class com.wdullaer.materialdatetimepicker.** { *; }
--keep class com.reversecoder.residemenu.** { *; }
--keep class com.rodolfonavalon.shaperipplelibrary.** { *; }
--keep class br.com.stickyindex.** { *; }
--keep class cc.solart.wave.** { *; }
-##---------------Begin: proguard configuration for Gson  ----------
-# Gson uses generic type information stored in a class file when working with fields. Proguard
-# removes such information by default, so configure it to keep all of it.
--keepattributes Signature
-# Gson specific classes
--keep class sun.misc.Unsafe { *; }
+########## Gson ##########
+-keep class com.google.gson.** { *; }
 -keep class com.google.gson.stream.** { *; }
-# Application classes that will be serialized/deserialized over Gson
-#-keep class com.google.gson.examples.android.model.** { *; }
--keep class com.reversecoder.ci.model.** { *; }
--keep class com.github.tamir7.contacts.** { *; }
-##---------------End: proguard configuration for Gson  ----------
+-keep class sum.misc.Unsafe { *; }
+-keepattributes Expose
+-keepattributes SerializedName
+-keepattributes Since
+-keepattributes Until
+-keepclasseswithmembers class * { @com.google.gson.annotations.Expose <fields>; }
+# Prevent proguard from stripping interface information from TypeAdapterFactory,
+# JsonSerializer, JsonDeserializer instances (so they can be used in @JsonAdapter)
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+# keep enum so gson can deserialize it
+-keepclassmembers enum * { *; }
+
+### TODO declare the classes which use GSON
+-keep class com.onecodelabs.reminder.remindful.SqliteRemindfulPersister {*;}
+-keep class com.onecodelabs.reminder.util.** {*;}
+
+########## Apache commons ##########
+-keep class org.apache.commons.** {*;}
