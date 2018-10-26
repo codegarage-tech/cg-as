@@ -131,6 +131,7 @@
 ### TODO declare the classes which use GSON
 -keep class com.onecodelabs.reminder.remindful.SqliteRemindfulPersister {*;}
 -keep class com.onecodelabs.reminder.util.** {*;}
+-keep class com.rc.abovesound.model.** {*;}
 
 ########## Apache commons ##########
 -keep class org.apache.commons.** {*;}

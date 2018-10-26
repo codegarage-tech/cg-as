@@ -38,8 +38,8 @@ allprojects {
 //        }
 //    }
 
-    ext.appVersionCode = 106
-    ext.appVersionName = "1.0.6"
+    ext.appVersionCode = 107
+    ext.appVersionName = "1.0.7"
     ext.appMinSdkVersion = 16
     ext.appTargetSdkVersion = 28
     ext.appCompileSdkVersion = 28
