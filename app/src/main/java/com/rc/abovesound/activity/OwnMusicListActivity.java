@@ -33,7 +33,7 @@ import com.reversecoder.library.util.AllSettingsManager;
 
 /**
  * @author Md. Rashadul Alam
- *         Email: rashed.droid@gmail.com
+ * Email: rashed.droid@gmail.com
  */
 public class OwnMusicListActivity extends AppCompatActivity {
 
@@ -110,6 +110,8 @@ public class OwnMusicListActivity extends AppCompatActivity {
                     .load(user.getProfile_image())
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
                     .apply(new RequestOptions().circleCropTransform())
+                    .apply(new RequestOptions().placeholder(R.drawable.vector_user_profile))
+                    .apply(new RequestOptions().error(R.drawable.vector_user_profile))
                     .into(ivProfileImage);
 
             if (AllSettingsManager.isNullOrEmpty(user.getFirst_name())

@@ -48,6 +48,7 @@ import com.reversecoder.library.event.OnSingleClickListener;
 import com.reversecoder.library.network.NetworkManager;
 import com.reversecoder.library.storage.SessionManager;
 import com.yalantis.guillotine.animation.GuillotineAnimation;
+import com.yalantis.guillotine.interfaces.GuillotineListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,7 +71,7 @@ import static com.rc.abovesound.util.AllConstants.SNAPSHOT_DATASET_HOME;
 
 /**
  * @author Md. Rashadul Alam
- *         Email: rashed.droid@gmail.com
+ * Email: rashed.droid@gmail.com
  */
 public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragment.Callbacks, AAH_FabulousFragment.AnimationListener, Remindable {
 
@@ -82,7 +83,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     GuillotineAnimation guillotineAnimation;
     TextView tvTitle;
     TextView tvNoInfoFound;
-    LinearLayout llLogOut, llHome, llProfile, llOwnMusic, llBoughtMusic, llZone;
+    LinearLayout llLogOut, llHome, llProfile, llBoughtMusic, llZone;
     private static final String TAG = HomeActivity.class.getSimpleName();
     MusicCategoryData wrapperMusicCategoryData;
     ResponseCountry wrapperCityWithCountryData;
@@ -134,7 +135,6 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         llLogOut = (LinearLayout) findViewById(R.id.ll_logout);
         llHome = (LinearLayout) findViewById(R.id.ll_home);
         llProfile = (LinearLayout) findViewById(R.id.ll_profile);
-        llOwnMusic = (LinearLayout) findViewById(R.id.ll_own_music);
         llBoughtMusic = (LinearLayout) findViewById(R.id.ll_bought_music);
         llZone = (LinearLayout) findViewById(R.id.ll_zone);
         lvMusic = (ListView) findViewById(R.id.lv_music);
@@ -195,6 +195,17 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
                 .setStartDelay(RIPPLE_DURATION)
                 .setActionBarViewForAnimation(toolbar)
                 .setClosedOnStart(true)
+                .setGuillotineListener(new GuillotineListener() {
+                    @Override
+                    public void onGuillotineOpened() {
+                        fabFilter.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onGuillotineClosed() {
+                        fabFilter.setVisibility(View.VISIBLE);
+                    }
+                })
                 .build();
 
         ((TextView) guillotineMenu.findViewById(R.id.text_title)).setText(getString(R.string.title_menu));
@@ -248,7 +259,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
             }
         });
 
-        llOwnMusic.setOnClickListener(new OnSingleClickListener() {
+        llProfile.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
 //                if (AppUtils.isServiceRunning(getApplicationContext(), MediaService.class)) {
@@ -288,13 +299,13 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
             }
         });
 
-        llProfile.setOnClickListener(new OnSingleClickListener() {
-            @Override
-            public void onSingleClick(View view) {
-                Intent profileIntent = new Intent(HomeActivity.this, ProfileActivity.class);
-                startActivity(profileIntent);
-            }
-        });
+//        llProfile.setOnClickListener(new OnSingleClickListener() {
+//            @Override
+//            public void onSingleClick(View view) {
+//                Intent profileIntent = new Intent(HomeActivity.this, ProfileActivity.class);
+//                startActivity(profileIntent);
+//            }
+//        });
 
         llZone.setOnClickListener(new OnSingleClickListener() {
             @Override

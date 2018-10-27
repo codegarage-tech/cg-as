@@ -10,7 +10,7 @@ import org.json.JSONObject;
 public class AllUrls {
 
     private static String TAG = AllUrls.class.getSimpleName();
-    private static final String BASE_URL = "http://ntstx.com/music_app/index.php/";
+    private static final String BASE_URL = "http://abovesoundusa.com/above-sound-users/index.php/";
 
     public static String getLoginUrl() {
         String url = BASE_URL + "user/login";

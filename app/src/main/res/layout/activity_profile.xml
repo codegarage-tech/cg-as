@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -22,15 +23,36 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/ll_toolbar"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp">
+        android:layout_below="@+id/ll_toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="20dp"
             android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/dp_10">
+
+                <ImageView
+                    android:id="@+id/iv_profile_image"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    app:srcCompat="@drawable/vector_user_profile" />
+
+                <ImageView
+                    android:id="@+id/iv_pick_image"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignRight="@+id/iv_profile_image"
+                    android:layout_alignBottom="@+id/iv_profile_image"
+                    android:layout_gravity="bottom"
+                    app:srcCompat="@drawable/vector_attachment_grey" />
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -41,10 +63,10 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_above="@+id/line_first_name"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="15dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="15dp"
                     android:background="@drawable/ic_name" />
 
                 <EditText
@@ -79,10 +101,10 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_above="@+id/line_last_name"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="15dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="15dp"
                     android:background="@drawable/ic_name" />
 
                 <EditText
@@ -117,10 +139,10 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_above="@+id/line_country"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="15dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="15dp"
                     android:background="@drawable/ic_country" />
 
                 <Spinner
@@ -151,10 +173,10 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_above="@+id/line_zone"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="15dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="15dp"
                     android:background="@drawable/ic_country" />
 
                 <Spinner
@@ -185,10 +207,10 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_above="@+id/line_city"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="15dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="15dp"
                     android:background="@drawable/ic_city" />
 
                 <Spinner
@@ -219,10 +241,10 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_above="@+id/line_email"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="15dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="15dp"
                     android:background="@drawable/ic_email" />
 
                 <EditText
@@ -257,10 +279,10 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_above="@+id/line_password"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="15dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="15dp"
                     android:background="@drawable/ic_password" />
 
                 <EditText
@@ -296,10 +318,10 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_above="@+id/line_bio"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="15dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="15dp"
                     android:background="@drawable/ic_bio" />
 
                 <EditText
@@ -334,10 +356,10 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_above="@+id/line_facebook_id"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="15dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="15dp"
                     android:background="@drawable/ic_facebook" />
 
                 <EditText
@@ -372,10 +394,10 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_above="@+id/line_twitter_id"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="15dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="15dp"
                     android:background="@drawable/ic_twitter" />
 
                 <EditText
@@ -410,10 +432,10 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_above="@+id/edt_youtube_channel_id"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="15dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="15dp"
                     android:background="@drawable/ic_youtube" />
 
                 <EditText
@@ -443,8 +465,8 @@
                 android:id="@+id/ll_control_block"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
                 android:layout_marginTop="50dp"
+                android:layout_marginBottom="20dp"
                 android:orientation="vertical">
 
                 <Button
