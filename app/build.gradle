@@ -134,6 +134,7 @@ dependencies {
     implementation project(":musicindicator")
     implementation project(":fabulousfilter")
     implementation project(":reminder")
+    implementation project(":matisse")
 
     implementation 'com.reversecoder.permission:rc-permission:1.0.1-SNAPSHOT'
     implementation 'com.reversecoder.library:rc-library:1.0.1-SNAPSHOT'
