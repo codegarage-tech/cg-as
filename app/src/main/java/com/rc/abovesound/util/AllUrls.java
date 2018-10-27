@@ -34,7 +34,7 @@ public class AllUrls {
     }
 
     public static JSONObject getSignUpParameters(String email, String password, String firstName, String lastName
-            , String city, String bio, String facebookID, String twitterID, String youtubeChannelID) {
+            , String city, String bio, String facebookID, String twitterID, String youtubeChannelID, String base64Image) {
         JSONObject params = HttpRequestManager.HttpParameter.getInstance()
                 .addJSONParam("email", email)
                 .addJSONParam("password", password)
@@ -46,6 +46,7 @@ public class AllUrls {
                 .addJSONParam("twitter", twitterID)
                 .addJSONParam("id", 0)
                 .addJSONParam("youtube", youtubeChannelID)
+                .addJSONParam("profile_image", base64Image)
                 .getJSONParam();
         Log.d(TAG, "getSignUpParameters: " + params.toString());
         return params;

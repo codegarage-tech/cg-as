@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,11 +14,18 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.developers.imagezipper.ImageZipper;
+import com.rc.abovesound.R;
 import com.rc.abovesound.adapter.CommonSpinnerAdapter;
+import com.rc.abovesound.model.City;
 import com.rc.abovesound.model.Country;
 import com.rc.abovesound.model.ResponseCountry;
 import com.rc.abovesound.model.ResponseUserData;
@@ -26,18 +34,24 @@ import com.rc.abovesound.util.AllConstants;
 import com.rc.abovesound.util.AllUrls;
 import com.rc.abovesound.util.AppUtils;
 import com.rc.abovesound.util.HttpRequestManager;
+import com.reversecoder.library.event.OnSingleClickListener;
 import com.reversecoder.library.network.NetworkManager;
 import com.reversecoder.library.storage.SessionManager;
-import com.rc.abovesound.R;
-import com.rc.abovesound.model.City;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.GlideEngine;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * @author Md. Rashadul Alam
- *         Email: rashed.droid@gmail.com
+ * Email: rashed.droid@gmail.com
  */
 public class SignUpActivity extends AppCompatActivity {
 
     Button btnLogin, btnSignUp;
+    ImageView ivProfileImage;
     EditText edtFirstName, edtLastName, edtEmail, edtPassword, edtBio, edtFacebookId, edtTwitterId, edtYoutubeChannelId;
     Spinner spinnerCountry, spinnerZone, spinnerCity;
     TextView tvTitle;
@@ -46,6 +60,7 @@ public class SignUpActivity extends AppCompatActivity {
     String TAG = AppUtils.getTagName(SignUpActivity.class);
     CommonSpinnerAdapter spinnerCountryAdapter, spinnerZoneAdapter, spinnerCityAdapter;
     ResponseCountry wrapperCityWithCountryData;
+    private String mImagePath = "", mBase64 = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +75,7 @@ public class SignUpActivity extends AppCompatActivity {
         tvTitle = (TextView) findViewById(R.id.text_title);
         btnSignUp = (Button) findViewById(R.id.btn_sign_up);
         btnLogin = (Button) findViewById(R.id.btn_login);
+        ivProfileImage = (ImageView) findViewById(R.id.iv_profile_image);
         edtFirstName = (EditText) findViewById(R.id.edt_first_name);
         edtLastName = (EditText) findViewById(R.id.edt_last_name);
         edtEmail = (EditText) findViewById(R.id.edt_email);
@@ -107,6 +123,20 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void initRegistrationAction() {
+        ivProfileImage.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View view) {
+                Matisse.from(SignUpActivity.this)
+                        .choose(MimeType.ofImage())
+                        .theme(R.style.Matisse_Dracula)
+                        .capture(true)
+                        .setDefaultCaptureStrategy()
+                        .countable(false)
+                        .maxSelectable(1)
+                        .imageEngine(new GlideEngine())
+                        .forResult(AllConstants.REQUEST_CODE_IMAGE_PICKER);
+            }
+        });
 
         spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -209,6 +239,41 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AllConstants.REQUEST_CODE_IMAGE_PICKER && resultCode == RESULT_OK) {
+            List<String> mData = Matisse.obtainPathResult(data);
+
+            if (mData.size() == 1) {
+                mImagePath = mData.get(0);
+                Log.d(TAG, "MatisseImage: " + mImagePath);
+
+                Glide
+                        .with(SignUpActivity.this)
+                        .load(mImagePath)
+                        .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                        .apply(new RequestOptions().circleCropTransform())
+                        .apply(new RequestOptions().placeholder(R.drawable.vector_user_profile))
+                        .apply(new RequestOptions().error(R.drawable.vector_user_profile))
+                        .into(ivProfileImage);
+
+                try {
+                    File imageZipperFile = new ImageZipper(SignUpActivity.this)
+                            .setQuality(100)
+                            .setMaxWidth(200)
+                            .setMaxHeight(200)
+                            .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                            .compressToFile(new File(mImagePath));
+                    mBase64 = AllConstants.PREFIX_BASE64_STRING + ImageZipper.getBase64forImage(imageZipperFile);
+                    Log.d(TAG, "MatisseImage(mBase64): " + mBase64);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
     public class DoSignUp extends AsyncTask<String, String, HttpRequestManager.HttpResponse> {
 
         private Context mContext;
@@ -249,7 +314,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         @Override
         protected HttpRequestManager.HttpResponse doInBackground(String... params) {
-            HttpRequestManager.HttpResponse response = HttpRequestManager.doRestPostRequest(AllUrls.getSignUpUrl(), AllUrls.getSignUpParameters(mEmail, mPassword, mFirstName, mLastName, mCity, mBio, mFacebookId, mTwitterId, mYoutubeChannelID), null);
+            HttpRequestManager.HttpResponse response = HttpRequestManager.doRestPostRequest(AllUrls.getSignUpUrl(), AllUrls.getSignUpParameters(mEmail, mPassword, mFirstName, mLastName, mCity, mBio, mFacebookId, mTwitterId, mYoutubeChannelID, mBase64), null);
             return response;
         }
 
@@ -265,9 +330,9 @@ public class SignUpActivity extends AppCompatActivity {
                 Log.d(TAG, "success response: " + result.getResult().toString());
                 ResponseUserData responseData = ResponseUserData.getResponseObject(result.getResult().toString(), ResponseUserData.class);
 
-                if ((responseData.getStatus().equalsIgnoreCase("1")) && (responseData.getUser_details().size() == 1)) {
-                    Log.d(TAG, "success wrapper: " + responseData.getUser_details().get(0).toString());
-                    SessionManager.setStringSetting(SignUpActivity.this, AllConstants.SESSION_USER_DATA, responseData.getUser_details().get(0).toString());
+                if ((responseData.getStatus().equalsIgnoreCase("1")) && (responseData.getData().size() == 1)) {
+                    Log.d(TAG, "success wrapper: " + responseData.getData().get(0).toString());
+                    SessionManager.setStringSetting(SignUpActivity.this, AllConstants.SESSION_USER_DATA, responseData.getData().get(0).toString());
 
                     Toast.makeText(SignUpActivity.this, responseData.getMsg(), Toast.LENGTH_SHORT).show();
                 } else {
