@@ -10,6 +10,7 @@ public class ResponseUserData extends ResponseBase {
     private String status = "";
     private String msg = "";
     private ArrayList<UserData> user_details = new ArrayList<UserData>();
+    private ArrayList<UserData> data = new ArrayList<UserData>();
 
     public ResponseUserData() {
     }
@@ -42,5 +43,23 @@ public class ResponseUserData extends ResponseBase {
 
     public void setUser_details(ArrayList<UserData> user_details) {
         this.user_details = user_details;
+    }
+
+    public ArrayList<UserData> getData() {
+        return data;
+    }
+
+    public void setData(ArrayList<UserData> data) {
+        this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseUserData{" +
+                "status='" + status + '\'' +
+                ", msg='" + msg + '\'' +
+                ", user_details=" + user_details +
+                ", data=" + data +
+                '}';
     }
 }

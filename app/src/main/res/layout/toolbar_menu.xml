@@ -19,4 +19,12 @@
         android:textColor="@color/white"
         android:textSize="@dimen/activity_title_text_size" />
 
+    <ImageView
+        android:id="@+id/iv_right_menu"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="@dimen/dp_30"
+        android:layout_gravity="end"
+        android:layout_marginRight="10dp"
+        android:visibility="gone" />
+
 </android.support.v7.widget.Toolbar>

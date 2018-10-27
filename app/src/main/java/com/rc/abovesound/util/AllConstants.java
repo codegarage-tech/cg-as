@@ -10,6 +10,8 @@ import java.util.ArrayList;
  */
 public class AllConstants {
 
+    public static final String PREFIX_BASE64_STRING = "data:image/jpeg;base64,";
+
     // Reminder
     public static final String SNAPSHOT_DATASET_HOME = "SNAPSHOT_DATASET_HOME";
     public static final long MILLIS_HOUR = 1000 * 60 * 60;
@@ -17,6 +19,8 @@ public class AllConstants {
     //Request code
     public static final int REQUEST_CODE_PAYPAL = 420;
     public static final int REQUEST_CODE_ZONE = 4200;
+    public static final int REQUEST_CODE_EDIT_PROFILE = 4201;
+    public static final int REQUEST_CODE_IMAGE_PICKER = 42100;
 
     //Intent extra
     public static final String KEY_INTENT_EXTRA_ACTION = "KEY_INTENT_EXTRA_ACTION";
@@ -38,6 +42,7 @@ public class AllConstants {
     public static final String INTENT_KEY_OWN_MUSIC_LIST_ITEM_MUSIC = "INTENT_KEY_OWN_MUSIC_LIST_ITEM_MUSIC";
     public static final String INTENT_KEY_OWN_MUSIC_LIST_FROM_MENU = "INTENT_KEY_OWN_MUSIC_LIST_FROM_MENU";
     public static final String INTENT_KEY_OWN_MUSIC_LIST_ITEM_USER= "INTENT_KEY_OWN_MUSIC_LIST_ITEM_USER";
+    public static final String INTENT_KEY_USER= "INTENT_KEY_USER";
 
     //Model
     public static final String DEFAULT_SPENT_TIME_TEXT = "00:00/00:00";

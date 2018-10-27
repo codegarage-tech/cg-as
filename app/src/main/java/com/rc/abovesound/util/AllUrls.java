@@ -64,7 +64,7 @@ public class AllUrls {
     }
 
     public static JSONObject getUpdateUserParameters(String userID, String email, String password, String firstName, String lastName
-            , String city, String bio, String facebookID, String twitterID, String youtubeChannelID) {
+            , String city, String bio, String facebookID, String twitterID, String youtubeChannelID, String base64Image) {
         JSONObject params = HttpRequestManager.HttpParameter.getInstance()
                 .addJSONParam("id", userID)
                 .addJSONParam("email", email)
@@ -76,6 +76,7 @@ public class AllUrls {
                 .addJSONParam("facebook", facebookID)
                 .addJSONParam("twitter", twitterID)
                 .addJSONParam("youtube", youtubeChannelID)
+                .addJSONParam("profile_image", base64Image)
                 .getJSONParam();
         Log.d(TAG, "getUpdateUserParameters: " + params.toString());
         return params;

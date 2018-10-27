@@ -272,6 +272,11 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
                     return;
                 }
 
+                if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_USER_DATA))) {
+                    Log.d(TAG, "Session data: " + SessionManager.getStringSetting(HomeActivity.this, SESSION_USER_DATA));
+                    user = UserData.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_USER_DATA), UserData.class);
+                }
+
                 Intent intentOwnMusicList = new Intent(HomeActivity.this, OwnMusicListActivity.class);
                 intentOwnMusicList.putExtra(INTENT_KEY_OWN_MUSIC_LIST_ITEM_USER, user);
                 intentOwnMusicList.putExtra(INTENT_KEY_OWN_MUSIC_LIST_FROM_MENU, true);
@@ -290,6 +295,11 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
                 if (!NetworkManager.isConnected(HomeActivity.this)) {
                     Toast.makeText(HomeActivity.this, getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
                     return;
+                }
+
+                if (!AppUtils.isNullOrEmpty(SessionManager.getStringSetting(HomeActivity.this, SESSION_USER_DATA))) {
+                    Log.d(TAG, "Session data: " + SessionManager.getStringSetting(HomeActivity.this, SESSION_USER_DATA));
+                    user = UserData.getResponseObject(SessionManager.getStringSetting(HomeActivity.this, SESSION_USER_DATA), UserData.class);
                 }
 
                 Intent intentBoughtMusicList = new Intent(HomeActivity.this, BoughtMusicListActivity.class);

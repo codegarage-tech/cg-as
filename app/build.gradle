@@ -135,6 +135,7 @@ dependencies {
     implementation project(":fabulousfilter")
     implementation project(":reminder")
     implementation project(":matisse")
+    implementation project(":imagezipper")
 
     implementation 'com.reversecoder.permission:rc-permission:1.0.1-SNAPSHOT'
     implementation 'com.reversecoder.library:rc-library:1.0.1-SNAPSHOT'

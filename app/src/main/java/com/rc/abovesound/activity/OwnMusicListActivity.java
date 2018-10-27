@@ -31,6 +31,8 @@ import com.rc.abovesound.util.IntentManager;
 import com.reversecoder.library.event.OnSingleClickListener;
 import com.reversecoder.library.util.AllSettingsManager;
 
+import static com.rc.abovesound.util.AllConstants.REQUEST_CODE_EDIT_PROFILE;
+
 /**
  * @author Md. Rashadul Alam
  * Email: rashed.droid@gmail.com
@@ -39,6 +41,7 @@ public class OwnMusicListActivity extends AppCompatActivity {
 
     TextView tvTitle;
     ListView lvOwnMusic;
+    ImageView ivRightMenu;
     private String TAG = OwnMusicListActivity.class.getSimpleName();
     public Music mMusic;
     UserData intentUser, mUser;
@@ -60,20 +63,8 @@ public class OwnMusicListActivity extends AppCompatActivity {
     }
 
     private void initOwnMusicListUI() {
-
-        Intent data = getIntent();
-
-        isFromMenu = data.getBooleanExtra(AllConstants.INTENT_KEY_OWN_MUSIC_LIST_FROM_MENU, false);
-
-        if (isFromMenu) {
-            intentUser = data.getParcelableExtra(AllConstants.INTENT_KEY_OWN_MUSIC_LIST_ITEM_USER);
-            Log.d(TAG, "user: " + intentUser);
-        } else {
-            mMusic = data.getParcelableExtra(AllConstants.INTENT_KEY_OWN_MUSIC_LIST_ITEM_MUSIC);
-            Log.d(TAG, "music: " + mMusic);
-        }
-
         tvTitle = (TextView) findViewById(R.id.text_title);
+        ivRightMenu = (ImageView) findViewById(R.id.iv_right_menu);
         lvOwnMusic = (ListView) findViewById(R.id.lv_own_music);
         ivBack = (ImageView) findViewById(R.id.menu_hamburger);
         ivProfileImage = (ImageView) findViewById(R.id.iv_profile_image);
@@ -83,6 +74,18 @@ public class OwnMusicListActivity extends AppCompatActivity {
         ivTwitter = (ImageView) findViewById(R.id.iv_twitter);
         ivYoutube = (ImageView) findViewById(R.id.iv_youtube);
         llSocialProfile = (LinearLayout) findViewById(R.id.ll_social_profile);
+
+        Intent data = getIntent();
+        isFromMenu = data.getBooleanExtra(AllConstants.INTENT_KEY_OWN_MUSIC_LIST_FROM_MENU, false);
+        if (isFromMenu) {
+            ivRightMenu.setBackgroundResource(R.drawable.vector_edit_profile);
+            ivRightMenu.setVisibility(View.VISIBLE);
+            intentUser = data.getParcelableExtra(AllConstants.INTENT_KEY_OWN_MUSIC_LIST_ITEM_USER);
+            Log.d(TAG, "user: " + intentUser);
+        } else {
+            mMusic = data.getParcelableExtra(AllConstants.INTENT_KEY_OWN_MUSIC_LIST_ITEM_MUSIC);
+            Log.d(TAG, "music: " + mMusic);
+        }
 
         initUserInfo(intentUser);
 
@@ -181,6 +184,14 @@ public class OwnMusicListActivity extends AppCompatActivity {
             @Override
             public void onSingleClick(View view) {
                 onBackPressed();
+            }
+        });
+
+        ivRightMenu.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View view) {
+                Intent profileIntent = new Intent(OwnMusicListActivity.this, ProfileActivity.class);
+                startActivityForResult(profileIntent, REQUEST_CODE_EDIT_PROFILE);
             }
         });
     }
@@ -288,8 +299,18 @@ public class OwnMusicListActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (musicListViewAdapter != null) {
-            musicListViewAdapter.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AllConstants.REQUEST_CODE_EDIT_PROFILE && resultCode == RESULT_OK) {
+            UserData userData = data.getParcelableExtra(AllConstants.INTENT_KEY_USER);
+            if (userData != null) {
+                intentUser = userData;
+                Log.d(TAG, "user: " + intentUser);
+                initUserInfo(intentUser);
+            }
+        } else {
+            if (musicListViewAdapter != null) {
+                musicListViewAdapter.onActivityResult(requestCode, resultCode, data);
+            }
         }
     }
 }

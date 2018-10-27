@@ -3,6 +3,8 @@ package com.rc.abovesound.activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +18,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.developers.imagezipper.ImageZipper;
+import com.rc.abovesound.R;
 import com.rc.abovesound.adapter.CommonSpinnerAdapter;
+import com.rc.abovesound.model.City;
 import com.rc.abovesound.model.Country;
 import com.rc.abovesound.model.ResponseCountry;
 import com.rc.abovesound.model.ResponseUserData;
@@ -29,16 +37,21 @@ import com.rc.abovesound.util.HttpRequestManager;
 import com.reversecoder.library.event.OnSingleClickListener;
 import com.reversecoder.library.network.NetworkManager;
 import com.reversecoder.library.storage.SessionManager;
-import com.rc.abovesound.R;
-import com.rc.abovesound.model.City;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.GlideEngine;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * @author Md. Rashadul Alam
- *         Email: rashed.droid@gmail.com
+ * Email: rashed.droid@gmail.com
  */
 public class ProfileActivity extends AppCompatActivity {
 
     private Button btnUpdateProfile;
+    ImageView ivProfileImage;
     EditText edtFirstName, edtLastName, edtEmail, edtPassword, edtBio, edtFacebookId, edtTwitterId, edtYoutubeChannelId;
     Spinner spinnerCountry, spinnerZone, spinnerCity;
     ProgressDialog loadingDialog;
@@ -47,6 +60,7 @@ public class ProfileActivity extends AppCompatActivity {
     String TAG = AppUtils.getTagName(ProfileActivity.class);
     CommonSpinnerAdapter spinnerCityAdapter, spinnerZoneAdapter, spinnerCountryAdapter;
     ResponseCountry wrapperCityWithCountryData;
+    private String mImagePath = "", mBase64 = "";
 
     TextView tvTitle;
     ImageView ivBack;
@@ -64,6 +78,7 @@ public class ProfileActivity extends AppCompatActivity {
         tvTitle = (TextView) findViewById(R.id.text_title);
         ivBack = (ImageView) findViewById(R.id.menu_hamburger);
         btnUpdateProfile = (Button) findViewById(R.id.btn_update_profile);
+        ivProfileImage = (ImageView) findViewById(R.id.iv_profile_image);
         edtFirstName = (EditText) findViewById(R.id.edt_first_name);
         edtLastName = (EditText) findViewById(R.id.edt_last_name);
         edtEmail = (EditText) findViewById(R.id.edt_email);
@@ -112,6 +127,21 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onSingleClick(View view) {
                 onBackPressed();
+            }
+        });
+
+        ivProfileImage.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View view) {
+                Matisse.from(ProfileActivity.this)
+                        .choose(MimeType.ofImage())
+                        .theme(R.style.Matisse_Dracula)
+                        .capture(true)
+                        .setDefaultCaptureStrategy()
+                        .countable(false)
+                        .maxSelectable(1)
+                        .imageEngine(new GlideEngine())
+                        .forResult(AllConstants.REQUEST_CODE_IMAGE_PICKER);
             }
         });
 
@@ -215,6 +245,41 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AllConstants.REQUEST_CODE_IMAGE_PICKER && resultCode == RESULT_OK) {
+            List<String> mData = Matisse.obtainPathResult(data);
+
+            if (mData.size() == 1) {
+                mImagePath = mData.get(0);
+                Log.d(TAG, "MatisseImage: " + mImagePath);
+
+                Glide
+                        .with(ProfileActivity.this)
+                        .load(mImagePath)
+                        .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                        .apply(new RequestOptions().circleCropTransform())
+                        .apply(new RequestOptions().placeholder(R.drawable.vector_user_profile))
+                        .apply(new RequestOptions().error(R.drawable.vector_user_profile))
+                        .into(ivProfileImage);
+
+                try {
+                    File imageZipperFile = new ImageZipper(ProfileActivity.this)
+                            .setQuality(100)
+                            .setMaxWidth(200)
+                            .setMaxHeight(200)
+                            .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                            .compressToFile(new File(mImagePath));
+                    mBase64 = AllConstants.PREFIX_BASE64_STRING + ImageZipper.getBase64forImage(imageZipperFile);
+                    Log.d(TAG, "MatisseImage(mBase64): " + mBase64);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
     public class DoUpdateProfile extends AsyncTask<String, String, HttpRequestManager.HttpResponse> {
 
         private Context mContext;
@@ -256,7 +321,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         @Override
         protected HttpRequestManager.HttpResponse doInBackground(String... params) {
-            HttpRequestManager.HttpResponse response = HttpRequestManager.doRestPostRequest(AllUrls.getUpdateUserUrl(), AllUrls.getUpdateUserParameters(mId, mEmail, mPassword, mFirstName, mLastName, mCity, mBio, mFacebookId, mTwitterId, mYoutubeChannelID), null);
+            HttpRequestManager.HttpResponse response = HttpRequestManager.doRestPostRequest(AllUrls.getUpdateUserUrl(), AllUrls.getUpdateUserParameters(mId, mEmail, mPassword, mFirstName, mLastName, mCity, mBio, mFacebookId, mTwitterId, mYoutubeChannelID, mBase64), null);
             return response;
         }
 
@@ -271,12 +336,17 @@ public class ProfileActivity extends AppCompatActivity {
             if (result.isSuccess() && !AppUtils.isNullOrEmpty(result.getResult().toString())) {
                 Log.d(TAG, "success response: " + result.getResult().toString());
                 ResponseUserData responseData = ResponseUserData.getResponseObject(result.getResult().toString(), ResponseUserData.class);
+                Log.d(TAG, "success data: " + responseData.toString());
 
-                if ((responseData.getStatus().equalsIgnoreCase("1")) && (responseData.getUser_details().size() == 1)) {
-                    Log.d(TAG, "success wrapper: " + responseData.getUser_details().get(0).toString());
-                    SessionManager.setStringSetting(ProfileActivity.this, AllConstants.SESSION_USER_DATA, responseData.getUser_details().get(0).toString());
-
+                if ((responseData.getStatus().equalsIgnoreCase("1")) && (responseData.getData().size() == 1)) {
+                    Log.d(TAG, "success wrapper: " + responseData.getData().get(0).toString());
+                    SessionManager.setStringSetting(ProfileActivity.this, AllConstants.SESSION_USER_DATA, responseData.getData().get(0).toString());
                     Toast.makeText(ProfileActivity.this, responseData.getMsg(), Toast.LENGTH_SHORT).show();
+
+                    Intent intentUser = new Intent();
+                    intentUser.putExtra(AllConstants.INTENT_KEY_USER, responseData.getData().get(0));
+                    setResult(RESULT_OK, intentUser);
+                    finish();
                 } else {
                     Toast.makeText(ProfileActivity.this, responseData.getMsg(), Toast.LENGTH_SHORT).show();
                 }
@@ -328,8 +398,16 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void setUserData() {
-
         if (user != null) {
+            Glide
+                    .with(ProfileActivity.this)
+                    .load(user.getProfile_image())
+                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                    .apply(new RequestOptions().circleCropTransform())
+                    .apply(new RequestOptions().placeholder(R.drawable.vector_user_profile))
+                    .apply(new RequestOptions().error(R.drawable.vector_user_profile))
+                    .into(ivProfileImage);
+
             edtFirstName.setText(user.getFirst_name());
             edtLastName.setText(user.getLast_name());
             edtEmail.setText(user.getEmail());
