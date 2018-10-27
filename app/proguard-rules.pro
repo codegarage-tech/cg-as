@@ -135,3 +135,7 @@
 
 ########## Apache commons ##########
 -keep class org.apache.commons.** {*;}
+
+########## Picasso ##########
+-dontwarn com.squareup.okhttp.**
+-dontwarn com.squareup.picasso.**
