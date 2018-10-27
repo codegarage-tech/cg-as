@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.developers.imagezipper.ImageZipper;
 import com.rc.abovesound.R;
 import com.rc.abovesound.adapter.CommonSpinnerAdapter;
@@ -258,7 +259,8 @@ public class ProfileActivity extends AppCompatActivity {
                 Glide
                         .with(ProfileActivity.this)
                         .load(mImagePath)
-                        .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+//                        .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
+                        .apply(new RequestOptions().signature(new ObjectKey(System.currentTimeMillis())))
                         .apply(new RequestOptions().circleCropTransform())
                         .apply(new RequestOptions().placeholder(R.drawable.vector_user_profile))
                         .apply(new RequestOptions().error(R.drawable.vector_user_profile))
@@ -402,7 +404,8 @@ public class ProfileActivity extends AppCompatActivity {
             Glide
                     .with(ProfileActivity.this)
                     .load(user.getProfile_image())
-                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+//                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
+                    .apply(new RequestOptions().signature(new ObjectKey(System.currentTimeMillis())))
                     .apply(new RequestOptions().circleCropTransform())
                     .apply(new RequestOptions().placeholder(R.drawable.vector_user_profile))
                     .apply(new RequestOptions().error(R.drawable.vector_user_profile))
